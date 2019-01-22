@@ -1,0 +1,39 @@
+import reqwest from '../utils/reqwest';
+import {getGlobalToken} from '../utils/constant';
+import querystring from 'querystring';
+
+#foreach($item in $methods)
+
+    //${item.comment}
+    export function ${item.name}(payload) {
+        return reqwest({
+            url: ${item.url},
+            method: '${item.method}',
+            headers:{
+                'content-type': '${fun.consumes}',
+                'platform':3,
+                'version': 2.0,
+                'channel' : 0,
+                'Authorization' : getGlobalToken()
+            },
+            type: 'json',
+            #if($fun.method == 'get')
+            data: ${fun.params}
+            #end
+            #if($fun.method == 'post')
+                #if($fun.reqParamType == 'body')
+                data: JSON.stringify(payload)
+                #end
+                #if($fun.reqParamType == 'formdata')
+                data: { ... payload}
+                #end
+            #end
+            #if($fun.method == 'put')
+            data: querystring.stringify(payload)
+            #end
+            #if($fun.method == 'delete')
+            data: {...payload}
+            #end
+        })
+    }
+#end
