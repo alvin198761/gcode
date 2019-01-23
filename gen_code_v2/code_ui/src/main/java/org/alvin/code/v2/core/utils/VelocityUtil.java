@@ -85,7 +85,7 @@ public class VelocityUtil {
 	 * @param velocityEngine
 	 */
 	public static void parse(String templateName, Object obj, String outPath, VelocityEngine velocityEngine) {
-		Template t = velocityEngine.getTemplate(templateName);
+		Template t = velocityEngine.getTemplate(templateName, "utf-8");
 		t.setEncoding("utf-8");
 		VelocityContext ctx = new VelocityContext();
 		JSONObject.parseObject(JSONObject.toJSONString(obj)).forEach(ctx::put);
