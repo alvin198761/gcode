@@ -1,5 +1,7 @@
 package org.alvin.code.v2.core.utils;
 
+import com.alibaba.fastjson.JSONObject;
+import com.google.common.base.CaseFormat;
 import com.google.common.base.Joiner;
 import org.alvin.code.v2.core.model.Field;
 import org.apache.commons.logging.Log;
@@ -8,8 +10,6 @@ import org.apache.commons.logging.LogFactory;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
@@ -23,17 +23,15 @@ import java.util.zip.ZipOutputStream;
 
 public class Utils {
 	private static Log logger = LogFactory.getLog(Utils.class);
-	private static String time;
 
 	public static void setTime() {
-		time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
 	}
 
 	/**
-	 * @param list 字段列表
+	 * @param list   字段列表
 	 * @param prefix 前缀
 	 * @param suffix 后缀
-	 * @param noId 不包括主键
+	 * @param noId   不包括主键
 	 */
 	public static StringBuilder add(List<Field> list, String prefix, String suffix, boolean noId, String wrap) {
 		StringBuilder sb = new StringBuilder();
@@ -65,26 +63,26 @@ public class Utils {
 		return sb.delete(sb.length() - 1, sb.length()).append(")");
 	}
 
-	/**
-	 * @方法说明: 类注释
-	 */
-	public static String classNote(String auth, String name) {
-		return String.format("\r\n\r\n/**\r\n * @类说明:%s\r\n * @author:%s\r\n * @date:%s\r\n **/", name, auth, time);
-	}
-
-	/**
-	 * @方法说明: 方法注释
-	 */
-	public static String methodNote(String name) {
-		return String.format("\r\n\r\n	/**\r\n	 * @方法说明:%s\r\n	 **/", name);
-	}
-
-	/**
-	 * @方法说明: 页面注释
-	 */
-	public static String pageNote(String cName, String auth) {
-		return String.format("/*%s,作者:%s,日期:%s*/", cName, auth, time);
-	}
+//	/**
+//	 * @方法说明: 类注释
+//	 */
+//	public static String classNote(String auth, String name, String time) {
+//		return String.format("\r\n\r\n/**\r\n * @类说明:%s\r\n * @author:%s\r\n * @date:%s\r\n **/", name, auth, time);
+//	}
+//
+//	/**
+//	 * @方法说明: 方法注释
+//	 */
+//	public static String methodNote(String name) {
+//		return String.format("\r\n\r\n	/**\r\n	 * @方法说明:%s\r\n	 **/", name);
+//	}
+//
+//	/**
+//	 * @方法说明: 页面注释
+//	 */
+//	public static String pageNote(String cName, String auth, String time) {
+//		return String.format("/*%s,作者:%s,日期:%s*/", cName, auth, time);
+//	}
 
 	/**
 	 * @方法说明: 首字母大写
@@ -158,40 +156,13 @@ public class Utils {
 			e.printStackTrace();
 		}
 	}
-	//////////////////////////////////////////////
 
-//	public static boolean isEmptyString(final CharSequence cs) {
-//		return cs == null || cs.length() == 0;
-//	}
-//
-//	public static <T> boolean isEmptyList(final List<T> list) {
-//		return list == null || list.size() == 0;
-//	}
-//
-//	public static boolean notEmptyString(final CharSequence cs) {
-//		return cs != null && cs.length() >= 0;
-//	}
-//
-//	public static <T> boolean notEmptyList(final List<T> list) {
-//		return list != null && list.size() >= 0;
-//	}
-
-	//	public static void main(String[] args) {
-//		logger.info(isEmptyString(""));
-//		logger.info(isEmptyString(null));
-//		List<Integer> list = Lists.newArrayList();
-//		logger.info(isEmptyList(null));
-//		logger.info(isEmptyList(list));
-//		list.add(1);
-//		logger.info(isEmptyList(list));
-//		logger.info(notEmptyList(list));
-//	}
 	/////////////////////////////////
-	public static void createZip(String sourcePath, String zipPath) {
+	public static void createZip(String sourcePath, String zipPath, boolean delete) {
 		try {
 			FileOutputStream fos = new FileOutputStream(zipPath);
 			ZipOutputStream zos = new ZipOutputStream(fos);
-			writeZip(new File(sourcePath), "", zos);
+			writeZip(new File(sourcePath), "", zos, delete);
 			zos.close();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -210,7 +181,7 @@ public class Utils {
 		file.delete();
 	}
 
-	private static void writeZip(File file, String parentPath, ZipOutputStream zos) {
+	private static void writeZip(File file, String parentPath, ZipOutputStream zos, boolean delete) {
 		try {
 			if (file.exists()) {
 				if (file.isDirectory()) {
@@ -218,7 +189,7 @@ public class Utils {
 					File[] files = file.listFiles();
 					if (files.length != 0) {
 						for (File f : files) {
-							writeZip(f, parentPath, zos);
+							writeZip(f, parentPath, zos, delete);
 						}
 					} else {
 						zos.putNextEntry(new ZipEntry(parentPath));
@@ -236,11 +207,35 @@ public class Utils {
 					}
 					fis.close();
 				}
+				//删除选项
+				if (delete) {
+					System.gc();
+					if (!file.delete()) {
+						file.deleteOnExit();
+					}
+				}
 			}
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	/**
+	 * 各种书写转化
+	 *
+	 * @param fList
+	 * @return
+	 */
+	public static JSONObject caseMapper(List<Field> fList) {
+		JSONObject mappper = new JSONObject();
+		fList.forEach(item -> {
+			JSONObject fitem = new JSONObject();
+			fitem.put("lower_underscore", CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, item.getName()));
+			fitem.put("lower_camel", CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, item.getName()));
+			mappper.put(item.getName(), fitem);
+		});
+		return mappper;
 	}
 }

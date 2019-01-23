@@ -79,7 +79,7 @@ public class ProjectService {
 		//第一层目录文件
 		File outSrcFile = mkdir(outFileDir, "src");
 		File sourceDir = new File(System.getProperty("user.dir"), "project_templates");
-		VelocityUtil.parse("/project_templates/pom.xml", config, new File(outFileDir, "pom.xml").getAbsolutePath(), VelocityUtil.fileVelocityEngine());
+		VelocityUtil.parse("/project_templates/pom.xml", config, new File(outFileDir, "pom.xml").getAbsolutePath(), VelocityUtil.fileVelocityEngine(sourceDir.getParentFile().getAbsolutePath()));
 		//第二层目录文件
 		File outMainFile = mkdir(outSrcFile, "main");
 		File outJavaFile = mkdir(outMainFile, "java");
@@ -87,7 +87,7 @@ public class ProjectService {
 		File outPackageFile = mkdir(outJavaFile, projectConfig.getBase_package().replace('.', '/'));
 		//打包文件
 		File assembly = mkdir(outMainFile, "assembly");
-		VelocityUtil.parse("/project_templates/assembly/assembly.xml", config, new File(assembly, "assembly.xml").getAbsolutePath(), VelocityUtil.fileVelocityEngine());
+		VelocityUtil.parse("/project_templates/assembly/assembly.xml", config, new File(assembly, "assembly.xml").getAbsolutePath(), VelocityUtil.fileVelocityEngine(outMainFile.getAbsolutePath()));
 		//配置文件
 		File outResourceDir = mkdir(outMainFile, "resources");
 		copyDir(new File(sourceDir, "resources"), outResourceDir, config, System.getProperty("user.dir"));
@@ -213,6 +213,7 @@ public class ProjectService {
 			System.out.println("template file :" + vm);
 			String distName = vmFile.getName().replace("Model", upp);
 			String templateName = vmFile.getAbsolutePath().substring(prefix.length()).replace('\\', '/');
+			File templateFile = new File(templateName);
 			System.out.println("=================start VelocityEngine==================");
 			String outPath;
 			if (vmFile.getName().toLowerCase().endsWith(".vue")) {
@@ -222,7 +223,7 @@ public class ProjectService {
 			} else {
 				outPath = new File(sysDir, distName).getAbsolutePath();
 			}
-			VelocityUtil.parse(templateName, jsonObject, outPath, VelocityUtil.fileVelocityEngine());
+			VelocityUtil.parse(templateFile.getName(), jsonObject, outPath, VelocityUtil.fileVelocityEngine(templateFile.getParentFile().getAbsolutePath()));
 			System.out.println("=================end VelocityEngine==================");
 		}
 	}
@@ -246,7 +247,8 @@ public class ProjectService {
 				continue;
 			}
 			String templateName = f.getAbsolutePath().substring(prefix.length()).replace('\\', '/');
-			VelocityUtil.parse(templateName, config, targetFile.getAbsolutePath(), VelocityUtil.fileVelocityEngine());
+			File templateFile = new File(templateName);
+			VelocityUtil.parse(templateFile.getName(), config, targetFile.getAbsolutePath(), VelocityUtil.fileVelocityEngine(templateFile.getParentFile().getAbsolutePath()));
 		}
 	}
 

@@ -3,6 +3,9 @@ package org.alvin.code.v2.core.service;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.base.CaseFormat;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import lombok.extern.slf4j.Slf4j;
+import org.alvin.code.gen.beans.RestfullResp;
 import org.alvin.code.v2.core.dao.CodeDao;
 import org.alvin.code.v2.core.model.CodeCond;
 import org.alvin.code.v2.core.model.Field;
@@ -12,12 +15,15 @@ import org.alvin.code.v2.core.utils.VelocityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 
@@ -27,20 +33,25 @@ import java.util.stream.Collectors;
  * @date 2018-02-15
  */
 @Service
+@Slf4j
 public class CodeService {
 	@Autowired
 	protected CodeDao dao;
-
 	@Autowired
-	private ScanDriverService scanDriverService;
+	private VmFileService vmFileService;
 
-
-	public void create(CodeCond cond) throws Exception {
-		String baseUrl = "codetemplate";
-		String dateFormart = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-		List<String> vms = scanDriverService.doScanService(baseUrl, ".vm");
+	public RestfullResp<Map<String, Object>> create(CodeCond cond) throws Exception {
+		String suffix = ".vm";
+		String dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+		File outBaseDir = new File("../../templates/gen_templates/codetemplate");
+		List<String> vms = vmFileService.scanTemplate(outBaseDir.getAbsolutePath(), suffix);
+		String uuid = UUID.randomUUID().toString();
+		String outPath = "dist/" + uuid;
+		if (vms.isEmpty()) {
+			return new RestfullResp<>(1, "没有扫描到模板");
+		}
 		for (Table table : cond.getC_list()) {
-			String auth = cond.getAuth();// 作者
+			String auth = cond.getAuthor();// 作者
 			//用工参数
 			cond.setT_name_eq(table.getT_name());// 表名
 			List<Field> fList = dao.queryFields(cond).stream().map(item -> {
@@ -69,7 +80,7 @@ public class CodeService {
 			//类名称
 			jsonObject.put("clsUpp", upp);
 			jsonObject.put("upp", upp);
-			jsonObject.put("time", dateFormart);
+			jsonObject.put("time", dateFormat);
 			//各种参数追加
 			jsonObject.put("selectFields", Utils.add(fList, "t.", ",", false, "select"));
 			jsonObject.put("insertFields", Utils.add(fList, "", ",", true, "insert"));
@@ -80,6 +91,7 @@ public class CodeService {
 			jsonObject.put("updateFields", Utils.add(fList, "", "=?,", true, "sql"));
 			jsonObject.put("updateParams", Utils.add(fList, "vo.get", "(),", true) + ",vo.get" + Utils.firstUpper(idName) + "()");
 			jsonObject.put("selectItems", Utils.add(fList, "t.", ","));
+			jsonObject.put("caseMapper", Utils.caseMapper(fList));
 
 			//其他附属数据
 			List<String> importList = Lists.newArrayList();
@@ -89,9 +101,16 @@ public class CodeService {
 			//
 			jsonObject.put("dollar", "$");
 			//java 代码生成
-			parseVmTemplate(vms, baseUrl, jsonObject, cond, upp, low);
+			parseVmTemplate(vms, outPath, jsonObject, cond, low, suffix, outBaseDir);
 		}
+		Map<String, Object> res = Maps.newHashMap();
+		File file = new File(outPath);
+		String fileName = file.getAbsolutePath().concat(".zip");
+		Utils.createZip(outPath, fileName, true);
+		res.put("download_url", uuid);
+		return new RestfullResp<>(res);
 	}
+
 
 	/**
 	 * 只生成java 类，目前
@@ -100,36 +119,34 @@ public class CodeService {
 	 * @param baseUrl
 	 * @param jsonObject
 	 * @param cond
-	 * @param upp
 	 * @param low
+	 * @param suffix
+	 * @param outBaseDir
 	 * @throws IOException
 	 */
-	public void parseVmTemplate(List<String> vms, String baseUrl, JSONObject jsonObject, CodeCond cond, String upp, String low) throws IOException {
+	public void parseVmTemplate(List<String> vms, String baseUrl, JSONObject jsonObject, CodeCond cond, String low, String suffix, File outBaseDir) throws IOException {
 		//循环模板，进行合并
 		for (String vm : vms) {
 			//获得文件名称
-			System.out.println("template file :" + vm);
-			String vmName = vm.substring(0, vm.length() - 3);
-			vm = "/" + vmName.replaceAll("[.]", "/") + ".vm";
-			//拼接文件地址
-			String dirName = vmName.substring(("/" + baseUrl + "/").length() - 1);
-			String clazzName = dirName.substring(dirName.lastIndexOf(".") + 1);
-			dirName = dirName.substring(0, dirName.lastIndexOf("."));
-			System.out.println(dirName);
+			log.info("template file :" + vm);
+			File baseDir = new File(baseUrl, vm);
 			//计算包名
-			String pName = cond.pack(dirName, low);
-			String fileType = clazzName.substring(clazzName.lastIndexOf("_"));
-			upp = clazzName.replaceAll("Model", jsonObject.getString("clsUpp"));
+			String pName = cond.getPackageName().concat(".").concat(low);
+			File fileName = new File(vm);
+			String vmName = fileName.getName().substring(0, fileName.getName().lastIndexOf(suffix));
+			String fileType = vmName.substring(vmName.lastIndexOf("_")).replace('_', '.');
+			String upp = vmName.replaceAll("Model", jsonObject.getString("clsUpp"));
 			upp = upp.substring(0, upp.length() - fileType.length());
 			jsonObject.put("upp", upp);
-			String path = cond.base(dirName, low, upp);
+			String path = baseDir.getParentFile().getAbsolutePath().concat("/").concat(low).concat("/").concat(upp);
 
-			System.out.println("target file :" + path + (fileType.replace('_', '.')));
-			System.out.println("=================start VelocityEngine==================");
+			log.info("target file :" + path + fileType);
+			log.info("=================start VelocityEngine==================");
 			jsonObject.put("pName", pName);
 			Files.createDirectories(Paths.get(path).getParent());
-			VelocityUtil.parse(vm, jsonObject, path + fileType.replace('_', '.'), VelocityUtil.classPathVelocityEngine());
-			System.out.println("=================end VelocityEngine==================");
+			String sourceLoadPath = outBaseDir.getCanonicalFile().getAbsolutePath();
+			VelocityUtil.parse(vm, jsonObject, path + fileType, VelocityUtil.fileVelocityEngine(sourceLoadPath));
+			log.info("=================end VelocityEngine==================");
 		}
 	}
 

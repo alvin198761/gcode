@@ -39,7 +39,7 @@ public class VelocityUtil {
 	 *
 	 * @return
 	 */
-	public static VelocityEngine fileVelocityEngine() {
+	public static VelocityEngine fileVelocityEngine(String path) {
 		//初始化参数
 		Properties properties = new Properties();
 		//设置velocity资源加载方式为file
@@ -49,7 +49,7 @@ public class VelocityUtil {
 		properties.setProperty(Velocity.ENCODING_DEFAULT, "utf-8");
 		properties.setProperty(Velocity.INPUT_ENCODING, "utf-8");
 		properties.setProperty(Velocity.OUTPUT_ENCODING, "utf-8");
-		properties.setProperty(VelocityEngine.FILE_RESOURCE_LOADER_PATH, System.getProperty("user.dir"));
+		properties.setProperty(VelocityEngine.FILE_RESOURCE_LOADER_PATH, path);
 		//实例化一个VelocityEngine对象
 		return new VelocityEngine(properties);
 	}

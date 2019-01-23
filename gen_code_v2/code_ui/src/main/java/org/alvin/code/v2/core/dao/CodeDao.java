@@ -1,16 +1,23 @@
 package org.alvin.code.v2.core.dao;
 
 
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.alvin.code.gen.beans.BaseDao;
 import org.alvin.code.gen.utils.SqlUtil;
 import org.alvin.code.v2.core.model.CodeCond;
 import org.alvin.code.v2.core.model.Field;
 import org.alvin.code.v2.core.model.Table;
+import org.apache.tools.ant.Project;
+import org.apache.tools.ant.taskdefs.SQLExec;
+import org.apache.tools.ant.types.EnumeratedAttribute;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.PostConstruct;
+import java.io.File;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -23,8 +30,18 @@ import java.util.List;
  */
 @Repository
 @Slf4j
+
+@Data
 public class CodeDao extends BaseDao {
 	public static String DBUSER;// 数据库用户名
+	@Value("${spring.datasource.driverClassName}")
+	private String driverClass;
+	@Value("${spring.datasource.url}")
+	private String url;
+	@Value("${spring.datasource.username}")
+	private String username;
+	@Value("${spring.datasource.password}")
+	private String password;
 
 	/**
 	 * @功能描述 系统变量及初始化
@@ -86,6 +103,43 @@ public class CodeDao extends BaseDao {
 
 	public void executeSql(String sql) {
 		jdbcTemplate.execute(sql);
+	}
+
+
+	public SQLExec createSqlExec() {
+		SQLExec sqlExec = new SQLExec();
+		sqlExec.setDriver(driverClass);
+		sqlExec.setUrl(url);
+		sqlExec.setUserid(username);
+		sqlExec.setPassword(password);
+		//如果有出错的语句继续执行.
+		sqlExec.setOnerror((SQLExec.OnError) (EnumeratedAttribute.getInstance(SQLExec.OnError.class, "continue")));
+//		sqlExec.setPrint(true);
+//		sqlExec.setOutput(new File("D:/userinfo.txt"));
+		sqlExec.setProject(new Project());
+		return sqlExec;
+	}
+
+	/**
+	 * 执行脚本
+	 *
+	 * @param sql
+	 */
+	public void executeSqlCmdByAnt(String sql) {
+		SQLExec sqlExec = createSqlExec();
+		sqlExec.addText(sql);
+		sqlExec.execute();
+	}
+
+	/**
+	 * 执行脚本文件
+	 *
+	 * @param sqlFile
+	 */
+	public void executeSqlFileByAnt(File sqlFile) {
+		SQLExec sqlExec = createSqlExec();
+		sqlExec.setSrc(sqlFile);
+		sqlExec.execute();
 	}
 
 }

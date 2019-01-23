@@ -2,23 +2,25 @@
     <div>
         <div style="color: blue;">
             【<span style="color: red;">注意</span>】
-            【调整[作者名]\[模块名],点击[查看字段]确保表名注释与字段名注释<span style="color: red;">为中文</span>,建议类名中表名前缀部分<span
+            [查看字段]确保表名注释与字段名注释<span style="color: red;">为中文</span>,建议类名中表名前缀部分<span
                 style="color: red;">已去掉</span>】
         </div>
         <br/>
         <div>
             表名
-            <el-input v-model="form.t_name" placeholder="请输入表名" style="width:100px" size="small"></el-input> &nbsp;
-            <el-button @click="query" type="primary" size="small">查询</el-button>&nbsp;
+            <el-input v-model="form.t_name" placeholder="请输入表名" style="width:100px" size="small"></el-input>
+            &nbsp;
+            <el-button @click="query" type="primary" size="small">查询</el-button>
+            &nbsp;
             作者名
-            <el-input v-model="form.auth" style="width:80px" size="small"></el-input>&nbsp;
-            公司名
-            <el-input v-model="form.company" style="width:80px" size="small"></el-input>&nbsp;
-            模块名
-            <el-input v-model="form.model" style="width:80px" size="small"></el-input>&nbsp;
-            <el-button @click="createCode" type="primary" size="small">生成代码</el-button>&nbsp;
-            项目名[alvin]
-            <el-button @click="openSql" type="primary" size="small">建表</el-button>&nbsp;
+            <el-input v-model="form.author" style="width:80px" size="small"></el-input>
+            包名
+            <el-input v-model="form.packageName" style="width:180px" size="small"></el-input>
+            &nbsp;
+            <el-button @click="createCode" type="primary" size="small">生成代码</el-button>
+
+            <el-button @click="openSql" type="primary" size="small">建表</el-button>
+            &nbsp;
         </div>
         <br/>
         <el-table :data="filterTableList" class="tabClass" @selection-change="onSelectChange" border size="small">
@@ -49,7 +51,7 @@
                 <el-table-column prop="type" label="JAVA数据类型"></el-table-column>
             </el-table>
         </el-dialog>
-        <el-dialog :visible.sync="showSql" title="执行SQL(只能一条一条执行!)">
+        <el-dialog :visible.sync="showSql" title="执行SQL">
             <el-input type="textarea" v-model="form.sqlText" rows="20"></el-input>
             <el-button @click="executeSql" type="primary" size="small">运行</el-button>
         </el-dialog>
@@ -63,9 +65,8 @@
                 form: {
                     t_name: '',
                     c_list: [],
-                    auth: "唐植超",
-                    company: "alvin",
-                    model: "demo",
+                    author: "唐植超",
+                    packageName: 'org.alvin.home',
                     sqlText: null,
                 },
                 t_list: [],
@@ -97,7 +98,7 @@
             },
             executeSql() {
                 // {params: {sql: this.form.sqlText}}
-                this.$http.get("/api/code/executeSql",  {params: {sql : this.form.sqlText}}).then(res => {
+                this.$http.get("/api/code/executeSql", {params: {sql: this.form.sqlText}}).then(res => {
                     this.showSql = false;
                     this.query();
                 }).catch(res => {
@@ -105,7 +106,7 @@
                 });
             },
             deleteTable(tableName) {
-                this.$http.get("/api/code/executeSql",  {params: {sql :" DROP TABLE IF EXISTS "+tableName}}).then(res => {
+                this.$http.get("/api/code/executeSql", {params: {sql: " DROP TABLE IF EXISTS " + tableName}}).then(res => {
                     this.showSql = false;
                     this.query();
                 }).catch(res => {
@@ -128,15 +129,19 @@
                     return;
                 }
                 this.$http.post("/api/code/create", JSON.stringify(this.form)).then(res => {
+                    if (res.data.code != 0) {
+                        this.$notify.error({title: '失败', message: res.date.errorMsg});
+                        return;
+                    }
                     this.$notify.info({title: '消息', message: '生成代码成功'});
-                    location.href = "/api/code/downCode";
+                    location.href = "/api/code/downCode/" + res.data.data.download_url;
                 }).catch(res => {
-                    this.$notify.error({title: '失败', message: '生成代码失败,请检查代码是否已经存在!'});
+                    this.$notify.error({title: '失败', message: '生成代码失败'});
                 });
             },
         },
     }
 </script>
-<style  >
+<style>
 
 </style>

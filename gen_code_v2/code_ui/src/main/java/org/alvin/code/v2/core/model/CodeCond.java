@@ -19,19 +19,12 @@ public class CodeCond extends BaseCondition {
 	private String t_name;// 表名模糊
 	private String t_name_eq;// 表名等于
 	private String db_user;// 数据库用户名
-	private String company;// 公司名
-	private String model;// 模块名
-	private String auth;// 作者名
+	//
+	private String author;// 作者名
+	private String packageName; //包名
 	private List<Table> c_list;// 生成代码用的数据
 
 	private String sql;
 
-	public String pack(String app, String low) {
-		return "com." + company + "." + app + "." + model + "." + low;
-	}
-
-	public String base(String app, String low, String upp) {
-		return Utils.path() + "com/" + company + "/" + app + "/" + model + "/" + low + "/" + upp;
-	}
 
 }

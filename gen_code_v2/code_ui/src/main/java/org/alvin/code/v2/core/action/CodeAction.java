@@ -1,6 +1,7 @@
 package org.alvin.code.v2.core.action;
 
 
+import org.alvin.code.gen.beans.RestfullResp;
 import org.alvin.code.v2.core.dao.CodeDao;
 import org.alvin.code.v2.core.model.CodeCond;
 import org.alvin.code.v2.core.model.Field;
@@ -18,10 +19,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Map;
 
 /**
- * @功能描述:代码生成器控制器类
  * @author gzz_gzz@163.com
+ * @功能描述:代码生成器控制器类
  * @date 2018-02-15
  */
 @RestController
@@ -29,6 +31,7 @@ import java.util.List;
 public class CodeAction {
 	@Autowired
 	private CodeService service;// 生成器业务罗辑接口
+
 	/**
 	 * @功能描述: 查询数据库中表名列表
 	 */
@@ -51,19 +54,15 @@ public class CodeAction {
 	 * @功能描述: 生成代码
 	 */
 	@PostMapping("/create")
-	public void create(@RequestBody CodeCond cond) throws Exception {
-		Utils.delDir(new File(Utils.path() + "com/dl/"));
+	public RestfullResp<Map<String, Object>> create(@RequestBody CodeCond cond) throws Exception {
 		cond.setDb_user(CodeDao.DBUSER);
-		Utils.setTime();
-		service.create(cond);
-		Utils.chmod();
+		return service.create(cond);
 	}
 
-	@GetMapping("/downCode")
-	public void downCode(HttpServletResponse response) throws IOException {
-		String fileName = "code.zip";
-		Utils.createZip(Utils.path() + "com", Utils.path() + fileName);
-		Path path = Paths.get(Utils.path() + fileName);
+	@GetMapping("/downCode/{uuid}")
+	public void downCode(HttpServletResponse response, @PathVariable("uuid") String uuid) throws IOException {
+		String fileName = "code_" + uuid + ".zip";
+		Path path = Paths.get("dist", uuid.concat(".zip"));
 		response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
 		response.setHeader("Content-Length", "" + Files.size(path));
 		response.setContentType("application/zip");
@@ -71,6 +70,8 @@ public class CodeAction {
 		out.write(Files.readAllBytes(path));
 		out.flush();
 		out.close();
+		System.gc();
+		Files.delete(path);
 	}
 
 	@GetMapping("/executeSql")
