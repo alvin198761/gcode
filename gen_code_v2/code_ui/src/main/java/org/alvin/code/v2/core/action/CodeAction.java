@@ -78,4 +78,9 @@ public class CodeAction {
 	public void executeSql(String sql) {
 		service.executeSql(sql);
 	}
+
+	@GetMapping("/templateDirs")
+	public List<String> templateDirs() {
+		return this.service.templateDirs();
+	}
 }

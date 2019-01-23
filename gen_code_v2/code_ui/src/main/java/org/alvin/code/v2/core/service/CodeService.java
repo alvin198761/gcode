@@ -12,6 +12,7 @@ import org.alvin.code.v2.core.model.Field;
 import org.alvin.code.v2.core.model.Table;
 import org.alvin.code.v2.core.utils.Utils;
 import org.alvin.code.v2.core.utils.VelocityUtil;
+import org.apache.velocity.app.VelocityEngine;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -40,11 +41,14 @@ public class CodeService {
 	@Autowired
 	private VmFileService vmFileService;
 
+	private static final File outBaseDir = new File("../../templates/gen_templates/codetemplate");
+
 	public RestfullResp<Map<String, Object>> create(CodeCond cond) throws Exception {
 		String suffix = ".vm";
 		String dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-		File outBaseDir = new File("../../templates/gen_templates/codetemplate");
-		List<String> vms = vmFileService.scanTemplate(outBaseDir.getAbsolutePath(), suffix);
+
+		VelocityEngine fileEngine = VelocityUtil.fileVelocityEngine(outBaseDir.getCanonicalPath());
+		List<String> vms = vmFileService.scanTemplate(outBaseDir.getAbsolutePath(), suffix, cond.getTemplateDirs());
 		String uuid = UUID.randomUUID().toString();
 		String outPath = "dist/" + uuid;
 		if (vms.isEmpty()) {
@@ -101,7 +105,7 @@ public class CodeService {
 			//
 			jsonObject.put("dollar", "$");
 			//java 代码生成
-			parseVmTemplate(vms, outPath, jsonObject, cond, low, suffix, outBaseDir);
+			parseVmTemplate(vms, outPath, jsonObject, cond, low, suffix, fileEngine);
 		}
 		Map<String, Object> res = Maps.newHashMap();
 		File file = new File(outPath);
@@ -121,10 +125,9 @@ public class CodeService {
 	 * @param cond
 	 * @param low
 	 * @param suffix
-	 * @param outBaseDir
 	 * @throws IOException
 	 */
-	public void parseVmTemplate(List<String> vms, String baseUrl, JSONObject jsonObject, CodeCond cond, String low, String suffix, File outBaseDir) throws IOException {
+	public void parseVmTemplate(List<String> vms, String baseUrl, JSONObject jsonObject, CodeCond cond, String low, String suffix, VelocityEngine engine) throws IOException {
 		//循环模板，进行合并
 		for (String vm : vms) {
 			//获得文件名称
@@ -144,8 +147,7 @@ public class CodeService {
 			log.info("=================start VelocityEngine==================");
 			jsonObject.put("pName", pName);
 			Files.createDirectories(Paths.get(path).getParent());
-			String sourceLoadPath = outBaseDir.getCanonicalFile().getAbsolutePath();
-			VelocityUtil.parse(vm, jsonObject, path + fileType, VelocityUtil.fileVelocityEngine(sourceLoadPath));
+			VelocityUtil.parse(vm, jsonObject, path + fileType, engine);
 			log.info("=================end VelocityEngine==================");
 		}
 	}
@@ -171,5 +173,12 @@ public class CodeService {
 
 	public void executeSql(String sql) {
 		dao.executeSql(sql);
+	}
+
+	/**
+	 * 获取模板的子目录列表
+	 */
+	public List<String> templateDirs() {
+		return Lists.newArrayList(outBaseDir.list());
 	}
 }

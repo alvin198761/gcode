@@ -24,6 +24,8 @@ public class CodeCond extends BaseCondition {
 	private String packageName; //包名
 	private List<Table> c_list;// 生成代码用的数据
 
+	private List<String> templateDirs; //模板目录选择
+
 	private String sql;
 
 

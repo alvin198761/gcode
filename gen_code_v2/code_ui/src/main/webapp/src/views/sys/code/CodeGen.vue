@@ -8,16 +8,11 @@
         <br/>
         <div>
             表名
-            <el-input v-model="form.t_name" placeholder="请输入表名" style="width:100px" size="small"></el-input>
+            <el-input v-model="form.t_name" placeholder="请输入表名" style="width:200px" size="small"></el-input>
             &nbsp;
             <el-button @click="query" type="primary" size="small">查询</el-button>
             &nbsp;
-            作者名
-            <el-input v-model="form.author" style="width:80px" size="small"></el-input>
-            包名
-            <el-input v-model="form.packageName" style="width:180px" size="small"></el-input>
-            &nbsp;
-            <el-button @click="createCode" type="primary" size="small">生成代码</el-button>
+            <el-button @click="createCode" type="primary" size="small" :disabled="form.c_list.length == 0">生成代码</el-button>
 
             <el-button @click="openSql" type="primary" size="small">建表</el-button>
             &nbsp;
@@ -55,18 +50,20 @@
             <el-input type="textarea" v-model="form.sqlText" rows="20"></el-input>
             <el-button @click="executeSql" type="primary" size="small">运行</el-button>
         </el-dialog>
+        <CodeGenDialog ref="codeGenDialog" :c_list="form.c_list"></CodeGenDialog>
     </div>
 </template>
 <script>
-
+    import CodeGenDialog  from './CodeGenDialog.vue';
     export default{
+        components: {
+            CodeGenDialog
+        },
         data: function () {
             return {
                 form: {
                     t_name: '',
                     c_list: [],
-                    author: "唐植超",
-                    packageName: 'org.alvin.home',
                     sqlText: null,
                 },
                 t_list: [],
@@ -124,20 +121,7 @@
                 });
             },
             createCode() {
-                if (this.form.c_list.length == 0) {
-                    this.$notify({title: '警告', message: '请至少选择一条记录.!', type: 'warning'});
-                    return;
-                }
-                this.$http.post("/api/code/create", JSON.stringify(this.form)).then(res => {
-                    if (res.data.code != 0) {
-                        this.$notify.error({title: '失败', message: res.date.errorMsg});
-                        return;
-                    }
-                    this.$notify.info({title: '消息', message: '生成代码成功'});
-                    location.href = "/api/code/downCode/" + res.data.data.download_url;
-                }).catch(res => {
-                    this.$notify.error({title: '失败', message: '生成代码失败'});
-                });
+                this.$refs["codeGenDialog"].showDialog(this.form.c_list);
             },
         },
     }
