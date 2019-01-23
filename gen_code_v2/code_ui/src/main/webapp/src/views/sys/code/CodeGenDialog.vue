@@ -1,5 +1,6 @@
 <template>
-    <el-dialog :visible.sync="show" title="代码生成设置" width="60%">
+    <el-dialog :visible.sync="show" title="代码生成设置" width="60%" :close-on-click-modal="false"
+               :close-on-press-escape="false">
         <el-form ref="form" :model="form" label-width="80px">
             <el-form-item label="作者">
                 <el-input v-model="form.author"></el-input>
@@ -13,7 +14,7 @@
             </el-form-item>
 
         </el-form>
-        <div slot="footer"  >
+        <div slot="footer">
             <el-button @click="show = false">取 消</el-button>
             <el-button type="primary" @click="genCode">确 定</el-button>
         </div>
@@ -37,9 +38,7 @@
                 defaultCheckedList: []
             }
         },
-        computed: {
-
-        },
+        computed: {},
         created: function () {
             this.loadTemplates();
         },
@@ -47,18 +46,17 @@
             loadTemplates(){
                 const that = this;
                 that.$http.get("/api/code/templateDirs").then(res => {
-                    that.form.templateDirs =[];
+                    that.form.templateDirs = [];
                     that.tempList = res.data.map(item => {
                         let data = ({
                             key: item,
                             label: item,
                         });
-                        if(["web","data","model","element_ui_vue"].indexOf(item) != -1){
+                        if (["web", "data", "model", "element_ui_vue"].indexOf(item) != -1) {
                             that.form.templateDirs.push(item);
                         }
                         return data;
                     });
-                    console.log( that.form.templateDirs )
                 }).catch(res => {
                     this.$message.error("获取模板列表失败：" + res)
                 });

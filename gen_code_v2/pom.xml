@@ -52,10 +52,10 @@
         </plugins>
     </build>
 
-    <repositories>
-        <repository>
-            <id>alvin_maven_repo</id>
-            <url>https://raw.githubusercontent.com/alvin198761/maven-repo/master/repository</url>
-        </repository>
-    </repositories>
+    <!--<repositories>-->
+        <!--<repository>-->
+            <!--<id>alvin_maven_repo</id>-->
+            <!--<url>https://raw.githubusercontent.com/alvin198761/maven-repo/master/repository</url>-->
+        <!--</repository>-->
+    <!--</repositories>-->
 </project>

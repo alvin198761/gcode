@@ -1,7 +1,7 @@
 <template>
     <div>
         <div style="color: blue;">
-            【<span style="color: red;">注意</span>】
+            【<span style="color: red;">注意</span>】目前只支持<b>mysql</b>
             [查看字段]确保表名注释与字段名注释<span style="color: red;">为中文</span>,建议类名中表名前缀部分<span
                 style="color: red;">已去掉</span>】
         </div>
@@ -12,9 +12,10 @@
             &nbsp;
             <el-button @click="query" type="primary" size="small">查询</el-button>
             &nbsp;
-            <el-button @click="createCode" type="primary" size="small" :disabled="form.c_list.length == 0">生成代码</el-button>
+            <el-button @click="createCode" type="primary" size="small" :disabled="form.c_list.length == 0">生成代码
+            </el-button>
 
-            <el-button @click="openSql" type="primary" size="small">建表</el-button>
+            <el-button @click="openSql" type="primary" size="small">执行SQL</el-button>
             &nbsp;
         </div>
         <br/>
@@ -46,30 +47,28 @@
                 <el-table-column prop="type" label="JAVA数据类型"></el-table-column>
             </el-table>
         </el-dialog>
-        <el-dialog :visible.sync="showSql" title="执行SQL">
-            <el-input type="textarea" v-model="form.sqlText" rows="20"></el-input>
-            <el-button @click="executeSql" type="primary" size="small">运行</el-button>
-        </el-dialog>
-        <CodeGenDialog ref="codeGenDialog" :c_list="form.c_list"></CodeGenDialog>
+
+        <CodeGenDialog ref="codeGenDialog"></CodeGenDialog>
+        <ExecuteSqlDialog ref="executeSqlDialog" :refresh="query"></ExecuteSqlDialog>
     </div>
 </template>
 <script>
+    import ExecuteSqlDialog from './ExecuteSqlDialog.vue';
     import CodeGenDialog  from './CodeGenDialog.vue';
     export default{
         components: {
-            CodeGenDialog
+            CodeGenDialog,
+            ExecuteSqlDialog
         },
         data: function () {
             return {
                 form: {
                     t_name: '',
                     c_list: [],
-                    sqlText: null,
                 },
                 t_list: [],
                 f_list: [],
-                show: false,
-                showSql: false,
+                show:false
             }
         },
         created: function () {
@@ -90,17 +89,8 @@
                     this.$notify.error({title: '失败', message: '加载表信息败!'});
                 });
             },
-            openSql(t_name) {
-                this.showSql = true;
-            },
-            executeSql() {
-                // {params: {sql: this.form.sqlText}}
-                this.$http.get("/api/code/executeSql", {params: {sql: this.form.sqlText}}).then(res => {
-                    this.showSql = false;
-                    this.query();
-                }).catch(res => {
-                    this.$notify.error({title: 'SQL执行失败', message: '请输入正确的建表语句!'});
-                });
+            openSql() {
+                this.$refs["executeSqlDialog"].showDialog();
             },
             deleteTable(tableName) {
                 this.$http.get("/api/code/executeSql", {params: {sql: " DROP TABLE IF EXISTS " + tableName}}).then(res => {

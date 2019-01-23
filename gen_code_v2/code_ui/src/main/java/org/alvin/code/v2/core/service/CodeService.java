@@ -2,6 +2,7 @@ package org.alvin.code.v2.core.service;
 
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.base.CaseFormat;
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
@@ -172,7 +173,10 @@ public class CodeService {
 	}
 
 	public void executeSql(String sql) {
-		dao.executeSql(sql);
+		if (Strings.isNullOrEmpty(sql)) {
+			return;
+		}
+		dao.executeSqlCmdByAnt(sql);
 	}
 
 	/**
@@ -181,4 +185,5 @@ public class CodeService {
 	public List<String> templateDirs() {
 		return Lists.newArrayList(outBaseDir.list());
 	}
+
 }

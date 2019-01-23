@@ -7,12 +7,11 @@ import org.alvin.code.v2.core.model.CodeCond;
 import org.alvin.code.v2.core.model.Field;
 import org.alvin.code.v2.core.model.Table;
 import org.alvin.code.v2.core.service.CodeService;
-import org.alvin.code.v2.core.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
@@ -83,4 +82,10 @@ public class CodeAction {
 	public List<String> templateDirs() {
 		return this.service.templateDirs();
 	}
+
+	@PostMapping("upload")
+	public void upload(MultipartFile file) throws IOException {
+		this.service.executeSql(new String(file.getBytes()));
+	}
+
 }

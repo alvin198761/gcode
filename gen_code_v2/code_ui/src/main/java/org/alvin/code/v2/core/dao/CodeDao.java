@@ -12,7 +12,6 @@ import org.apache.tools.ant.Project;
 import org.apache.tools.ant.taskdefs.SQLExec;
 import org.apache.tools.ant.types.EnumeratedAttribute;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.stereotype.Repository;
 
@@ -114,8 +113,8 @@ public class CodeDao extends BaseDao {
 		sqlExec.setPassword(password);
 		//如果有出错的语句继续执行.
 		sqlExec.setOnerror((SQLExec.OnError) (EnumeratedAttribute.getInstance(SQLExec.OnError.class, "continue")));
-//		sqlExec.setPrint(true);
-//		sqlExec.setOutput(new File("D:/userinfo.txt"));
+		sqlExec.setPrint(true);
+		sqlExec.setOutput(new File("sql.log"));
 		sqlExec.setProject(new Project());
 		return sqlExec;
 	}
