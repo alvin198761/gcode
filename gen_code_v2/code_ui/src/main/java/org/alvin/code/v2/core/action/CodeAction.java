@@ -7,6 +7,9 @@ import org.alvin.code.v2.core.model.CodeCond;
 import org.alvin.code.v2.core.model.Field;
 import org.alvin.code.v2.core.model.Table;
 import org.alvin.code.v2.core.service.CodeService;
+import org.alvin.code.v2.core.utils.VelocityUtil;
+import org.alvin.code.v2.sys.pro.EntityConfig;
+import org.apache.velocity.app.VelocityEngine;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -86,6 +89,11 @@ public class CodeAction {
 	@PostMapping("upload")
 	public void upload(MultipartFile file) throws IOException {
 		this.service.executeSql(new String(file.getBytes()));
+	}
+
+	@PostMapping("designPreview")
+	public String designPreview(@RequestBody EntityConfig entityConfig) throws IOException {
+		return this.service.designPreview(entityConfig);
 	}
 
 }

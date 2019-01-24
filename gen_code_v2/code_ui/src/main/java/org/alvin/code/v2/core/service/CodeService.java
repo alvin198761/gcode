@@ -13,6 +13,7 @@ import org.alvin.code.v2.core.model.Field;
 import org.alvin.code.v2.core.model.Table;
 import org.alvin.code.v2.core.utils.Utils;
 import org.alvin.code.v2.core.utils.VelocityUtil;
+import org.alvin.code.v2.sys.pro.EntityConfig;
 import org.apache.velocity.app.VelocityEngine;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -186,4 +187,13 @@ public class CodeService {
 		return Lists.newArrayList(outBaseDir.list());
 	}
 
+	/**
+	 * 预览sql
+	 *
+	 * @param entityConfig
+	 * @return
+	 */
+	public String designPreview(EntityConfig entityConfig) throws IOException {
+		return VelocityUtil.parse("/sqltemplates/Mysql_createTable.vm", entityConfig, VelocityUtil.classPathVelocityEngine());
+	}
 }

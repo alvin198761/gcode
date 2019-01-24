@@ -16,6 +16,7 @@
             </el-button>
 
             <el-button @click="openSql" type="primary" size="small">执行SQL</el-button>
+            <el-button @click="showDesign" type="primary" size="small">表设计</el-button>
             &nbsp;
         </div>
         <br/>
@@ -50,15 +51,20 @@
 
         <CodeGenDialog ref="codeGenDialog"></CodeGenDialog>
         <ExecuteSqlDialog ref="executeSqlDialog" :refresh="query"></ExecuteSqlDialog>
+        <TableDesignDialog ref="tableDesignDialog"  :refresh="query"></TableDesignDialog>
     </div>
 </template>
 <script>
+
     import ExecuteSqlDialog from './ExecuteSqlDialog.vue';
     import CodeGenDialog  from './CodeGenDialog.vue';
+    import TableDesignDialog from './TableDesignDialog.vue';
+
     export default{
         components: {
             CodeGenDialog,
-            ExecuteSqlDialog
+            ExecuteSqlDialog,
+            TableDesignDialog
         },
         data: function () {
             return {
@@ -68,7 +74,7 @@
                 },
                 t_list: [],
                 f_list: [],
-                show:false
+                show: false
             }
         },
         created: function () {
@@ -96,6 +102,7 @@
                 this.$http.get("/api/code/executeSql", {params: {sql: " DROP TABLE IF EXISTS " + tableName}}).then(res => {
                     this.showSql = false;
                     this.query();
+                    this.$message.success("删除成功")
                 }).catch(res => {
                     this.$notify.error({title: 'SQL执行失败', message: '请输入正确的建表语句!'});
                 });
@@ -113,6 +120,9 @@
             createCode() {
                 this.$refs["codeGenDialog"].showDialog(this.form.c_list);
             },
+            showDesign(){
+                this.$refs["tableDesignDialog"].showDialog();
+            }
         },
     }
 </script>

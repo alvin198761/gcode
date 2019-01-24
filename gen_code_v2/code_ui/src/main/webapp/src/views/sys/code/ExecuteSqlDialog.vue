@@ -65,7 +65,8 @@
                 });
             },
             uploadSuccess(response, file, fileList){
-                this.show = false;
+                this.$notify.success(file.name + " 执行成功")
+//                this.show = false;
             },
             doSubmitSql(){
                 this.$refs["upload"].submit();

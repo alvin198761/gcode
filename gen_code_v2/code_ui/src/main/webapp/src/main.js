@@ -8,7 +8,10 @@ import 'element-ui/lib/theme-chalk/index.css';
 import NProgress from 'nprogress'//页面顶部进度条
 import installFilter from './views/common/vue-filters';
 import installPlugins from './views/common/vue-plugins';
+import VueHighlightJS from 'vue-highlightjs'
+import 'highlight.js/styles/googlecode.css'
 
+Vue.use(VueHighlightJS)
 Vue.use(ElementUI);
 installFilter(Vue);
 installPlugins(Vue);
