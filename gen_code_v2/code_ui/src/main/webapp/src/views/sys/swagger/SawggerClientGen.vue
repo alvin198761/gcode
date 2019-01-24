@@ -1,4 +1,3 @@
-<script src="../../../../../../mock_gen_dir/app-auth-action.js"></script>
 <template>
     <div>
         <el-form ref="form" :model="form" :rules="rules" inline>

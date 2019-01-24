@@ -17,6 +17,8 @@
 
             <el-button @click="openSql" type="primary" size="small">执行SQL</el-button>
             <el-button @click="showDesign" type="primary" size="small">表设计</el-button>
+            <el-button @click="exportFile('/api/code/exportStruts')" type="primary" size="small">导出表结构</el-button>
+            <el-button @click="exportFile('/api/code/exportData')" type="primary" size="small">导出数据</el-button>
             &nbsp;
         </div>
         <br/>
@@ -135,6 +137,9 @@
             },
             editRow(row){
                 this.$refs["tableDesignDialog"].editDialog(row);
+            },
+            exportFile(url){
+                location.href = url;
             }
         },
     }

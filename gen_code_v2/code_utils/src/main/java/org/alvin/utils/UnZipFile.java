@@ -1,4 +1,4 @@
-package org.alvin.utils.zip;
+package org.alvin.utils;
 
 import java.io.File;
 import java.io.FileOutputStream;

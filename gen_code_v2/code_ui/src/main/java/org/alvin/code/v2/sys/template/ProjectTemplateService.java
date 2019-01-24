@@ -2,7 +2,7 @@ package org.alvin.code.v2.sys.template;
 
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
-import org.alvin.utils.zip.UnZipFile;
+import org.alvin.utils.UnZipFile;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;

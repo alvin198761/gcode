@@ -201,4 +201,22 @@ public class CodeService {
 	public String designPreview(EntityConfig entityConfig) throws IOException {
 		return VelocityUtil.parse("/sqltemplates/Mysql_createTable.vm", entityConfig, VelocityUtil.classPathVelocityEngine());
 	}
+
+	/**
+	 * 导出表结构
+	 *
+	 * @return
+	 */
+	public String exportStruts() throws Exception {
+		return this.dao.exportStruts();
+	}
+
+	/**
+	 * 导出结构和数据
+	 *
+	 * @return
+	 */
+	public String exportData() throws Exception {
+		return this.dao.backup("");
+	}
 }

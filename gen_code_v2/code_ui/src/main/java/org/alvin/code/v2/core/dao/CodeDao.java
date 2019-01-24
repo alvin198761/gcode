@@ -10,6 +10,7 @@ import org.alvin.code.v2.core.model.CodeCond;
 import org.alvin.code.v2.core.model.Field;
 import org.alvin.code.v2.core.model.Table;
 import org.alvin.code.v2.sys.pro.FieldConfig;
+import org.alvin.utils.CMDUtils;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.taskdefs.SQLExec;
 import org.apache.tools.ant.types.EnumeratedAttribute;
@@ -19,10 +20,14 @@ import org.springframework.stereotype.Repository;
 
 import javax.annotation.PostConstruct;
 import java.io.File;
+import java.io.IOException;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -46,6 +51,10 @@ public class CodeDao extends BaseDao {
 	private String username;
 	@Value("${spring.datasource.password}")
 	private String password;
+	@Value("${db_name}")
+	private String database;
+	@Value("${db_ip}")
+	private String host;
 
 	/**
 	 * @功能描述 系统变量及初始化
@@ -112,13 +121,6 @@ public class CodeDao extends BaseDao {
 	 * @return
 	 */
 	public List<FieldConfig> queryFieldConfig(String table_name) {
-//		jdbcTemplate.getDataSource().getConnection().getSchema();
-		Pattern urlPattern = Pattern.compile("[/](\\w+)[?]");
-		Matcher matcher = urlPattern.matcher(url);
-		String database = null;
-		if (matcher.find()) {
-			database = matcher.group(1);
-		}
 		String sql = "select * from INFORMATION_SCHEMA.Columns where TABLE_NAME = ? and TABLE_SCHEMA = ?  ORDER BY ORDINAL_POSITION ";
 		return jdbcTemplate.queryForList(sql, new Object[]{table_name, database}).stream().map(item -> {
 			JSONObject jsonObject = new JSONObject(item);
@@ -180,4 +182,27 @@ public class CodeDao extends BaseDao {
 //		sqlExec.execute();
 //	}
 
+
+	public String backup(String struts) throws Exception {
+		String cmd = "mysqldump  " + struts + " " + database + "  -u" + username + " " + " -p" + password + " -h " + host;
+//		String cmd = "mysqldump --databases  -u" + username + " " + " -p" + password + " -h " + host;
+		File file = new File("db_backup", UUID.randomUUID().toString());
+		if (!file.exists()) {
+			file.getParentFile().mkdirs();
+		}
+		try {
+			int res = CMDUtils.execute(cmd + " > " + file.getAbsolutePath(), new StringBuffer(), new StringBuffer());
+			if (res == 0) {
+				return file.getAbsolutePath();
+			}
+			throw new Exception("导出出现故障");
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		}
+	}
+
+	public String exportStruts() throws Exception {
+		return backup("-d");
+	}
 }

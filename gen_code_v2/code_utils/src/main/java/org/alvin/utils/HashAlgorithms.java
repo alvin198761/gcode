@@ -1,4 +1,4 @@
-package org.alvin.utils.zip;
+package org.alvin.utils;
 
 /**
  * Hash算法大全<br>

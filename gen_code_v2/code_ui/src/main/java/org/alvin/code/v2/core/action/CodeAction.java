@@ -106,4 +106,32 @@ public class CodeAction {
 		return this.service.designPreview(entityConfig);
 	}
 
+	@GetMapping("exportStruts")
+	public void exportStruts(HttpServletResponse response) throws Exception {
+		Path path = Paths.get(this.service.exportStruts());
+		response.setHeader("Content-Disposition", "attachment; filename=\"struts.sql\"");
+		response.setHeader("Content-Length", "" + Files.size(path));
+		response.setContentType("application/octet-stream");
+		OutputStream out = response.getOutputStream();
+		out.write(Files.readAllBytes(path));
+		out.flush();
+		out.close();
+		System.gc();
+		Files.delete(path);
+	}
+
+	@GetMapping("exportData")
+	public void exportData(HttpServletResponse response) throws Exception {
+		Path path = Paths.get(this.service.exportData());
+		response.setHeader("Content-Disposition", "attachment; filename=\"data.sql\"");
+		response.setHeader("Content-Length", "" + Files.size(path));
+		response.setContentType("application/octet-stream");
+		OutputStream out = response.getOutputStream();
+		out.write(Files.readAllBytes(path));
+		out.flush();
+		out.close();
+		System.gc();
+		Files.delete(path);
+	}
+
 }

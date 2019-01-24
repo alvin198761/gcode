@@ -9,7 +9,7 @@ import org.alvin.code.v2.sys.mock.bean.ActionBean;
 import org.alvin.code.v2.sys.mock.bean.ActionMethodBean;
 import org.alvin.code.v2.sys.mock.bean.JSMockApiConfig;
 import org.alvin.code.v2.sys.mock.service.HttpClientService;
-import org.alvin.utils.zip.ZipUtils;
+import org.alvin.utils.ZipUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

@@ -21,3 +21,4 @@ yarn-error.log*
 *.sw*
 /target
 sql.log
+/db_backup
