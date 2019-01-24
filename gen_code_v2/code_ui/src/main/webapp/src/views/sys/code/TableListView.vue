@@ -36,7 +36,7 @@
             </el-table-column>
             <el-table-column label="操作" width="200px">
                 <template slot-scope="props">
-                    <el-button @click="queryfieldList(props.row.t_name)" type="primary" size="small">查看字段</el-button>
+                    <el-button @click="editRow(props.row)" type="primary" size="small">编辑字段</el-button>
                     <el-button @click="deleteTable(props.row.t_name)" type="primary" size="small">删除表</el-button>
                 </template>
             </el-table-column>
@@ -122,6 +122,9 @@
             },
             showDesign(){
                 this.$refs["tableDesignDialog"].showDialog();
+            },
+            editRow(row){
+                this.$refs["tableDesignDialog"].editDialog(row);
             }
         },
     }

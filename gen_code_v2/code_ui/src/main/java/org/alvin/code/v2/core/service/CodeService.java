@@ -14,6 +14,7 @@ import org.alvin.code.v2.core.model.Table;
 import org.alvin.code.v2.core.utils.Utils;
 import org.alvin.code.v2.core.utils.VelocityUtil;
 import org.alvin.code.v2.sys.pro.EntityConfig;
+import org.alvin.code.v2.sys.pro.FieldConfig;
 import org.apache.velocity.app.VelocityEngine;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -171,6 +172,10 @@ public class CodeService {
 	 */
 	public List<Field> queryFields(CodeCond cond) {
 		return dao.queryFields(cond);
+	}
+
+	public List<FieldConfig> queryFieldConfig(CodeCond cond) {
+		return this.dao.queryFieldConfig(cond.getT_name_eq());
 	}
 
 	public void executeSql(String sql) {

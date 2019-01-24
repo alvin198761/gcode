@@ -1,15 +1,13 @@
 package org.alvin.code.gen.utils;
 
 import com.google.common.base.Joiner;
+import com.google.common.collect.Maps;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class SqlUtil {
 
@@ -136,6 +134,35 @@ public class SqlUtil {
 		return name.substring(0, 1).toUpperCase() + name.substring(1, name.length());
 	}
 
+	private static Map<String, String> type_map = Maps.newHashMap();
+
+	static {
+		type_map.put("CHAR", "java.lang.String");
+		type_map.put("VARCHAR", "java.lang.String");
+		type_map.put("BLOB", "java.lang.byte[]");
+		type_map.put("TEXT", "java.lang.String");
+		type_map.put("INTEGER", "java.lang.Integer");
+		type_map.put("INT", "java.lang.Integer");
+		type_map.put("TINYINT", "java.lang.Byte");
+		type_map.put("SMALLINT", "java.lang.Short");
+		type_map.put("MEDIUMINT", "java.lang.Integer");
+		type_map.put("BIT", "java.lang.Boolean");
+		type_map.put("BIGINT", "java.lang.Long");
+		type_map.put("FLOAT", "java.lang.Float");
+		type_map.put("DOUBLE", "java.lang.Double");
+		type_map.put("DECIMAL", "java.math.BigDecimal");
+		type_map.put("BOOLEAN", "java.lang.Boolean");
+		type_map.put("ID", "java.lang.Long");
+		type_map.put("DATE", "java.util.Date");
+		type_map.put("TIME", "java.util.Date");
+		type_map.put("DATETIME", "java.util.Date");
+		type_map.put("TIMESTAMP", "java.util.Date");
+		type_map.put("YEAR", "java.util.Date");
+	}
+
+	public static String typeMap(String sql_type) {
+		return type_map.get(sql_type.toUpperCase());
+	}
 }
 
 @Getter

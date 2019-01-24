@@ -25,6 +25,10 @@ public class FieldConfig {
 	private String sql_type;
 	//是否为空
 	private String isNull = "NULL";
+	//是否主键
+	private Boolean isKey;
+	//扩展信息
+	private String extra;
 
 	@Override
 	public boolean equals(Object o) {

@@ -254,7 +254,6 @@
                     }
                     return field;
                 });
-                console.log(this.entity.fields)
                 if (this.entity.idName == null) {
                     this.$message.error("主键必须不能为空")
                     return false;
@@ -290,6 +289,29 @@
                     that.executable = that.sqlText == null && that.sqlText.length == 0;
                 }).catch(err => {
                     that.$notify.error("预览sql失败");
+                });
+            },
+            editDialog(table){
+                const that = this;
+                this.$http.post("/api/code/queryField", JSON.stringify({"t_name_eq": table.t_name})).then(res => {
+                    that.show = true;
+                    let idName = null;
+                    let flist =  res.data.map(item => {
+                        if (item.isKey) {
+                            item.isPrimaryKeyChecked = true;
+                            idName = item.name;
+                        }
+                        item.isNullChecked = item.isNull == "NOT NULL";
+                        return item;
+                    });
+                    that.entity = {
+                        name: table.t_name,
+                        remark: table.comment,
+                        fields:flist,
+                        idName: idName
+                    }
+                }).catch(res => {
+                    that.$notify.error({title: '失败', message: '加载表信息败!'});
                 });
             }
         },

@@ -1,6 +1,7 @@
 package org.alvin.code.v2.core.dao;
 
 
+import com.alibaba.fastjson.JSONObject;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.alvin.code.gen.beans.BaseDao;
@@ -8,6 +9,7 @@ import org.alvin.code.gen.utils.SqlUtil;
 import org.alvin.code.v2.core.model.CodeCond;
 import org.alvin.code.v2.core.model.Field;
 import org.alvin.code.v2.core.model.Table;
+import org.alvin.code.v2.sys.pro.FieldConfig;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.taskdefs.SQLExec;
 import org.apache.tools.ant.types.EnumeratedAttribute;
@@ -21,6 +23,9 @@ import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * @author gzz_gzz@163.com
@@ -100,10 +105,41 @@ public class CodeDao extends BaseDao {
 		return jdbcTemplate.query(sb.toString(), cond.getArray(), new BeanPropertyRowMapper<Field>(Field.class));
 	}
 
-	public void executeSql(String sql) {
-		jdbcTemplate.execute(sql);
+	/**
+	 * 新的获取属性方法
+	 *
+	 * @param table_name
+	 * @return
+	 */
+	public List<FieldConfig> queryFieldConfig(String table_name) {
+//		jdbcTemplate.getDataSource().getConnection().getSchema();
+		Pattern urlPattern = Pattern.compile("[/](\\w+)[?]");
+		Matcher matcher = urlPattern.matcher(url);
+		String database = null;
+		if (matcher.find()) {
+			database = matcher.group(1);
+		}
+		String sql = "select * from INFORMATION_SCHEMA.Columns where TABLE_NAME = ? and TABLE_SCHEMA = ?  ORDER BY ORDINAL_POSITION ";
+		return jdbcTemplate.queryForList(sql, new Object[]{table_name, database}).stream().map(item -> {
+			JSONObject jsonObject = new JSONObject(item);
+			FieldConfig fieldConfig = new FieldConfig();
+			fieldConfig.setName(jsonObject.getString("COLUMN_NAME"));
+			fieldConfig.setSql_type(jsonObject.getString("COLUMN_TYPE"));
+			String regex = "([^()]+)[(](\\d+)[)]";
+			Pattern pattern = Pattern.compile(regex);
+			Matcher m = pattern.matcher(fieldConfig.getSql_type());
+			if (m.find()) {
+				fieldConfig.setType(SqlUtil.typeMap(m.group(1)));
+				fieldConfig.setLength(Integer.valueOf(m.group(2)));
+				System.out.println(m.group(1) + "----" + SqlUtil.typeMap(m.group(1)));
+			}
+			fieldConfig.setIsNull(jsonObject.getString("IS_NULLABLE").equals("NO") ? "NOT NULL" : "NULL");
+			fieldConfig.setRemark(jsonObject.getString("COLUMN_COMMENT"));
+			fieldConfig.setIsKey(jsonObject.getString("COLUMN_KEY").equals("PRI"));
+			fieldConfig.setExtra(jsonObject.getString("EXTRA"));
+			return fieldConfig;
+		}).collect(Collectors.toList());
 	}
-
 
 	public SQLExec createSqlExec() {
 		SQLExec sqlExec = new SQLExec();
@@ -129,16 +165,16 @@ public class CodeDao extends BaseDao {
 		sqlExec.addText(sql);
 		sqlExec.execute();
 	}
-
-	/**
-	 * 执行脚本文件
-	 *
-	 * @param sqlFile
-	 */
-	public void executeSqlFileByAnt(File sqlFile) {
-		SQLExec sqlExec = createSqlExec();
-		sqlExec.setSrc(sqlFile);
-		sqlExec.execute();
-	}
+//
+//	/**
+//	 * 执行脚本文件
+//	 *
+//	 * @param sqlFile
+//	 */
+//	public void executeSqlFileByAnt(File sqlFile) {
+//		SQLExec sqlExec = createSqlExec();
+//		sqlExec.setSrc(sqlFile);
+//		sqlExec.execute();
+//	}
 
 }
