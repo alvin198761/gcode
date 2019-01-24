@@ -51,7 +51,7 @@
 
         <CodeGenDialog ref="codeGenDialog"></CodeGenDialog>
         <ExecuteSqlDialog ref="executeSqlDialog" :refresh="query"></ExecuteSqlDialog>
-        <TableDesignDialog ref="tableDesignDialog"  :refresh="query"></TableDesignDialog>
+        <TableDesignDialog ref="tableDesignDialog" :refresh="query"></TableDesignDialog>
     </div>
 </template>
 <script>
@@ -99,13 +99,23 @@
                 this.$refs["executeSqlDialog"].showDialog();
             },
             deleteTable(tableName) {
-                this.$http.get("/api/code/executeSql", {params: {sql: " DROP TABLE IF EXISTS " + tableName}}).then(res => {
-                    this.showSql = false;
-                    this.query();
-                    this.$message.success("删除成功")
-                }).catch(res => {
-                    this.$notify.error({title: 'SQL执行失败', message: '请输入正确的建表语句!'});
+                const that = this;
+                this.$confirm('此操作将永久删除该数据库表, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    that.$http.get("/api/code/executeSql", {params: {sql: " DROP TABLE IF EXISTS " + tableName}}).then(res => {
+                        that.showSql = false;
+                        that.query();
+                        that.$message.success("删除成功")
+                    }).catch(res => {
+                        that.$notify.error({title: 'SQL执行失败', message: '请输入正确的语句!'});
+                    });
+                }).catch(() => {
+
                 });
+
             },
             onSelectChange(val) {
                 this.form.c_list = val;

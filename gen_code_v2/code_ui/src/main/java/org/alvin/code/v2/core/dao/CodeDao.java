@@ -132,6 +132,9 @@ public class CodeDao extends BaseDao {
 				fieldConfig.setType(SqlUtil.typeMap(m.group(1)));
 				fieldConfig.setLength(Integer.valueOf(m.group(2)));
 				System.out.println(m.group(1) + "----" + SqlUtil.typeMap(m.group(1)));
+			} else {
+				fieldConfig.setType(SqlUtil.typeMap(fieldConfig.getSql_type()));
+//				fieldConfig.setLength(0);
 			}
 			fieldConfig.setIsNull(jsonObject.getString("IS_NULLABLE").equals("NO") ? "NOT NULL" : "NULL");
 			fieldConfig.setRemark(jsonObject.getString("COLUMN_COMMENT"));

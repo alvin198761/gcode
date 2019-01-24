@@ -3,7 +3,7 @@
                :close-on-press-escape="false">
         <el-tabs v-model="activeName" type="card">
             <el-tab-pane label="执行脚本" name="script">
-                <el-input type="textarea" v-model="form.sqlText" rows="20"></el-input>
+                <el-input type="textarea" v-model="form.sqlText" rows="20" placehodler="请输入脚本"></el-input>
             </el-tab-pane>
             <el-tab-pane label="执行sql文件" name="file">
                 <el-row>

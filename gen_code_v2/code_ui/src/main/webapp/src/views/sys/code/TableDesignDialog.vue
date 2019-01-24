@@ -26,7 +26,7 @@
                             <el-input v-model="props.row.name" size="small"></el-input>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="type" label="类型" width="150">
+                    <el-table-column prop="type" label="类型" width="250">
                         <template slot-scope="props">
                             <el-select size="small" v-model="props.row.type" placeholder="请选择类型"
                                        @change="(val) => changeType(val,props.row)">
@@ -87,6 +87,7 @@
 </template>
 <script>
     import {remove} from '../../../utils/ArraysUtils';
+    import {MYSQL_TYPES} from '../../../views/common/MySqlConst';
 
     export default{
         props: ["refresh"],
@@ -124,44 +125,7 @@
                     remark: null,
                     fields: [{}]
                 },
-                types: [
-                    {
-                        value: 'java.lang.String',
-                        label: 'java.lang.String',
-                        db_type: 'VARCHAR',
-                        length: 50
-                    },
-                    {
-                        value: 'java.lang.Long',
-                        label: 'java.lang.Long',
-                        db_type: 'BIGINT(11)',
-                    },
-                    {
-                        value: 'java.lang.Byte',
-                        label: 'java.lang.Byte',
-                        db_type: 'TINYINT',
-                    },
-                    {
-                        value: 'java.lang.Integer',
-                        label: 'java.lang.Integer',
-                        db_type: 'INT(4)',
-                    },
-                    {
-                        value: 'java.lang.Boolean',
-                        label: 'java.lang.Boolean',
-                        db_type: 'BIT',
-                    },
-                    {
-                        value: 'java.lang.Float',
-                        label: 'java.lang.Float',
-                        db_type: 'FLOAT',
-                    },
-                    {
-                        value: 'java.util.Date',
-                        label: 'java.util.Date',
-                        db_type: 'DATETIME',
-                    }
-                ],
+                types: MYSQL_TYPES,
                 sqlText: '',
                 executable: false
             }
@@ -191,6 +155,7 @@
                 this.$http.get("/api/code/executeSql", {params: {sql: this.sqlText}}).then(res => {
                     that.show = false;
                     that.refresh();
+                    this.$message.success("创建成功！");
                 }).catch(res => {
                     this.$notify.error({title: 'SQL执行失败', message: '请输入正确的建表语句!'});
                 });
@@ -293,21 +258,22 @@
             },
             editDialog(table){
                 const that = this;
+                that.tabActiveName = 'edit';
                 this.$http.post("/api/code/queryField", JSON.stringify({"t_name_eq": table.t_name})).then(res => {
                     that.show = true;
                     let idName = null;
-                    let flist =  res.data.map(item => {
+                    let flist = res.data.map(item => {
                         if (item.isKey) {
                             item.isPrimaryKeyChecked = true;
                             idName = item.name;
                         }
-                        item.isNullChecked = item.isNull == "NOT NULL";
+                        item.isNullChecked = item.isNull == "NULL";
                         return item;
                     });
                     that.entity = {
                         name: table.t_name,
                         remark: table.comment,
-                        fields:flist,
+                        fields: flist,
                         idName: idName
                     }
                 }).catch(res => {
