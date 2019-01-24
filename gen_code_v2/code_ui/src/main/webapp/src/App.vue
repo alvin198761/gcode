@@ -11,8 +11,8 @@
                                  active-text-color="#ffd04b">
                             <el-menu-item index="/code">代码生成</el-menu-item>
                             <el-menu-item index="/swagger">Swagger 客户端</el-menu-item>
-                            <el-menu-item index="/project">项目设计</el-menu-item>
                             <el-menu-item index="/template">模板设计</el-menu-item>
+                            <el-menu-item index="/project">项目设计</el-menu-item>
                         </el-menu>
                     </el-col>
                     <el-col :span="2">
