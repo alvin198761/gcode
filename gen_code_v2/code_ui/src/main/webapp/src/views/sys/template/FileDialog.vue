@@ -24,7 +24,7 @@
                     <el-form-item label="文件内容" prop="remark">
                         <el-tabs v-model="form.contentType">
                             <el-tab-pane label="编辑内容" name="content">
-                                <el-input v-model="form.content" placeholder="请输入模板描述" rows="10" type="textarea"
+                                <el-input v-model="form.content" placeholder="请输入模板内容" rows="10" type="textarea"
                                           size="small"
                                           autocomplete="off"></el-input>
                             </el-tab-pane>

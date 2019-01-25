@@ -73,17 +73,12 @@
                                     <el-button
                                             type="text"
                                             size="mini"
-                                            v-if="data.type!=4 && data.type != -1"
+                                            @click="()=> doEditFile(node,data)"
+                                            v-if="data.type != -1"
                                     >
                                         编辑
                                     </el-button>
-                                    <el-button
-                                            type="text"
-                                            size="mini"
-                                            v-if="data.type==4"
-                                    >
-                                        编辑
-                                    </el-button>
+
                                     <el-button
                                             type="text"
                                             size="mini"
@@ -100,13 +95,28 @@
         </div>
         <TemplateDialog ref="dialog" :saveTemplate="saveTemplate"></TemplateDialog>
         <FileDialog ref="fileDialog" :refresh="refresh"></FileDialog>
+        <EditContentFileDialog ref="contentDialog" :refresh="refresh"></EditContentFileDialog>
+        <EditDirFileDialog ref="dirDialog" :refresh="refresh"></EditDirFileDialog>
+        <EditUploadFileDialog ref="uploadDialog" :refresh="refresh"></EditUploadFileDialog>
+        <EditURLFileDialog ref="urlDialog" :refresh="refresh"></EditURLFileDialog>
     </div>
 </template>
 <script>
     import TemplateDialog from './TemplateDialog.vue';
     import FileDialog from './FileDialog.vue';
+    import EditContentFileDialog from './EditContentFileDialog.vue';
+    import EditDirFileDialog from './EditDirFileDialog.vue';
+    import EditUploadFileDialog from './EditUploadFileDialog.vue';
+    import EditURLFileDialog from './EditURLFileDialog.vue';
     export default{
-        components: {TemplateDialog, FileDialog},
+        components: {
+            TemplateDialog,
+            FileDialog,
+            EditContentFileDialog,
+            EditDirFileDialog,
+            EditUploadFileDialog,
+            EditURLFileDialog
+        },
         data: function () {
             return {
                 form: {},
@@ -216,6 +226,24 @@
                 }).catch(() => {
 
                 });
+            },
+            doEditFile(node, data){
+                if (data.type == 4) {
+                    this.$refs["dirDialog"].addDialog(data);
+                    return;
+                }
+                if (data.contentType = "content") {
+                    this.$refs["contentDialog"].addDialog(data);
+                    return;
+                }
+                if (data.contentType = "file") {
+                    this.$refs["uploadDialog"].addDialog(data);
+                    return;
+                }
+                if (data.contentType = "url") {
+                    this.$refs["urlDialog"].addDialog(data);
+                    return;
+                }
             }
         }
     }
