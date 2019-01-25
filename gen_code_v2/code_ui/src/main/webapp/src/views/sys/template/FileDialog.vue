@@ -30,12 +30,15 @@
                             </el-tab-pane>
                             <el-tab-pane label="上传内容" name="file">
                                 <el-upload
+                                        ref="upload"
                                         size="small"
-                                        class="upload-demo"
                                         drag
                                         action="/api/template/upload"
                                         name="file"
                                         :on-success="uploadSuccess"
+                                        :auto-upload="false"
+                                        :data="{...form}"
+                                        :on-change="changeFile"
                                 >
                                     <i class="el-icon-upload"></i>
                                     <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
@@ -66,11 +69,21 @@
         data: function () {
             return {
                 show: false,
-                form: {
+                form: this.initForm(),
+                rules: {},
+            }
+        },
+        computed: {},
+        created: function () {
+
+        },
+        methods: {
+            initForm(){
+                return {
                     //文件名称
                     name: '',
                     //文件类型 1 普通模板 2 实体模板 3 非模板 4 目录
-                    type: '',
+                    type: null,
                     //相对项目模板文件夹的位置，相对路径
                     path: '',
                     //模板名称
@@ -82,34 +95,64 @@
                     //当前节点id
                     id: '',
                     contentType: 'content'
-                },
-                rules: {},
-            }
-        },
-        computed: {},
-        created: function () {
-
-        },
-        methods: {
+                }
+            },
             save(){
                 const that = this;
-                that.$http.post("/api/template/addFile", JSON.stringify(this.form)).then(res => {
-                    that.$Message.success({content: '添加成功'});
-                    that.refresh();
-                }).catch(err => {
-                    that.$Message.error({content: '添加失败'});
-                });
+                const requestData = {...this.form};
+                if (requestData.path == "/") {
+                    requestData.path = requestData.path + requestData.name;
+                } else {
+                    requestData.path = requestData.path + "/" + requestData.name;
+                }
+
+                if (requestData.contentType == "file") {
+                    that.form = {...requestData};
+                    setTimeout(function () {
+                        that.$refs["upload"].submit();
+                    }, 500);
+                } else {
+                    that.$http.post("/api/template/addFile", JSON.stringify(requestData)).then(res => {
+                        that.$message.success('添加成功');
+                        that.show = false;
+                        that.refresh(true);
+                    }).catch(err => {
+                        that.$message.error('添加失败');
+                    });
+                }
             },
             addDialog(data){
                 let copyData = {...data};
                 if (copyData.id == -1) {
                     copyData.path = '/';
+                } else {
+                    copyData.path = data.path;
                 }
-                this.form = {...this.form, pid: copyData.id, path: copyData.path, templateName: copyData.templateName}
+//                debugger
+                this.form = {
+                    ...this.initForm(),
+                    pid: copyData.id,
+                    path: copyData.path,
+                    templateName: copyData.templateName,
+                }
                 this.show = true;
+                const that = this;
+                setTimeout(function () {
+                    if (that.$refs["upload"]) {
+                        that.$refs["upload"].clearFiles();
+                    }
+                }, 500);
             },
             uploadSuccess(res){
-                console.log(res);
+                const that = this;
+                if (res == 1) {
+                    that.$message.success('添加成功');
+                    that.show = false;
+                    that.refresh(true);
+                }
+            },
+            changeFile(file, fileList){
+                this.form.name = file.name;
             }
         }
     }

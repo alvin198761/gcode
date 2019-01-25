@@ -25,7 +25,13 @@
                                             type="text"
                                             size="mini"
                                     >
-                                        保存
+                                        编辑
+                                    </el-button>
+                                    <el-button
+                                            type="text"
+                                            size="mini"
+                                    >
+                                        刷新
                                     </el-button>
                                     <el-button
                                             type="text"
@@ -51,24 +57,37 @@
                                 default-expand-all
                                 ref="templateSettingTree">
                             <el-row slot-scope="{ node, data }" style="width: 100%">
-                                <el-col :span="18">{{ node.label }}</el-col>
+                                <el-col :span="18">
+                                    <img :src="'/api/template/getIcon?templateName='+ data.templateName + '&path='+data.path + '&type='+data.type"/>
+                                    {{ node.label }}
+                                </el-col>
                                 <el-col :span="6">
                                     <el-button
                                             type="text"
                                             size="mini"
                                             @click="() => addFileDialog(node, data)"
+                                            v-if="data.type==4 || data.type == -1"
                                     >
-                                       添加文件
+                                        添加文件
                                     </el-button>
                                     <el-button
                                             type="text"
                                             size="mini"
+                                            v-if="data.type!=4 && data.type != -1"
                                     >
                                         编辑
                                     </el-button>
                                     <el-button
                                             type="text"
                                             size="mini"
+                                            v-if="data.type==4"
+                                    >
+                                        编辑
+                                    </el-button>
+                                    <el-button
+                                            type="text"
+                                            size="mini"
+                                            @click="()=> deleteTemplate(node,data)" v-if="data.type != -1"
                                     >
                                         删除
                                     </el-button>
@@ -80,67 +99,87 @@
             </el-row>
         </div>
         <TemplateDialog ref="dialog" :saveTemplate="saveTemplate"></TemplateDialog>
-        <FileDialog ref="fileDialog"></FileDialog>
+        <FileDialog ref="fileDialog" :refresh="refresh"></FileDialog>
     </div>
 </template>
 <script>
     import TemplateDialog from './TemplateDialog.vue';
     import FileDialog from './FileDialog.vue';
     export default{
-        components: {TemplateDialog,FileDialog},
+        components: {TemplateDialog, FileDialog},
         data: function () {
             return {
                 form: {},
                 dataList: [],
                 defaultProps: {
                     children: 'children',
-                    label: 'name'
+                    label: 'name',
                 },
                 projectTreeData: []
             }
         },
-        computed: {
-
-        },
+        computed: {},
         created: function () {
-            this.refresh();
+            this.refresh(false);
         },
         methods: {
-            refresh(){
+            refresh(clickFlag){
                 const that = this;
                 that.$http.get("/api/template/list").then(res => {
                     that.dataList = res.data;
-                    that.form = {};
+                    if (clickFlag) {
+                        for (let i = 0; i < that.dataList.length; i++) {
+                            if (that.dataList[i].name == that.form.name) {
+                                that.clickNode(that.dataList[i])
+                                break;
+                            }
+                        }
+                    } else {
+                        that.form = {};
+                    }
                 }).catch(err => {
-                    that.$message.error("获取模板列表失败：" + res);
+                    that.$message.error("获取模板列表失败：" + err);
                 });
             },
             clickNode(node){
                 this.form = node;
-                this.projectTreeData =  [{
+                this.projectTreeData = [{
                     name: node.name,
                     templateName: node.name,
-                    children: this.toTreeNode(node.templateFiles ,"-1",node.name),
-                    id: "-1"
+                    children: this.toTreeNode(node.templateFiles, "-1", node.name),
+                    id: "-1",
+                    type: "-1"
                 }]
             },
-            toTreeNode(children,pid,templateName){
+            toTreeNode(children, pid, templateName){
                 const that = this;
-                return children.filter(item => {
-                    if(item.pid == null && pid == null){
-                        return true;
+//                debugger
+                let resultList = [];
+                for (let i = 0; i < children.length; i++) {
+                    let item = children[i];
+                    if (item.pid == null && pid == null) {
+                        continue;
                     }
-                    if(item.pid == null){
-                        return false;
+                    if (item.pid == null) {
+                        continue;
                     }
-                    return item.pid == pid;
-                }).map(item =>{
-                    return {
-                        name :item.name,
-                        children: that.toTreeNode(children,item.id,templateName),
-                        templateName: templateName,
+                    if (item.pid == pid) {
+                        if (item.type == 4) {
+                            resultList.push({
+                                ...item,
+                                children: that.toTreeNode(children, item.id, templateName),
+                                templateName: templateName,
+                            });
+                        } else {
+                            resultList.push({
+                                ...item,
+                                templateName: templateName,
+                            });
+                        }
+
                     }
-                });
+                }
+                return resultList;
             },
             newTemplate(){
                 this.$refs["dialog"].addDialog();
@@ -154,8 +193,29 @@
                     that.$message.error("保存失败:" + err);
                 });
             },
-            addFileDialog(node,data){
+            addFileDialog(node, data){
                 this.$refs["fileDialog"].addDialog(data);
+            },
+            deleteTemplate(node, data){
+                const that = this;
+                this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    that.$http.post("/api/template/deleteFile", JSON.stringify(data)).then(res => {
+                        if (res.data == 1) {
+                            that.refresh(true);
+                            that.$message.success("删除成功")
+                        } else {
+                            that.$message.error("删除失败")
+                        }
+                    }).catch(res => {
+                        that.$notify.error("删除出错：" + res);
+                    });
+                }).catch(() => {
+
+                });
             }
         }
     }

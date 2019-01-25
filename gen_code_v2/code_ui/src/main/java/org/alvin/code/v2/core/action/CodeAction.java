@@ -44,15 +44,6 @@ public class CodeAction {
 		return service.queryTables(cond);
 	}
 
-//	/**
-//	 * @功能描述: 查询数据库中表名列表
-//	 */
-//	@PostMapping("/queryField")
-//	public List<Field> queryField(@RequestBody CodeCond cond) {
-//		cond.setDb_user(CodeDao.DBUSER);
-//		return service.queryFields(cond);
-//	}
-
 	/**
 	 * @功能描述: 查询数据库中表名列表
 	 */
