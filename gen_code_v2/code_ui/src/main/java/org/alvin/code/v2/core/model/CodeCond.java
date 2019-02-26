@@ -13,11 +13,12 @@ public class CodeCond extends BaseCondition {
 	public void addCondition() {
 		add(t_name, "AND table_name LIKE ?", 3);
 		add(t_name_eq, "AND table_name = ?");
-		add(db_user, "AND table_schema=?");
+		add(table_schema, "AND table_schema=?");
 	}
 
 	private String t_name;// 表名模糊
 	private String t_name_eq;// 表名等于
+	private String table_schema;// 数据名
 	private String db_user;// 数据库用户名
 	//
 	private String author;// 作者名

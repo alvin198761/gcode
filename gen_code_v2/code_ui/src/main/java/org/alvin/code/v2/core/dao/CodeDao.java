@@ -61,10 +61,14 @@ public class CodeDao extends BaseDao {
 	 */
 	@PostConstruct
 	private void init() {
+//		DBUSER = this.username;
 		DatabaseMetaData dbMetaData;
 		try {
 			dbMetaData = jdbcTemplate.getDataSource().getConnection().getMetaData();
 			ResultSet rs = dbMetaData.getTables(null, null, null, null);
+			if(rs.getFetchSize() == 0){
+				return ;
+			}
 			rs.next();
 			DBUSER = rs.getString(1);
 		} catch (SQLException e) {

@@ -17,6 +17,7 @@ import org.alvin.code.v2.sys.pro.EntityConfig;
 import org.alvin.code.v2.sys.pro.FieldConfig;
 import org.apache.velocity.app.VelocityEngine;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -43,6 +44,8 @@ public class CodeService {
 	protected CodeDao dao;
 	@Autowired
 	private VmFileService vmFileService;
+	@Value("${db_name}")
+	private String table_schema;
 
 	private static final File outBaseDir = new File("../../templates/gen_templates/codetemplate");
 
@@ -159,6 +162,7 @@ public class CodeService {
 	 * @功能描述: 查询数据库中表名列表
 	 */
 	public List<Table> queryTables(CodeCond para) {
+		para.setTable_schema(this.table_schema);
 		List<Table> list = dao.queryTables(para);
 		list.forEach(item -> {
 			item.setCls_upp(CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.UPPER_CAMEL, Utils.delFirWord(item.getT_name())));

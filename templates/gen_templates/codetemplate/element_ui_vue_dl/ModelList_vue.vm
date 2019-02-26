@@ -75,7 +75,7 @@
         const that = this;
         that.loading = true;
         const requestData = {...that.form, page: that.page - 1, size: that.size};
-        that.${dollar}postByJson("/api/${lowUpp}/queryPage", JSON.stringify(requestData)).then(res => {
+        that.${dollar}http.post("/api/${lowUpp}/queryPage", JSON.stringify(requestData)).then(res => {
 		          that.loading = false;
 		          that.dataList = res.data.content;
 		          that.total = res.data.totalElements;

@@ -4,7 +4,7 @@ server:
     enabled: true
     mime-types: application/json,application/xml,text/html,text/xml,text/plain,application/javascript,text/css
 
-db_name : erp_laozhang
+db_name : code
 db_ip: localhost
 
 spring:
@@ -12,7 +12,7 @@ spring:
     driverClassName: com.mysql.jdbc.Driver
     url: jdbc:mysql://${db_ip}:3306/${db_name}?useUnicode=true&characterEncoding=utf-8&useSSL=false
     username: root
-    password: alvin
+    password: 1234
 
 #server: 
 #    ssl: 
