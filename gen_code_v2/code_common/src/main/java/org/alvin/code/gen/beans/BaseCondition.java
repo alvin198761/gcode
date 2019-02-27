@@ -15,6 +15,7 @@ import java.util.*;
 
 @Data
 public abstract class BaseCondition {
+	@ApiModelProperty( dataType = "List" , hidden = true)
 	private List<Object> paramList = new ArrayList<Object>();// 参数值
 	@ApiModelProperty(hidden = true)
 	private StringBuffer condition = new StringBuffer();// 条件语句
@@ -22,11 +23,15 @@ public abstract class BaseCondition {
 	private Integer size = 10;// 页大小(每页记录条)
 	@ApiModelProperty(value = "当前页", dataType = "Integer")
 	private Integer page = 0;// 当前页码
+	@ApiModelProperty( dataType = "Map" , hidden = true)
 	private Map<String, String> orderMap = new HashMap<>();// 支持的排序字段
+	@ApiModelProperty( dataType = "Map" , hidden = true)
 	private Map<String, String> order = new HashMap<>();// 当前使用的排序字段
-
+	@ApiModelProperty( dataType = "List" , hidden = true)
 	private List<String> selectedFields; //选查字段
+	@ApiModelProperty( dataType = "StringBuilder" , hidden = true)
 	private StringBuilder joinTables = new StringBuilder(); //选连表语句
+	@ApiModelProperty( dataType = "Byte" , hidden = true)
 	private Byte queryMode = QUERY_MODE_JOIN_ALL ;//查询模式 默认是全查
 
 	public static  final byte QUERY_MODE_SINGLE_ALL = 0; //单表全查

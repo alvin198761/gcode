@@ -75,13 +75,10 @@
         const that = this;
         that.loading = true;
         const requestData = {...that.form, page: that.page - 1, size: that.size};
-        that.${dollar}postByJson("/api/${lowUpp}/queryPage", JSON.stringify(requestData)).then(res => {
+        that.${dollar}postByForm("/api/${lowUpp}/queryPage", requestData).then(res => {
 		          that.loading = false;
-		          that.dataList = res.data.content;
-		          that.total = res.data.totalElements;
-		        }).catch(res => {
-		          that.${dollar}message.error("获取${cName}列表失败：" + res);
-		          that.loading = false;
+		          that.dataList = res.resultData.content;
+		          that.total = res.resultData.totalElements;
 		        });
       },
       doAdd() {
@@ -97,14 +94,14 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          that.${dollar}http.delete("/api/${lowUpp}/delete", {
-		            params: {id: row.${idName}}
-		          }).then(res => {
-		            this.${dollar}message.success("删除成功");
-		            that.refresh();
-		          }).catch(res => {
-		            that.${dollar}message.error("删除失败：" + res);
-		          });
+          that.${dollar}post("/api/${lowUpp}/delete", {id: row.${idName}}).then(res =>{
+		              if(res.resultCode != 200){
+		               that.${dollar}message.error(res.resultMsg)
+                      }else {
+					   that.${dollar}message.success("删除成功！")
+					   that.refresh();						 
+					  }
+          });
         }).catch(() => {
         });
       }

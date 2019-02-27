@@ -4,9 +4,9 @@ import java.util.List;
 import org.springframework.stereotype.Repository;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 
-import org.alvin.code.gen.beans.BaseDao;
-import org.alvin.code.gen.utils.Page;
-import org.alvin.code.gen.utils.SqlUtil;
+import com.dl.keep.common.util.SqlUtil;
+import com.dl.webdata.common.jdbc.BaseDao;
+import com.dl.keep.common.util.Page;
 import com.google.common.base.Joiner;
 /**
 * @类说明: ${cName}--数据访问层

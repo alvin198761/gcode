@@ -45,12 +45,14 @@
               if (!valid) {
                 return;
               }
-              that.${dollar}postByJson("/api/${lowUpp}/" + that.dialogMode, JSON.stringify(that.form)).then(res => {
-                that.show = false;
-                that.${dollar}message.success(that.title + "成功!");
-                that.refresh();
-              }).catch(res => {
-                that.${dollar}message.error(that.title + "出错!" + res);
+              that.${dollar}postByForm("/api/${lowUpp}/" + that.dialogMode, that.form).then(res => {
+                 if(res.resultCode == 200){
+                      that.show = false;
+                      that.${dollar}message.success(that.title + "成功!");
+                      that.refresh();
+                }else {
+                      that.${dollar}message.error(res.resultMsg);
+                }
               });
         });
       },

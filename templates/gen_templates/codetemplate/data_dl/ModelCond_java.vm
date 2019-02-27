@@ -5,7 +5,11 @@ package $pName ;
 #end
 import lombok.Getter;
 import lombok.Setter;
-import org.alvin.code.gen.beans.BaseCondition;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
+import com.dl.keep.common.util.base.BaseCondition;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.util.List;
@@ -17,6 +21,10 @@ import java.util.List;
 **/
 @Setter
 @Getter
+@Accessors(chain = true)
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @ApiModel(value = "${clsUpp}", description = "${cName}查询条件实体")
 public class ${clsUpp}Cond extends BaseCondition {
 
@@ -38,9 +46,10 @@ public class ${clsUpp}Cond extends BaseCondition {
 
     //feilds
     #foreach ($fie in $fList)
-    @ApiModelProperty(value = "${fie.comment}", dataType = "${fie.type}" ,hidden = true)
+    @ApiModelProperty(value = "${fie.comment}", dataType = "${fie.type}")
     private  ${fie.type}  ${fie.name} ;//  ${fie.comment}
     #end
 
-    //private List<Long> ids;// 主键列表 
+    //private List<Long> ids;// 主键列表
+    private List<String> selectedFields; //暂时不放入父类
 }

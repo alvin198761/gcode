@@ -1,6 +1,6 @@
 package ${pName};
 import java.util.List;
-import org.alvin.code.gen.utils.Page;
+import com.dl.keep.common.util.Page;
 
 
 import org.apache.commons.logging.Log;
