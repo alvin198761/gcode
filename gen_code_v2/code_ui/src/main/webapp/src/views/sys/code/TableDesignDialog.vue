@@ -81,7 +81,7 @@
 
         <div slot="footer">
             <el-button @click="show=false">取 消</el-button>
-            <el-button type="primary" @click="executeSql">确 定</el-button>
+            <el-button type="primary" @click="executeSql" :disabled="tabActiveName != 'preview'">确 定</el-button>
         </div>
     </el-dialog>
 </template>
