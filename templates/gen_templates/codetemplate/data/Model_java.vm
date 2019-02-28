@@ -3,8 +3,7 @@ package $pName ;
 #foreach($importItem in $importList)
     $importItem
 #end
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 /**
@@ -12,8 +11,7 @@ import io.swagger.annotations.ApiModelProperty;
 * @author: ${auth}
 * @date : ${time}
 **/
-@Setter
-@Getter
+@Data
 @ApiModel(value = "${upp}", description = "${cName}实体")
 public class ${upp} {
 

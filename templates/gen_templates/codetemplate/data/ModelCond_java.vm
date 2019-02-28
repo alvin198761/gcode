@@ -3,8 +3,7 @@ package $pName ;
 #foreach($importItem in $importList)
     $importItem
 #end
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import org.alvin.code.gen.beans.BaseCondition;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -15,8 +14,7 @@ import java.util.List;
 * @author: ${auth}
 * @date : ${time}
 **/
-@Setter
-@Getter
+@Data
 @ApiModel(value = "${clsUpp}", description = "${cName}查询条件实体")
 public class ${clsUpp}Cond extends BaseCondition {
 

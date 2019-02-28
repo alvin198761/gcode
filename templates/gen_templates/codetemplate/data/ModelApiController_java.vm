@@ -19,7 +19,7 @@ import org.alvin.code.gen.beans.ResultBean;
 @Api(value = "[${cName}]控制器", description = "[${cName}]相关操作")
 @RestController
 @RequestMapping("/api/${lowUpp}")
-public class ${clsUpp}Controller  {
+public class ${clsUpp}ApiController  {
 
     @SuppressWarnings("unused")
 	private final Log logger = LogFactory.getLog(getClass());
@@ -33,13 +33,15 @@ public class ${clsUpp}Controller  {
     @ApiOperation(value = "新增[${cName}]", notes = "返回影响记录行数")
 	@ApiResponses({
             @ApiResponse(code = 200, message = "请求成功"),
-            @ApiResponse(code = 9999, message = "系统错误!")
+            @ApiResponse(code = 9999, message = "系统错误!"),
+            @ApiResponse(code = 1006, message = "TOKEN未授权或已过期!")
     })
     @ApiImplicitParams(
     {
         #foreach($fi in $fList)
             @ApiImplicitParam(name = "${fi.name}", value = "${fi.comment}", paramType = "query", dataType="${fi.type}"),
         #end
+		@ApiImplicitParam(name = "Access-Token", value = "登录令牌", paramType = "header", dataType = "string")
     })
 
     @PostMapping("save")
@@ -54,11 +56,13 @@ public class ${clsUpp}Controller  {
     @ApiOperation(value = "删除[${cName}]", notes = "返回影响记录行数")
 	@ApiResponses({
             @ApiResponse(code = 200, message = "请求成功"),
-            @ApiResponse(code = 9999, message = "系统错误!")
+            @ApiResponse(code = 9999, message = "系统错误!"),
+            @ApiResponse(code = 1006, message = "TOKEN未授权或已过期!")
     })
     @ApiImplicitParams(
     {
-        @ApiImplicitParam(name = "id", value = "[${cName}]的主键", required = true, dataType = "${idType}", paramType = "query")
+        @ApiImplicitParam(name = "id", value = "[${cName}]的主键", required = true, dataType = "${idType}", paramType = "query"),
+		@ApiImplicitParam(name = "Access-Token", value = "登录令牌", paramType = "header", dataType = "string")
     })
     @PostMapping( "delete" )
     public ResultBean<Integer> delete(@RequestParam("id") ${idType} id) {
@@ -79,6 +83,7 @@ public class ${clsUpp}Controller  {
         #foreach($fi in $fList)
             @ApiImplicitParam(name = "${fi.name}", value = "${fi.comment}", paramType = "query", dataType="${fi.type}"),
         #end
+		@ApiImplicitParam(name = "Access-Token", value = "登录令牌", paramType = "header", dataType = "string")
     })
     @PostMapping("update")
     public ResultBean<Integer> update( ${clsUpp} ${lowUpp}, Principal principal) {
@@ -91,13 +96,15 @@ public class ${clsUpp}Controller  {
     @ApiOperation(value = "按条件查询分页[${cName}]列表", notes = "返回分页[${cName}]列表")
 		@ApiResponses({
             @ApiResponse(code = 200, message = "请求成功"),
-            @ApiResponse(code = 9999, message = "系统错误!")
+            @ApiResponse(code = 9999, message = "系统错误!"),
+            @ApiResponse(code = 1006, message = "TOKEN未授权或已过期!")
     })
     @ApiImplicitParams(
     {
         #foreach($fi in $fList)
             @ApiImplicitParam(name = "${fi.name}", value = "${fi.comment}", paramType = "query", dataType="${fi.type}"),
         #end
+		@ApiImplicitParam(name = "Access-Token", value = "登录令牌", paramType = "header", dataType = "string")
     })
     @PostMapping( "queryPage")
     public ResultBean<Page<${clsUpp}>> queryPage( ${clsUpp}Cond cond, Principal principal) {
@@ -111,13 +118,15 @@ public class ${clsUpp}Controller  {
     @ApiOperation(value = "按条件查询不分页[${cName}]列表", notes = "返回不分页[${cName}]列表")
 		@ApiResponses({
             @ApiResponse(code = 200, message = "请求成功"),
-            @ApiResponse(code = 9999, message = "系统错误!")
+            @ApiResponse(code = 9999, message = "系统错误!"),
+            @ApiResponse(code = 1006, message = "TOKEN未授权或已过期!")
     })
     @ApiImplicitParams(
     {
         #foreach($fi in $fList)
             @ApiImplicitParam(name = "${fi.name}", value = "${fi.comment}", paramType = "query", dataType="${fi.type}"),
         #end
+		@ApiImplicitParam(name = "Access-Token", value = "登录令牌", paramType = "header", dataType = "string")
     })
 	@PostMapping("queryList")
     public ResultBean<List<${clsUpp}>> queryList( ${clsUpp}Cond cond, Principal principal) {
@@ -131,13 +140,15 @@ public class ${clsUpp}Controller  {
     @ApiOperation(value = "按条件查询[${cName}]记录个数", notes = "返回记录个数")
 		@ApiResponses({
             @ApiResponse(code = 200, message = "请求成功"),
-            @ApiResponse(code = 9999, message = "系统错误!")
+            @ApiResponse(code = 9999, message = "系统错误!"),
+            @ApiResponse(code = 1006, message = "TOKEN未授权或已过期!")
     })
     @ApiImplicitParams(
     {
         #foreach($fi in $fList)
             @ApiImplicitParam(name = "${fi.name}", value = "${fi.comment}", paramType = "query", dataType="${fi.type}"),
         #end
+		@ApiImplicitParam(name = "Access-Token", value = "登录令牌", paramType = "header", dataType = "string")
     })
 	@PostMapping( "queryCount")
 	public ResultBean<Long> queryCount( ${clsUpp}Cond cond) {
@@ -150,10 +161,12 @@ public class ${clsUpp}Controller  {
     @ApiOperation(value = "按主键查询单个[${cName}]记录", notes = "返回单个[${cName}]对象")
 		@ApiResponses({
             @ApiResponse(code = 200, message = "请求成功"),
-            @ApiResponse(code = 9999, message = "系统错误!")
+            @ApiResponse(code = 9999, message = "系统错误!"),
+            @ApiResponse(code = 1006, message = "TOKEN未授权或已过期!")
     })
     @ApiImplicitParams({ 
-	@ApiImplicitParam(name = "id", value = "[${cName}]的主键", required = true, dataType = "${idType}", paramType = "query")
+	@ApiImplicitParam(name = "id", value = "[${cName}]的主键", required = true, dataType = "${idType}", paramType = "query"),
+	@ApiImplicitParam(name = "Access-Token", value = "登录令牌", paramType = "header", dataType = "string")
  })
     @PostMapping( "findById")
     public ResultBean<${clsUpp}> findById(@RequestParam("id") ${idType} id) {

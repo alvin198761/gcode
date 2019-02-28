@@ -24,8 +24,8 @@ public abstract class BaseCondition {
 	@ApiModelProperty(value = "当前页", dataType = "Integer")
 	private Integer page = 0;// 当前页码
 	@ApiModelProperty( dataType = "Map" , hidden = true)
-	private Map<String, String> orderMap = new HashMap<>();// 支持的排序字段
-	@ApiModelProperty( dataType = "Map" , hidden = true)
+//	private Map<String, String> orderMap = new HashMap<>();// 支持的排序字段
+//	@ApiModelProperty( dataType = "Map" , hidden = true)
 	private Map<String, String> order = new HashMap<>();// 当前使用的排序字段
 	@ApiModelProperty( dataType = "List" , hidden = true)
 	private List<String> selectedFields; //选查字段
@@ -40,8 +40,8 @@ public abstract class BaseCondition {
 	public static final byte QUERY_MODE_JOIN_ALL_QUERY_SELECT = 3; //全连选查
 	public static final byte QUERY_MODE_JOIN_SELECT_QUERY_SELECT = 4; //选连选查
 
-	protected void addOrder(String param, String field) {
-		this.orderMap.put(param, field);
+	protected void addOrder(String field,String sortType) {
+		this.order.put(field, sortType);
 	}
 
 	public String getOrderSql() {
@@ -50,7 +50,7 @@ public abstract class BaseCondition {
 			sql += " ORDER BY ";
 			for (Map.Entry<String, String> entry : order.entrySet()) {
 				if (entry.getKey() != null && !entry.getKey().equals("")) {
-					sql += orderMap.get(entry.getKey()) + " " + entry.getValue() + ",";
+					sql +=  entry.getKey() + " " + entry.getValue() + ",";
 				}
 			}
 			sql = sql.substring(0, sql.length() - 1);
