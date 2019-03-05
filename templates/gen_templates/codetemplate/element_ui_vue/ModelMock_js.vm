@@ -19,20 +19,37 @@ module.exports = {
       'size': 10,
       'totalElements': 500,
     });
+
+    var resp = {
+         "resultCode": 200,
+         "resultMsg": "请求成功",
+         "resultData":data
+         };
+
     setTimeout(function () {
-      res.json(data);
+      res.json(resp);
     }, 500);
   },
 
   'POST /api/${lowUpp}/update': function (req, res, next) {
+    var resp = {
+           "resultCode": 200,
+           "resultMsg": "请求成功",
+           "resultData":1
+           };
     setTimeout(function () {
-      res.json({});
+      res.json(resp);
     }, 500);
   },
 
   'POST /api/${lowUpp}/save': function (req, res, next) {
+   var resp = {
+         "resultCode": 200,
+         "resultMsg": "请求成功",
+         "resultData":1
+         };
     setTimeout(function () {
-      res.json({});
+      res.json(resp);
     }, 500);
   },
 
@@ -48,14 +65,26 @@ module.exports = {
         #end
       }]
     });
-    setTimeout(function () {
-      res.json(data.content);
-    }, 500);
+      var resp = {
+         "resultCode": 200,
+         "resultMsg": "请求成功",
+         "resultData":data.content
+         };
+
+        setTimeout(function () {
+          res.json(resp);
+        }, 500);
+
   },
 
   'POST /api/${lowUpp}/delete': function (req, res, next) {
+     var resp = {
+       "resultCode": 200,
+       "resultMsg": "请求成功",
+       "resultData":1
+       };
     setTimeout(function () {
-      res.json({});
+      res.json(resp);
     }, 500);
   },
 }
