@@ -13,6 +13,7 @@
                 <el-select v-model="form.ctype" placeholder="请选择客户端类型" size="small">
                     <!--<el-option label="reqwest js" value="Reqwest"></el-option>-->
                     <el-option label="axios js" value="Axios"></el-option>
+                    <el-option label="wx request" value="WxRquest"></el-option>
                 </el-select>
             </el-form-item>
             <el-form-item>
