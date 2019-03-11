@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.annotations.*;
 import org.alvin.code.gen.beans.ResultBean;
- 
+import com.leagoo.platform.controller.BaseController;
 
 /**
 * @类说明: "[${cName}]app端Swagger控制器类"
@@ -19,7 +19,7 @@ import org.alvin.code.gen.beans.ResultBean;
 @Api(value = "[${cName}]控制器", description = "[${cName}]相关操作")
 @RestController
 @RequestMapping("/api/${lowUpp}")
-public class ${clsUpp}Controller  {
+public class ${clsUpp}Controller extends BaseController {
 
     @SuppressWarnings("unused")
 	private final Log logger = LogFactory.getLog(getClass());
@@ -37,6 +37,7 @@ public class ${clsUpp}Controller  {
     })
     @ApiImplicitParams(
     {
+        @ApiImplicitParam(name = "Access-Token", value = "登录令牌", paramType = "header", dataType = "string"),
         #foreach($fi in $fList)
             @ApiImplicitParam(name = "${fi.name}", value = "${fi.comment}", paramType = "query", dataType="${fi.type}"),
         #end
@@ -58,6 +59,7 @@ public class ${clsUpp}Controller  {
     })
     @ApiImplicitParams(
     {
+        @ApiImplicitParam(name = "Access-Token", value = "登录令牌", paramType = "header", dataType = "string"),
         @ApiImplicitParam(name = "id", value = "[${cName}]的主键", required = true, dataType = "${idType}", paramType = "query")
     })
     @PostMapping( "delete" )
@@ -76,6 +78,7 @@ public class ${clsUpp}Controller  {
     })
     @ApiImplicitParams(
     {
+        @ApiImplicitParam(name = "Access-Token", value = "登录令牌", paramType = "header", dataType = "string"),
         #foreach($fi in $fList)
             @ApiImplicitParam(name = "${fi.name}", value = "${fi.comment}", paramType = "query", dataType="${fi.type}"),
         #end
@@ -95,6 +98,7 @@ public class ${clsUpp}Controller  {
     })
     @ApiImplicitParams(
     {
+        @ApiImplicitParam(name = "Access-Token", value = "登录令牌", paramType = "header", dataType = "string"),
         #foreach($fi in $fList)
             @ApiImplicitParam(name = "${fi.name}", value = "${fi.comment}", paramType = "query", dataType="${fi.type}"),
         #end
@@ -115,6 +119,7 @@ public class ${clsUpp}Controller  {
     })
     @ApiImplicitParams(
     {
+        @ApiImplicitParam(name = "Access-Token", value = "登录令牌", paramType = "header", dataType = "string"),
         #foreach($fi in $fList)
             @ApiImplicitParam(name = "${fi.name}", value = "${fi.comment}", paramType = "query", dataType="${fi.type}"),
         #end
@@ -135,6 +140,7 @@ public class ${clsUpp}Controller  {
     })
     @ApiImplicitParams(
     {
+        @ApiImplicitParam(name = "Access-Token", value = "登录令牌", paramType = "header", dataType = "string"),
         #foreach($fi in $fList)
             @ApiImplicitParam(name = "${fi.name}", value = "${fi.comment}", paramType = "query", dataType="${fi.type}"),
         #end
@@ -153,8 +159,9 @@ public class ${clsUpp}Controller  {
             @ApiResponse(code = 9999, message = "系统错误!")
     })
     @ApiImplicitParams({ 
-	@ApiImplicitParam(name = "id", value = "[${cName}]的主键", required = true, dataType = "${idType}", paramType = "query")
- })
+        @ApiImplicitParam(name = "Access-Token", value = "登录令牌", paramType = "header", dataType = "string"),
+    	@ApiImplicitParam(name = "id", value = "[${cName}]的主键", required = true, dataType = "${idType}", paramType = "query")
+     })
     @PostMapping( "findById")
     public ResultBean<${clsUpp}> findById(@RequestParam("id") ${idType} id) {
     		return new ResultBean<>(service.findById(id));

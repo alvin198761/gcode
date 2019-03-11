@@ -43,6 +43,14 @@ public abstract class BaseDao {
 		return Page.map(dataList, cond.getPage(), cond.getSize(), rowCount);
 	}
 
+	protected <T> Page<T> queryPage(String sql, Object [] params , int curPage, int pageSize, Class<T> clazz) {
+		String countSQL = "SELECT count(1) FROM (" + sql + ") t";// 统计记录个数的SQL语句
+		int rowCount = jdbcTemplate.queryForObject(countSQL, params, Integer.class);// 查询记录个数
+		String listSql = sql + " LIMIT " + curPage * pageSize + "," + pageSize;// 查询分页数据列表的SQL语句
+		List<T> dataList = jdbcTemplate.query(listSql, params, new BeanPropertyRowMapper<T>(clazz));
+		return Page.map(dataList, curPage, pageSize, rowCount);
+	}
+
 	protected <T> int[] batchOperate(List<T> list, String sql) {
 		SqlParameterSource[] params = new SqlParameterSource[list.size()];
 		for (int i = 0; i < list.size(); i++) {
