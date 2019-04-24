@@ -31,7 +31,7 @@ public class ${clsUpp}Cond extends BaseCondition {
         add(${fie.name} , " AND t.${fie.name} = ? " );
         #end
     #end
-    // add(ids, "AND t.id IN ");");
+     add(ids, "AND t.id IN ");
     }
 
     //feilds
@@ -40,5 +40,5 @@ public class ${clsUpp}Cond extends BaseCondition {
     private  ${fie.type}  ${fie.name} ;//  ${fie.comment}
     #end
 
-    //private List<Long> ids;// 主键列表 
+    private List<${idType}> ids;// 主键列表 
 }
