@@ -36,16 +36,20 @@ public class ${clsUpp}Cond extends BaseCondition {
     public void addCondition() {
     #foreach ($fie in $fList)
         #if($fie.type == "String")
+
         add(${fie.name} , " AND t.${fie.name} LIKE ? " ,3);
         #else
+
         add(${fie.name} , " AND t.${fie.name} = ? " );
         #end
     #end
+    
     // add(ids, "AND t.id IN ");");
     }
 
     //feilds
     #foreach ($fie in $fList)
+
     @ApiModelProperty(value = "${fie.comment}", dataType = "${fie.type}")
     private  ${fie.type}  ${fie.name} ;//  ${fie.comment}
     #end
