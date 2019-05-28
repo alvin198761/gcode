@@ -71,6 +71,38 @@ public class ${clsUpp}Dao extends BaseDao{
         return jdbcTemplate.update(sql.toString(), params);
       }
 
+
+     /**
+    * @方法说明：更新${cName}记录,不为空的都更新掉
+    */
+    public int updateNotNull(${clsUpp} vo) {
+        List<String> fields = new ArrayList<>();
+        List<Object> values = new ArrayList<>();
+        #foreach ($fie in $fList)
+        #if ($fie.name == ${idName})
+            #set($idGetName = 'vo.get' + $fie.bigName + '()')        
+        #end
+        #if ($fie.name != ${idName})
+
+        if(vo.get${fie.bigName}() != null){
+            fields.add(" ${fie.name} = ? ");
+            values.add(vo.get${fie.bigName}());
+        }   
+        #end
+        #end
+        
+        if(fields.isEmpty()){
+            return 0;
+        }
+        StringBuilder sql = new StringBuilder();
+        sql.append("UPDATE ${tName} SET ");
+        sql.append(Joiner.on(",").join(fields);
+        sql.append(" WHERE ${idName}=? ");
+        values.add(${idGetName});
+        Object[] params = {values.toArray()};
+        return jdbcTemplate.update(sql.toString(), params);
+      }
+
         /**
         * @方法说明：按条件查询分页${cName}列表
         */

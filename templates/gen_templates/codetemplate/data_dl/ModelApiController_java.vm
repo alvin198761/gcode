@@ -39,8 +39,10 @@ public class ${clsUpp}ApiController  {
     @ApiImplicitParams(
     {
         #foreach($fi in $fList)
+
             @ApiImplicitParam(name = "${fi.name}", value = "${fi.comment}", paramType = "query", dataType="${fi.type}"),
         #end
+
 		@ApiImplicitParam(name = "Access-Token", value = "登录令牌", paramType = "header", dataType = "string")
     })
 
@@ -81,8 +83,10 @@ public class ${clsUpp}ApiController  {
     @ApiImplicitParams(
     {
         #foreach($fi in $fList)
+
             @ApiImplicitParam(name = "${fi.name}", value = "${fi.comment}", paramType = "query", dataType="${fi.type}"),
         #end
+
 		@ApiImplicitParam(name = "Access-Token", value = "登录令牌", paramType = "header", dataType = "string")
     })
     @PostMapping("update")
@@ -102,8 +106,10 @@ public class ${clsUpp}ApiController  {
     @ApiImplicitParams(
     {
         #foreach($fi in $fList)
+
             @ApiImplicitParam(name = "${fi.name}", value = "${fi.comment}", paramType = "query", dataType="${fi.type}"),
         #end
+
 		@ApiImplicitParam(name = "Access-Token", value = "登录令牌", paramType = "header", dataType = "string")
     })
     @PostMapping( "queryPage")
@@ -124,8 +130,10 @@ public class ${clsUpp}ApiController  {
     @ApiImplicitParams(
     {
         #foreach($fi in $fList)
+
             @ApiImplicitParam(name = "${fi.name}", value = "${fi.comment}", paramType = "query", dataType="${fi.type}"),
         #end
+        
 		@ApiImplicitParam(name = "Access-Token", value = "登录令牌", paramType = "header", dataType = "string")
     })
 	@PostMapping("queryList")

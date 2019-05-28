@@ -46,6 +46,14 @@ public class ${clsUpp}Service {
 		return dao.update(${lowUpp}); 
 	}
 
+	 /**
+    * @方法说明：更新${cName}记录,不为空的都更新掉
+    */
+    @Transactional
+    public int updateNotNull(${clsUpp} ${lowUpp}) {
+		return dao.updateNotNull(${lowUpp}); 
+    }
+
 	/**
 	* @方法说明： 按条件查询分页${cName}列表
 	*/
