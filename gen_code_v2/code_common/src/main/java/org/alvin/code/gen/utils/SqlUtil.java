@@ -2,8 +2,6 @@ package org.alvin.code.gen.utils;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.Maps;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
@@ -165,9 +163,25 @@ public class SqlUtil {
 	}
 }
 
-@Getter
-@Setter
+
 class ParamPos {
 	private Integer start;
 	private Integer end;
+
+
+	public Integer getStart() {
+		return start;
+	}
+
+	public void setStart(Integer start) {
+		this.start = start;
+	}
+
+	public Integer getEnd() {
+		return end;
+	}
+
+	public void setEnd(Integer end) {
+		this.end = end;
+	}
 }

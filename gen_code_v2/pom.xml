@@ -13,6 +13,7 @@
         <module>code_ui</module>
         <module>code_common</module>
         <module>code_utils</module>
+        <module>code_jdbc</module>
     </modules>
 
 
