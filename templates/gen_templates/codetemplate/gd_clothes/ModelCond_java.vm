@@ -12,7 +12,6 @@ import lombok.experimental.Accessors;
 import org.alvin.code.gen.beans.BaseCondition;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import java.util.List;
 
 
 /**
@@ -56,5 +55,4 @@ public class ${clsUpp}Cond extends BaseCondition {
     #end
 
     //private List<Long> ids;// 主键列表
-    private List<String> selectedFields; //暂时不放入父类
 }
