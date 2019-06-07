@@ -6,7 +6,7 @@ function resolve (dir) {
     return path.join(__dirname, dir)
 }
 module.exports = {
-    baseUrl:'/',
+    publicPath:'/',
     indexPath:path.resolve(__dirname, '../resources/templates/index.ftl'),
     outputDir: path.resolve(__dirname, '../resources/static'),
     configureWebpack: {
