@@ -1,0 +1,22 @@
+db_name : erp_laozhang
+db_port: 3306
+db_ip: 47.98.132.116:${db_port}
+
+spring:
+  datasource:
+    driverClassName: com.mysql.jdbc.Driver
+    url: jdbc:mysql://${db_ip}/${db_name}?useUnicode=true&characterEncoding=utf-8&useSSL=false
+    username: root
+    password: T_dl123456
+
+#server: 
+#    ssl: 
+#      key-store: classpath:keystore.p12
+#      key-store-password: 38967098gzz
+#      keyStoreType: PKCS12
+#      keyAlias: jetty
+gen:
+  project:
+    outdir: D:/pro_dir
+    datadir: D:/pro_data
+    templatedir: D:/pro_temp_data

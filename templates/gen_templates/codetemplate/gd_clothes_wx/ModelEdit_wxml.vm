@@ -1,0 +1,14 @@
+<!--pages/add/add.wxml-->
+<text style='margin-bottom: 20px;text-align: center'>添加/修改</text>
+<van-cell-group>
+<van-field
+    value="{{ value }}"
+    placeholder="请输入用户名"
+    bind:change="onChangeName"
+    maxlength="20"  ame="name" label="用户姓名" required clearable
+  />
+  <van-row style="text-align:right;" >
+  <van-button type='primary' style='float: right' bind:click='doSave' >保存</van-button>
+  <van-button style='float: right' bind:click='goBack'>返回</van-button>
+   </van-row>
+</van-cell-group>

@@ -1,0 +1,133 @@
+// pages/add/add.js
+import ListApi from '../../utils/ListApi.js';
+Page({
+
+  /**
+   * 页面的初始数据
+   */
+  data: {
+    mode: null,
+    id: null,
+    obj: {
+
+    }
+  },
+
+  /**
+   * 生命周期函数--监听页面加载
+   */
+  onLoad: function(options) {
+    this.setData({
+      mode: options.mode,
+      id: options.id
+    });
+  },
+
+  /**
+   * 生命周期函数--监听页面初次渲染完成
+   */
+  onReady: function() {
+
+  },
+
+  /**
+   * 生命周期函数--监听页面显示
+   */
+  onShow: function() {
+    if (this.data.id != null && this.data.mode == 'update') {
+      const that = this;
+      ListApi.findById(this.data.id, (res) => {
+        if (res.code != 0) {
+          wx.showToast({
+            title: res.errorMsg,
+            icon: 'none'
+          })
+          return;
+        }
+        that.setData({
+          obj: res.data
+        });
+      });
+    }
+  },
+
+  /**
+   * 生命周期函数--监听页面隐藏
+   */
+  onHide: function() {
+
+  },
+
+  /**
+   * 生命周期函数--监听页面卸载
+   */
+  onUnload: function() {
+
+  },
+
+  /**
+   * 页面相关事件处理函数--监听用户下拉动作
+   */
+  onPullDownRefresh: function() {
+
+  },
+
+  /**
+   * 页面上拉触底事件的处理函数
+   */
+  onReachBottom: function() {
+
+  },
+
+  /**
+   * 用户点击右上角分享
+   */
+  onShareAppMessage: function() {
+
+  },
+
+  onChangeName(event) {
+    this.setData({
+      name: event.detail
+    });
+  },
+
+  doSave() {
+    const that = this;
+    if(!that.validateForm()){
+      return ;
+    }
+    if (this.data.mode == "save") {
+      ListApi.save(this.data.obj, (res) => {
+        wx.showToast({
+          title: '保存成功',
+        })
+        that.goBack();
+      });
+    } else {
+      ListApi.update(this.data.obj, (res) => {
+        wx.showToast({
+          title: '修改成功',
+        })
+        that.goBack();
+      });
+    }
+  },
+  goBack() {
+    wx.navigateBack({
+      delta: 1
+    })
+  },
+  validateForm(){
+    if(obj.name == null || obj.name.length == 0){
+      wx.showToast({
+        title: '请输入姓名',
+        icon: 'none'
+      })
+      return false;
+    }
+    return true;
+  }
+
+
+})

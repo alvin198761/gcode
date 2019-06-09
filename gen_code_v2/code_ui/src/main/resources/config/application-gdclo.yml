@@ -1,0 +1,16 @@
+db_name : xw-factory
+db_port: 10025
+db_ip: cdb-rwyyx497.gz.tencentcdb.com:${db_port}
+
+spring:
+  datasource:
+    driverClassName: com.mysql.jdbc.Driver
+    url: jdbc:mysql://${db_ip}/${db_name}?useUnicode=true&characterEncoding=utf-8&useSSL=false
+    username: xwadmin
+    password: adminQ!1
+
+gen:
+  project:
+    outdir: D:/pro_dir
+    datadir: D:/pro_data
+    templatedir: D:/pro_temp_data

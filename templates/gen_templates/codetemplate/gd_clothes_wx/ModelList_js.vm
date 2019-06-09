@@ -1,0 +1,135 @@
+// pages/list/list.js
+import ListApi from '../../utils/ListApi.js';
+import Dialog from '../../vant-weapp/dialog/dialog';
+Page({
+
+  /**
+   * 页面的初始数据
+   */
+  data: {
+    checkAll: false, //全选
+    dataList: [], //列表数据
+    page: 1, //当前页码
+    size: 10, //每页条数
+    search: '', //查询用的变量
+  },
+  //全选
+  onCheckAll(event) {
+    this.setData({
+      checkAll: event.detail
+    });
+  },
+
+  /**
+   * 生命周期函数--监听页面加载
+   */
+  onLoad: function(options) {
+
+  },
+
+  /**
+   * 生命周期函数--监听页面初次渲染完成
+   */
+  onReady: function() {
+
+  },
+
+  /**
+   * 生命周期函数--监听页面显示
+   */
+  onShow: function() {
+    this.refresh();
+  },
+
+  /**
+   * 生命周期函数--监听页面隐藏
+   */
+  onHide: function() {
+
+  },
+
+  /**
+   * 生命周期函数--监听页面卸载
+   */
+  onUnload: function() {
+
+  },
+
+  /**
+   * 页面相关事件处理函数--监听用户下拉动作
+   */
+  onPullDownRefresh: function() {
+
+  },
+
+  /**
+   * 页面上拉触底事件的处理函数
+   */
+  onReachBottom: function() {
+
+  },
+
+  /**
+   * 用户点击右上角分享
+   */
+  onShareAppMessage: function() {
+
+  },
+  //查询
+  refresh() {
+    ListApi.queryPage({
+      page: this.data.page - 1,
+      size: this.data.size,
+      search: this.data.search
+    }, (res) => {
+      console.log(res.data);
+      if (res.code != 0) {
+        wx.showToast({
+          title: res.errorMsg,
+          icon: 'none'
+        })
+        return;
+      }
+      this.setData({
+        page: res.data.number + 1,
+        size: res.data.size,
+        dataList: res.data.content
+      });
+    });
+  },
+  //添加
+  addDailog(event) {
+    wx.navigateTo({
+      url: '/pages/add/add?mode=save&id=',
+    })
+  },
+  //编辑
+  editDailog(event) {
+    let id = event.currentTarget.dataset.kid;
+    wx.navigateTo({
+      url: '/pages/add/add?mode=update&id=' + id,
+    })
+  },
+  //删除
+  doDelete(event) {
+    let id = event.currentTarget.dataset.kid;
+    wx.showModal({
+      title: '警告',
+      content: '该操作将导致数据被删除',
+      success : (res)=>{
+        if(res.confirm == false){
+          return ;
+        }
+        ListApi.deleteById(id, (res) => {
+          if (res.code != 0) {
+            wx.showToast({
+              title: res.errorMsg,
+              icon: 'none'
+            })
+            return;
+          }
+        })
+      }
+    })
+  }
+})

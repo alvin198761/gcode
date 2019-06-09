@@ -135,6 +135,21 @@ public class ${clsUpp}Dao extends BaseDao{
     	return jdbcTemplate.query(sb.toString(), cond.getArray(), new BeanPropertyRowMapper<>(${clsUpp}.class));
     }
     
+	/**
+    * @方法说明：按条件查询一个 ${cName} 对象
+    */
+    public ${clsUpp} findOne(${clsUpp}Cond cond) {
+        StringBuilder sb = new StringBuilder("SELECT ");
+        sb.append(this.getSelectedItems(cond));
+        sb.append(" FROM ${tName} t ");
+        sb.append(getJoinTables());
+        sb.append(" WHERE 1=1 ");
+    	sb.append(cond.getCondition());
+    	//sb.append(" ORDER BY operate_time DESC");
+		sb.append(" limit 0,1");
+    	return jdbcTemplate.queryForObject(sb.toString(), cond.getArray(), new BeanPropertyRowMapper<>(${clsUpp}.class));
+    }
+	
     /**
     * @方法说明：按ID查找单个${cName}实体
     */

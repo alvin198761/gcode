@@ -65,6 +65,13 @@ public class ${clsUpp}Service {
 	public List<${clsUpp}> queryList(${clsUpp}Cond cond) {
 		return dao.queryList(cond);
 	}
+	
+	/**
+	* @方法说明： 按条件查询一个 ${cName} 对象
+	*/
+	public ${clsUpp} findOne(${clsUpp}Cond cond) {
+		return dao.findOne(cond);
+	}
 
 	/**
 	* @方法说明： 按ID查找单个${cName}记录

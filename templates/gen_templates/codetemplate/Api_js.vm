@@ -1,0 +1,132 @@
+const Api = Api || {};
+// Api.host = 'https://cdb-rwyyx497.gz.tencentcdb.com'; //正式
+Api.host = 'https://cdb-rwyyx497.gz.tencentcdb.com'; //测试
+
+
+/**
+ * http 总入口 , 全局拦截
+ */
+function execute(url, data,contentType, success, fail, complete) {
+  success = success || function(res) {
+    console.log(url, res);
+  }
+  fail = fail || function(err) {
+    console.log(url, err);
+  }
+  complete = complete || function(res) {
+    console.log(url, res);
+  }
+  wx.request({
+    url: Api.host + url,
+    header: {
+      'content-type': contentType,
+      'Access-Token': wx.getStorageSync("Access-Token")
+    },
+    data: data,
+    method: "POST",
+    success: function(res) {
+      console.log("每个方法都要来", url);
+      //拦截token 信息
+      if (!validateCode(res)) {
+        return;
+      }
+      //登录的时候,保存token 
+      // checkAndSaveToken(url, res);
+      success(res);
+    },
+    fail: fail,
+    complete: complete
+  })
+}
+/**
+*form data 提交 走拦截
+*/
+function executeFormData(url, data, success, fail, complete) {
+	execute(url,data,'application/x-www-form-urlencoded',success,fail,complete);
+}
+
+/**
+*request body 提交 走拦截
+*/
+function executeBody(url, data, success, fail, complete) {
+	execute(url,JSON.stringify(data),'application/json',success,fail,complete);
+}
+/**
+ * 登录保存token
+ */
+function checkAndSaveToken(url, res) {
+  if (res.data.code == 0) { //登录成功
+    wx.setStorageSync("Access-Token", "Bearer+"+res.data.data);
+  }
+}
+
+/**
+ * 拦截和处理特殊代码
+ */
+function validateCode(res) {
+  if (res.data.code == -1) { //token已经过期!
+    console.log("token已经过期!", res);
+    wx.removeStorageSync("Access-Token");
+    wx.showToast({
+      title: '会话超时,重新获取用户信息',
+      duration : 2000,
+      icon: 'node',
+      success : function(){
+        wx.reLaunch({
+          url: '/pages/index/index',
+        })
+      }
+    })
+    return false;
+  }
+  if (res.data.code == -2) { //这是一个无效的token!
+    console.log("这是一个无效的token!", res);
+    wx.removeStorageSync("Access-Token");
+    wx.showToast({
+      title: '这是一个无效的token!',
+      icon: 'node',
+      duration: 2000,
+      success: function () {
+        wx.reLaunch({
+          url: '/pages/index/index',
+        })
+      }
+    })
+    return false;
+  }
+  if (res.data.code == -3) { //在其它设备登录,导致token失效!
+    console.log("在其它设备登录,导致token失效!");
+    wx.removeStorageSync("Access-Token");
+    wx.showToast({
+      title: '在其它设备登录,导致token失效!',
+      icon: 'node',
+      duration: 2000,
+      success: function () {
+        wx.reLaunch({
+          url: '/pages/index/index',
+        })
+      }
+    })
+    return false;
+  }
+  return true;
+}
+
+
+/**
+ * 获取地址栏参数
+ * @param 参数名称
+ * @url 地址栏
+ */
+Api.getQueryString = (name, url) => {
+  if (url && url.indexOf('?') == -1) return null
+  let reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)")
+  let startIndex = url.indexOf('?') + 1
+  var r = url.substr(startIndex).match(reg)
+  if (r != null) {
+    return unescape(r[2])
+  }
+  return null
+}
+
+export default Api;

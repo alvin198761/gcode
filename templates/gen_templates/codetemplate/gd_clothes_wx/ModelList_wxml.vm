@@ -1,0 +1,42 @@
+<!--pages/list/list.wxml-->
+<view style='margin-bottom: 20px;text-align: center'>
+  <text>添加工厂</text>
+</view>
+<view style='margin: 10px;'>
+  <van-row>
+    <van-col span="20">
+      <van-checkbox value="{{ checkAll }}" bind:change="onCheckAll">
+        全选
+      </van-checkbox>
+    </van-col>
+    <van-col span="4" style="text-align: right">
+      <van-row>
+        <van-col span="12">
+          <van-icon name="add-o" />
+        </van-col>
+        <van-col span="12">
+          <van-icon name="close" />
+        </van-col>
+      </van-row>
+    </van-col>
+  </van-row>
+  <van-row wx:for="{{ dataList }}" wx:key="index" name="{{ item }}" style="line-height: 40px">
+   <van-col span="2" style='padding-top: 20px'>
+    <van-checkbox  >
+      </van-checkbox>
+   </van-col>
+    <van-col span="18">
+      <view>测试数据</view>
+    </van-col>
+    <van-col span="4">
+      <van-row>
+        <van-col span="12">
+          <van-icon name="edit" bindtap='editDailog' data-kid='{{item.id}}'/>
+        </van-col>
+        <van-col span="12">
+          <van-icon name="close" bindtap='doDelete' data-kid='{{item.id}}'/>
+        </van-col>
+      </van-row>
+    </van-col>
+  </van-row>
+</view>
