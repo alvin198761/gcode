@@ -2,6 +2,7 @@ package ${pName};
 
 import java.security.Principal;
 import java.util.List;
+import com.gd.clo.common.aop.NoRepeatSubmit;
 import org.alvin.code.gen.utils.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -74,7 +75,7 @@ public class ${clsUpp}Action {
         @ApiImplicitParam(paramType = "body", dataType = "${clsUpp}", name = "${lowUpp}", value = "${cName}", required = true) ,
         @ApiImplicitParam(name = "Authorization", value = "Token",required = true, dataType = "string", paramType = "header")
     })
-    @PostMapping("update")
+    @PostMapping("updateNotNull")
     public RestfullResp<Integer> updateNotNull(@RequestBody ${clsUpp} ${lowUpp}, Principal principal) {
         return new RestfullResp<>(service.updateNotNull(${lowUpp}));
     }
@@ -89,6 +90,7 @@ public class ${clsUpp}Action {
         @ApiImplicitParam(name = "Authorization", value = "Token",required = true, dataType = "string", paramType = "header")
     })
     @PostMapping( "queryPage")
+	@NoRepeatSubmit
     public RestfullResp<Page<${clsUpp}>> queryPage(@RequestBody ${clsUpp}Cond cond, Principal principal) {
         return new RestfullResp<>(service.queryPage(cond));
     }
@@ -103,6 +105,7 @@ public class ${clsUpp}Action {
         @ApiImplicitParam(name = "Authorization", value = "Token",required = true, dataType = "string", paramType = "header")
     })
 	@PostMapping("queryList")
+	@NoRepeatSubmit
     public RestfullResp<List<${clsUpp}>> queryList(@RequestBody ${clsUpp}Cond cond, Principal principal) {
     		return new RestfullResp<>(service.queryList(cond));
     }
@@ -117,6 +120,7 @@ public class ${clsUpp}Action {
         @ApiImplicitParam(name = "Authorization", value = "Token",required = true, dataType = "string", paramType = "header")
     })
 	@PostMapping("findOne")
+	@NoRepeatSubmit
     public RestfullResp<${clsUpp}> findOne(@RequestBody ${clsUpp}Cond cond, Principal principal) {
     		return new RestfullResp<>(service.findOne(cond));
     }
@@ -131,6 +135,7 @@ public class ${clsUpp}Action {
         @ApiImplicitParam(name = "Authorization", value = "Token",required = true, dataType = "string", paramType = "header")
     })
 	@PostMapping( "queryCount")
+	@NoRepeatSubmit
 	public RestfullResp<Long> queryCount(@RequestBody ${clsUpp}Cond cond) {
 		return new RestfullResp<>(service.queryCount(cond));
 	}
@@ -142,6 +147,7 @@ public class ${clsUpp}Action {
     @ApiImplicitParams({ @ApiImplicitParam(name = "id", value = "[${cName}]的主键", required = true, dataType = "${idType}", paramType = "query"),
     @ApiImplicitParam(name = "Authorization", value = "Token",required = true, dataType = "string", paramType = "header") })
     @PostMapping( "findById")
+	@NoRepeatSubmit
     public RestfullResp<${clsUpp}> findById(@RequestParam("id") ${idType} id) {
     		return new RestfullResp<>(service.findById(id));
     	}
