@@ -17,6 +17,13 @@ ${clsUpp}Api.deleteById = (id,success, fail, complete) =>{
 }
 
 /**
+*删除[${cName}]记录 批量
+*/
+${clsUpp}Api.deleteAll = (ids,success, fail, complete) =>{
+	Api.executeFormData('/api/${lowUpp}/deleteAll',{ids: ids},success,fail,complete);
+}
+
+/**
 *修改[${cName}]记录 ,必须传入完整对象,不然会有数据丢失
 */
 ${clsUpp}Api.update = (${lowUpp},success, fail, complete) =>{

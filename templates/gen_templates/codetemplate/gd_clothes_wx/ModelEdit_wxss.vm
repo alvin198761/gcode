@@ -1,1 +1,3 @@
-/* pages/add/add.wxss */
+.row{
+  padding-top:20rpx;
+}

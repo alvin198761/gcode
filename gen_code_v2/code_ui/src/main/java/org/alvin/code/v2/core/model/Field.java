@@ -9,4 +9,8 @@ public class Field {
 	private String type;// 数据类型
 
 	private String bigName; //首字母大小
+
+	private String lower_camel; //单峰驼
+	private String upper_camel; //双峰驼
+
 }

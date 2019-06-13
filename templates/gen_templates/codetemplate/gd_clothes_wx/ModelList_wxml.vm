@@ -1,42 +1,132 @@
-<!--pages/list/list.wxml-->
-<view style='margin-bottom: 20px;text-align: center'>
-  <text>添加工厂</text>
-</view>
-<view style='margin: 10px;'>
-  <van-row>
-    <van-col span="20">
-      <van-checkbox value="{{ checkAll }}" bind:change="onCheckAll">
-        全选
-      </van-checkbox>
+<xw-block title="基础用法" >
+  <van-row custom-class="head" >
+    <van-col offset="1" span="17">
+      <van-search value="{{ search }}" background="#FF2D55" placeholder="请输入搜索关键词" use-action-slot bind:change="onSearch" show-action="{{true}}">
+      </van-search>
     </van-col>
-    <van-col span="4" style="text-align: right">
-      <van-row>
-        <van-col span="12">
-          <van-icon name="add-o" />
-        </van-col>
-        <van-col span="12">
-          <van-icon name="close" />
-        </van-col>
-      </van-row>
+    <van-col span="3"  >
+      <van-icon name="filter-o" custom-class="padingtop6" size="65rpx" bind:click="searchpopup" />
+    </van-col>
+    <van-col span="3">
+      <van-icon name="plus" custom-class="padingtop6" size="65rpx" bind:click="add" />
     </van-col>
   </van-row>
-  <van-row wx:for="{{ dataList }}" wx:key="index" name="{{ item }}" style="line-height: 40px">
-   <van-col span="2" style='padding-top: 20px'>
-    <van-checkbox  >
-      </van-checkbox>
-   </van-col>
-    <van-col span="18">
-      <view>测试数据</view>
-    </van-col>
-    <van-col span="4">
-      <van-row>
-        <van-col span="12">
-          <van-icon name="edit" bindtap='editDailog' data-kid='{{item.id}}'/>
-        </van-col>
-        <van-col span="12">
-          <van-icon name="close" bindtap='doDelete' data-kid='{{item.id}}'/>
-        </van-col>
-      </van-row>
-    </van-col>
+
+  <van-row custom-class="tabshead">
+     <!--  入库  start  -->
+        <van-row custom-class="opmenuAll">
+          <van-col wx:if="{{show.selectAll}}" span="6">
+            <van-row gutter="1">
+              <van-col>
+                <van-icon name="passed" data-id="-1" size="45rpx" bind:click="selects" />
+              </van-col>
+              <van-col>
+                取消
+              </van-col>
+            </van-row>
+          </van-col>
+          <van-col wx:else span="6">
+            <van-row gutter="1">
+              <van-col>
+                <van-icon name="circle" data-id="-1" size="45rpx" bind:click="selects" />
+              </van-col>
+              <van-col>
+                全选
+              </van-col>
+            </van-row>
+          </van-col>
+          <van-col offset="10" span="4" custom-class="imgrgiht" >
+            <van-icon name="delete" data-id="-1" size="45rpx" bind:click="deleteAll" />
+          </van-col>
+          <van-col span="4" custom-class="imgrgiht">
+            <van-icon name="more-o" data-id="-1" size="45rpx" bind:click="opAllshow" />
+          </van-col>
+        </van-row>
+
+        <van-row wx:for="{{dataList}}" wx:for-item="items" wx:for-index="rowindex"  custom-class="listrow {{items.select?'selectdata':''}}">
+          <!--  列表左侧  start  -->
+          <van-col wx:if="{{items.select}}" span="2">
+            <van-icon name="passed" custom-class="margintop45" data-rowindex="{{rowindex}}" size="45rpx" bind:click="selectindex" />
+          </van-col>
+          <van-col wx:else span="2">
+            <van-icon name="circle" custom-class="margintop45" data-rowindex="{{rowindex}}" size="45rpx" bind:click="selectindex" />
+          </van-col>
+          <van-col span="4">
+            <image bindtap='showdatadeta' data-id="{{items.id}}" style="width: 120rpx; height: 120rpx;" src="../../../../static/images/1.jpeg" lazy-load='true'></image>
+          </van-col>
+          <!--  列表左侧  end  -->
+          <!--  列表右侧  start  -->
+          <van-col custom-class="listrow--right" span="18">
+            <van-row>
+              <van-col span="20">{{items.id}}({{"斜纹针织"}})</van-col>
+              <van-col span="4">06-10</van-col>
+            </van-row>
+            <van-row>
+              <van-col span="16">20个</van-col>
+              <van-col span="4" custom-class="imgrgiht">
+                <van-icon name="delete" data-id="{{items.id}}" size="45rpx" bind:click="deletes" />
+              </van-col>
+              <van-col span="4" custom-class="imgrgiht">
+                <van-icon name="edit" data-id="{{items.id}}" size="45rpx" bind:click="edits" />
+              </van-col>
+            </van-row>
+          </van-col>
+          <!--  列表右侧  end  -->
+        </van-row>
+        <!--  入库  end  -->
+       
   </van-row>
-</view>
+</xw-block>
+
+
+<xw-block>
+  <!-- 搜索条件  start  -->
+  <van-popup show="{{ show.searchdia }}" custom-class="isConditionPopup" overlay="{{false}}" position="top" bind:close="searchpopup">
+    <van-field value="{{ startTime }}" placeholder="开始时间" disabled bindtap="optimestartClick" />
+    <van-field value="{{ startEnd }}" placeholder="结束时间" disabled bindtap="optimeendClick" />
+    <van-button type="info" size="large" bindtap="search" >搜 索</van-button>
+  </van-popup>
+  <!-- 搜索条件  end -->
+</xw-block>
+
+
+<xw-block>
+  <!-- 详细数据  start  -->
+  <van-popup show="{{ show.datadeta }}" position="top" bind:close="showdatadeta">
+    <van-row custom-class="datadeta">
+      <van-col span="24">
+        <van-row>
+          <van-col custom-class="detatitle" span="24">${cName}详情</van-col>
+        </van-row>
+
+
+        <van-row>
+          <van-col>
+            <image bindtap='showdatadeta' data-id="{{items.id}}" style="width: 180rpx; height: 180rpx;" src="../../../../static/images/1.jpeg" lazy-load='true'></image>
+          </van-col>
+        </van-row>
+		#foreach ($fi in $fList)
+        <van-row gutter="4">
+          <van-col>${fi.comment}：</van-col>
+          <van-col>${items}.${fi.name}</van-col>
+        </van-row>
+		#end
+        
+      </van-col>
+    </van-row>
+  </van-popup>
+  <!-- 详细数据  end -->
+</xw-block>
+
+<xw-block>
+  <!-- 多选操作  start  -->
+  <van-popup show="{{ show.opAllshow }}" position="top" bind:close="closeopAllshow">
+    <van-cell-group>
+      <van-cell title="删 除" bind:click="deleteAll"></van-cell>
+      <van-cell title="冻 结" bind:click="frozenAll"></van-cell>
+    </van-cell-group>
+  </van-popup>
+  <!-- 多选操作  end -->
+</xw-block>
+
+<van-dialog id="van-dialog" />

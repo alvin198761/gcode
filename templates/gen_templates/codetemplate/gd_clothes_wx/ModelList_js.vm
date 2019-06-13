@@ -1,135 +1,193 @@
-// pages/list/list.js
-import ListApi from '../../utils/ListApi.js';
-import Dialog from '../../vant-weapp/dialog/dialog';
+import Page from '../../../../common/page';
+import Dialog from '../../../../dist/dialog/dialog'
+import ${upp}Api from '../../../../utils/${upp}Api.js'
+var util = require('../../../../utils/util.js');
+
 Page({
-
-  /**
-   * 页面的初始数据
-   */
   data: {
-    checkAll: false, //全选
-    dataList: [], //列表数据
-    page: 1, //当前页码
-    size: 10, //每页条数
-    search: '', //查询用的变量
+    show:{
+      searchdia : false,  // 是否显示筛选条件
+      selectAll : false,  // 是否全选
+      datadeta : false,   // 详细数据是否显示
+      opAllshow: false,   // 是否显示多选操作窗口
+    },
+    dataList: [],
+	value: null
   },
-  //全选
-  onCheckAll(event) {
-    this.setData({
-      checkAll: event.detail
-    });
+  
+  showdatadeta(event){ // 查看数据的详细信息
+    const id = event.currentTarget.dataset.id;
+    if(id != undefined){
+
+    }
+    console.log("showdatadeta, id=",id)
+    this.toggle("datadeta")
   },
-
-  /**
-   * 生命周期函数--监听页面加载
-   */
-  onLoad: function(options) {
-
+  selects(){  // 全选 / 取消全选
+    let dataList = this.data.dataList
+    const isselect = !this.data.show.selectAll
+    for (let i in dataList){
+      dataList[i].select = isselect
+    }
+    this.setData({ dataList, 'show.selectAll' : isselect })
   },
-
-  /**
-   * 生命周期函数--监听页面初次渲染完成
-   */
-  onReady: function() {
-
+  selectindex(event) {  // 全选 / 取消全选
+    console.log("selectindex=",event)
+    const rowindex = event.currentTarget.dataset.rowindex;
+    var param = {};
+    var temp_str = 'dataList[' + rowindex + '].select';
+    const isselect = !this.data.dataList[rowindex].select
+    this.setData({ [temp_str]: isselect })
+    console.log("this.data.dataList=", this.data.dataList)
   },
-
-  /**
-   * 生命周期函数--监听页面显示
-   */
-  onShow: function() {
-    this.refresh();
+  opAllshow(){  // 显示多选操作框
+    const dataList = this.data.dataList
+    let opidArr = []
+    for (let i in dataList) {
+      if (dataList[i].select) opidArr.push(dataList[i].id)
+    }
+    if (opidArr.length < 1) {
+      util.showErrorToast("请先选择数据！");
+      return
+    }
+    this.toggle("opAllshow")
   },
-
-  /**
-   * 生命周期函数--监听页面隐藏
-   */
-  onHide: function() {
-
+  closeopAllshow(){
+    this.setData({'show.opAllshow': false })
   },
-
-  /**
-   * 生命周期函数--监听页面卸载
-   */
-  onUnload: function() {
-
+  deleteAll() {  // 多选删除
+    this.opAll(3)
   },
-
-  /**
-   * 页面相关事件处理函数--监听用户下拉动作
-   */
-  onPullDownRefresh: function() {
-
+  frozenAll() { // 多选冻结
+    this.opAll(2)
   },
-
-  /**
-   * 页面上拉触底事件的处理函数
-   */
-  onReachBottom: function() {
-
+  opAll(optype) {  // 多选操作 optype 2=冻结 3=删除
+    let msg = "冻结"
+    if (optype == 3) msg = "删除"
+    const dataList = this.data.dataList
+    let opidArr = dataList.map(item => item.id);
+    if (opidArr.length < 1){
+      util.showErrorToast("请先选择数据！");
+      return
+    }
+    console.log("deleteAll 选择的数据=", opidArr)
+	const that = this;
+    try {
+      Dialog.confirm({
+        title: '确认' + msg+' ？',
+      }).then(() => {
+		${upp}Api.deleteAll(opidArr ,(res) => {
+		  if(res.code == 0){
+			   that.setData({ 'show.opAllshow': false, 'show.selectAll' : false })
+			  // 业务处理
+			  util.showSuccessToast(msg+'成功!')
+			  that.loaddata()
+		  }else {
+			util.showErrorToast(res.errorMsg);
+		  }
+		 
+		});
+      
+      }).catch(() => { })
+    } catch (e) {
+      console.log(e)
+    }
   },
-
-  /**
-   * 用户点击右上角分享
-   */
-  onShareAppMessage: function() {
-
+  onSearch(event){  // 搜索
+    const value = event.detail;
+    console.log("onSearch  value=", value)
+    this.loaddata()
   },
-  //查询
-  refresh() {
-    ListApi.queryPage({
-      page: this.data.page - 1,
-      size: this.data.size,
-      search: this.data.search
-    }, (res) => {
-      console.log(res.data);
-      if (res.code != 0) {
-        wx.showToast({
-          title: res.errorMsg,
-          icon: 'none'
+  searchpopup(){ // 筛选条件
+    this.toggle("searchdia")
+  },
+  search(){ // 搜索
+    this.searchpopup()
+  },
+  add(){    //  新增
+    wx.navigateTo({
+      url: '/pages/factory/assets/${lowUpp}/edit/${upp}Edit',
+    })
+  },
+  edits(event){  // 修改
+    const id = event.currentTarget.dataset.id;
+    console.log("edits  id=",id);
+    try {
+      Dialog.confirm({
+        title: '确认修改 ？',
+      }).then(() => {
+        wx.navigateTo({
+          url: '/pages/factory/assets/${lowUpp}/edit/${upp}Edit?id=' + id,
         })
-        return;
-      }
-      this.setData({
-        page: res.data.number + 1,
-        size: res.data.size,
-        dataList: res.data.content
+      }).catch(() => { })
+    } catch (e) {
+      console.log(e)
+    }
+  },
+  deletes(event){// 删除
+    const id = event.currentTarget.dataset.id;
+    console.log("deletes  id=", id);
+    try{
+      Dialog.confirm({
+        title: '确认删除 ？',
+      }).then(() => {
+		${upp}Api.deleteById(id ,(res) => {
+		  if(res.code == 0){
+        // 业务处理
+        util.showSuccessToast('删除成功!')
+        this.loaddata()
+		});
+      }).catch(() => {})
+    }catch(e){
+      console.log(e)
+    }
+  },
+  loaddata(){
+    let that = this
+    wx.showLoading({
+      title: '加载中...',
+      mask: true,
+    })
+    that.setData({ dataList: [{ id: 1, select: false }, { id: 2, select: false }, { id: 3, select: false }, { id: 4, select: false }] })
+	${upp}Api.findById({ id: 1, } ,(res) => {
+		  if(res.code == 0){
+    api.execute(apiurl.ProdAccessList, { id: 1, }, 'application/json',
+      (res) => {
+        console.log(" -- success -- ", res)
+      },
+      (err) => {
+        console.log(" -- fail -- ", err)
+      },
+      (res) => {
+        console.log(" -- complete -- ", res)
+        wx.hideLoading();
       });
+  },
+  toggle(type) {
+    this.setData({
+      [`show.${type}`]: !this.data.show[type]
     });
   },
-  //添加
-  addDailog(event) {
-    wx.navigateTo({
-      url: '/pages/add/add?mode=save&id=',
+  onPullDownRefresh: function () {  //下拉刷新
+
+  },
+  onLoad: function (options) {
+    
+  },
+  onReady: function () {
+    // 页面渲染完成
+    wx.setNavigationBarTitle({
+      title: "辅料管理"
     })
   },
-  //编辑
-  editDailog(event) {
-    let id = event.currentTarget.dataset.kid;
-    wx.navigateTo({
-      url: '/pages/add/add?mode=update&id=' + id,
-    })
+  onShow: function () {
+    // 页面显示
+    this.loaddata()
   },
-  //删除
-  doDelete(event) {
-    let id = event.currentTarget.dataset.kid;
-    wx.showModal({
-      title: '警告',
-      content: '该操作将导致数据被删除',
-      success : (res)=>{
-        if(res.confirm == false){
-          return ;
-        }
-        ListApi.deleteById(id, (res) => {
-          if (res.code != 0) {
-            wx.showToast({
-              title: res.errorMsg,
-              icon: 'none'
-            })
-            return;
-          }
-        })
-      }
-    })
-  }
-})
+  onHide: function () {
+    // 页面隐藏
+  },
+  onUnload: function () {
+    // 页面关闭
+  },
+});

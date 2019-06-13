@@ -66,6 +66,8 @@ public class CodeService {
 			cond.setT_name_eq(table.getT_name());// 表名
 			List<Field> fList = dao.queryFields(cond).stream().map(item -> {
 				item.setBigName(Utils.firstUpper(item.getName()));
+				item.setLower_camel(CaseFormat.LOWER_HYPHEN.to(CaseFormat.LOWER_CAMEL, item.getName()));
+				item.setUpper_camel(CaseFormat.LOWER_HYPHEN.to(CaseFormat.UPPER_CAMEL,  item.getName()));
 				return item;
 			}).collect(Collectors.toList());// 字段列表
 			String cName = table.getC_name();// 表注释中文名
@@ -82,10 +84,12 @@ public class CodeService {
 			jsonObject.put("cName", cName);
 			jsonObject.put("lowUpp", lowUpp);
 			jsonObject.put("idType", idType);
-			jsonObject.put("table", table.getT_name());
 			jsonObject.put("id", fList.get(0));
 			jsonObject.put("cond", cond);
+			jsonObject.put("table", table.getT_name());
 			jsonObject.put("tName", table.getT_name());
+			jsonObject.put("comment" , table.getComment());
+			jsonObject.put("c_name" , table.getC_name());
 			jsonObject.put("idName", fList.get(0).getName());
 			//类名称
 			jsonObject.put("clsUpp", upp);

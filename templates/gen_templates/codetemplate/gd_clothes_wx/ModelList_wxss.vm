@@ -1,1 +1,51 @@
-/* pages/list/list.wxss */
+.head{
+  background-color: #FF2D55;
+  font-size: 35rpx;
+  color: #fff;
+  border: 0px;
+}
+.padingtop6{
+  padding-top:10rpx;
+}
+
+.tabshead{
+  padding:21rpx 10rpx;
+  font-size: 40rpx;
+}
+
+.listrow{
+  padding:10rpx 0rpx;
+  font-size:32rpx;
+  border-bottom: 1px solid #F2F2F2;
+}
+
+.listrow--right{
+  padding:30rpx 0rpx 0rpx 10rpx;
+}
+
+.datadeta{
+  padding:30rpx 20rpx;
+}
+
+.opmenuAll{
+  padding:13rpx 0rpx;
+  border-bottom: 1px solid #F2F2F2;
+  font-size: 30rpx;
+}
+
+.imgrgiht{
+  text-align: right;
+}
+.margintop45{
+  margin-top:45rpx;
+}
+.marginbottom3{
+  margin-bottom: 3rpx;
+}
+.selectdata{
+  background-color: #F9F9F9;
+}
+.detatitle{
+  text-align: center;
+  border-bottom: 1px solid #F2F2F2;
+}
