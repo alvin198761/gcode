@@ -1,78 +1,19 @@
-<xw-block title="辅料管理">
-  <van-row custom-class="row">
+<xw-block title="${cName}管理">
+#foreach($fi in $fList)
+  #if($fi.name != $idName)
+    <van-row custom-class="row">
     <van-col offset="1" span="22">
-      <van-field   value="{{ value }}" right-icon="arrow-down" left-icon="search"  placeholder="品牌归属" readonly  bind:change="onChange" />
+      <van-field   value="{{ form.${fi.name} }}" right-icon="arrow-down" left-icon="search"  placeholder="${fi.comment}"  bind:change="onChange${fi.upper_camel}" />
     </van-col>
   </van-row>
-
-  <van-row custom-class="row">
-    <van-col offset="1" span="22">
-      <van-field   value="{{ value }}" maxlength="20" clearable required placeholder="辅料名称" bind:change="onChange" />
-    </van-col>
-  </van-row>
-
-  <van-row custom-class="row">
-    <van-col offset="1" span="22">
-      <van-field   value="{{ value }}" maxlength="10" clearable placeholder="辅料编号" bind:change="onChange" />
-    </van-col>
-  </van-row>
-
-  <van-row custom-class="row">
-    <van-col offset="1" span="22">
-      <van-field   value="{{ value }}" maxlength="5" type="digit" clearable required placeholder="辅料价格" bind:change="onChange" />
-    </van-col>
-  </van-row>
-
-  <van-row custom-class="row">
-    <van-col offset="1" span="22">
-      <van-field   value="{{ value }}" right-icon="arrow-down" left-icon="search"  placeholder="辅料类别" readonly  bind:change="onChange" />
-    </van-col>
-  </van-row>
-
-  <van-row custom-class="row">
-    <van-col offset="1" span="22">
-      <van-field   value="{{ value }}" right-icon="arrow-down" left-icon="search"  placeholder="辅料单位" readonly  bind:change="onChange" />
-    </van-col>
-  </van-row>
-
-  <van-row custom-class="row">
-    <van-col offset="1" span="22">
-      <van-field   value="{{ value }}" maxlength="30" type="digit" clearable placeholder="备注" bind:change="onChange" />
-    </van-col>
-  </van-row>
-
-  <van-row custom-class="row">
-    <van-row>
-      <van-col offset="1" span="22">辅料主图</van-col>
-    </van-row>
-    <van-row>
-      <van-col offset="1" span="22">
-        <image bindtap='simpleUpload' style="width: 110rpx; height: 110rpx; background-color: #eeeeee;" mode="aspectFill" src='{{delaultimg}}'></image>
-      </van-col>
-    </van-row>
-    <canvas canvas-id="photo_canvas" style="width:{{canvasWidth}}px;height:{{canvasHeight}}px;position: absolute;left:-900px;top:-900px;"></canvas>
-  </van-row>
-
+  #end
+ #end
 </xw-block>
 <xw-block>
   <van-row custom-class="row">
     <van-col offset="1" span="22">
-      <van-button loading="{{but.savebutloading}}" disabled="{{but.savebutdisabled}}" type="info" loading-text="处理中..." class="demo-margin-right">保  存</van-button>
+      <van-button loading="{{but.savebutloading}}" disabled="{{but.savebutdisabled}}" 
+	  type="info" loading-text="处理中..." class="demo-margin-right" bind:click="doSave">保  存</van-button>
     </van-col>
   </van-row>
 </xw-block>
-
-
-<!-- 归属品牌 start -->
-<van-popup
-  show="{{ show.mdIsShow }}"
-  position="top"
-  overlay="{{ false }}"
-  bind:close="toggleTopPopup">
-  <van-radio-group value="{{ mdradio }}" data-key="mdradio" >
-    <van-cell title="{{items.dkName}}({{items.dkNc}})"  wx:for="{{mdArr}}" wx:for-item="items" clickable data-name="{{items.id}}" data-values="{{items.dkName}}({{items.dkNc}})" bind:click="onClick">
-      <van-radio name="{{items.id}}" checked-color="#1989fa" />
-    </van-cell>
-  </van-radio-group>
-</van-popup>
-<!-- 归属品牌 end -->

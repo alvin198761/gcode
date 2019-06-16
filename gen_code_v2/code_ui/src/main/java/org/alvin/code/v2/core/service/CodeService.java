@@ -66,8 +66,8 @@ public class CodeService {
 			cond.setT_name_eq(table.getT_name());// 表名
 			List<Field> fList = dao.queryFields(cond).stream().map(item -> {
 				item.setBigName(Utils.firstUpper(item.getName()));
-				item.setLower_camel(CaseFormat.LOWER_HYPHEN.to(CaseFormat.LOWER_CAMEL, item.getName()));
-				item.setUpper_camel(CaseFormat.LOWER_HYPHEN.to(CaseFormat.UPPER_CAMEL,  item.getName()));
+				item.setLower_camel(CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, item.getName()));
+				item.setUpper_camel(CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.UPPER_CAMEL,  item.getName()));
 				return item;
 			}).collect(Collectors.toList());// 字段列表
 			String cName = table.getC_name();// 表注释中文名

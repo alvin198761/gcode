@@ -1,164 +1,54 @@
-import Page from '../../../../../common/page';
-var COS = require('../../../../../utils/cos-wx-sdk-v5');
-var config = require('../../../../../config/upload-config.js');
+import Page from '../../../../common/page';
+import ${clsUpp}Api from '../../../../utils/${clsUpp}Api.js'
+var util = require('../../../../utils/util.js');
 
-var cos = new COS({
-  getAuthorization: function (params, callback) {//获取签名 必填参数
-    var authorization = COS.getAuthorization({
-      SecretId: config.SecretId,
-      SecretKey: config.SecretKey,
-      Method: params.Method,
-      Key: params.Key
-    });
-    callback(authorization);
-  }
-});
 Page({
   data: {
-    userArr : [], //  工厂客户
-    datadictioArr : [],  //数据字典
     but : {
       savebutloading : false,
       savebutdisabled : false,
     },
-    delaultimg: config.Defaultimg
+	mode: 'save', // save or  update
+	form: { //要显示的数据
+		#foreach($fi in $fList)
+			${fi.name}:null, 
+		#end
+	}
   },
-
-  // 图片上传
-  simpleUpload(imgIndex) {
-    let that = this;
-    var paths = '';
-    let imgName = "";
-    // 选择文件
-    wx.chooseImage({
-      count: 1, // 默认9
-      sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
-      sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
-      success: function (photo) {
-        let fpath = photo.tempFilePaths[0];
-        let tfpath = fpath.substr(fpath.lastIndexOf('/') + 1);
-        // tfpath = wx13962aec62527f48.o***a3a4e8d.jpg
-        let yimgName = fpath.replace("wx13962aec62527f48.o6zAJs8WlIx74E8SjIajoVgs2mzM.", "");
-        // console.log("图片==========", yimgName, "tfpath=", tfpath)
-        wx.getImageInfo({
-          src: fpath,
-          success: function (res) {
-            var ctx = wx.createCanvasContext('photo_canvas');
-            var ratio = 2;
-            var canvasWidth = res.width;
-            var canvasHeight = res.height;
-            that.setData({
-              yuanImgPath: fpath,
-              canvasWidth2: res.width,
-              canvasHeight2: res.height
-            });
-            // 保证宽高均在200以内
-            while (canvasWidth > 450 || canvasHeight > 450) {
-              //比例取整
-              canvasWidth = Math.trunc(res.width / ratio);
-              canvasHeight = Math.trunc(res.height / ratio);
-              ratio++;
-            }
-            // console.log("res=",res)
-            that.setData({
-              canvasWidth: canvasWidth,
-              canvasHeight: canvasHeight
-            });//设置canvas尺寸
-            console.log("canvasWidth=", canvasWidth, "canvasHeight=", canvasHeight);
-            ctx.drawImage(fpath, 0, 0, canvasWidth, canvasHeight);  //将图片填充在canvas上
-            ctx.draw();
-            //下载canvas图片
-            setTimeout(function () {
-              wx.canvasToTempFilePath({
-                canvasId: 'photo_canvas',
-                success: function (res) {
-                  imgName = res.tempFilePath.replace("wx13962aec62527f48.o6zAJs8WlIx74E8SjIajoVgs2mzM.", "");
-                  console.log("图片压缩完成=", imgName);
-                  // that.setData({bbb: res.tempFilePath})
-
-                  //  图片上传
-                  that.imgUpLoad(res.tempFilePath, imgIndex)
-                },
-                fail: function (error) {
-                  console.log(error)
-                }
-              })
-            }, 300)
-          }, fail: function (error) {
-            console.log(error)
-          }
-        })
-      }
-    })
-    // setTimeout(function () {
-    //   //要延时执行的代码
-    //   console.log(paths)
-
-    // }, 5000) //延迟时间 这里是1秒
-  },
-  imgUpLoad(filePath, imgIndex) {
-    let that = this;
-    let imgPath = app.globalData.imgPath;
-    console.log("imgUpLoad------>filePath=", filePath, "imgIndex=", imgIndex);
-    // let filePath = res.tempFilePaths[0];
-    let fimeName = filePath.substr(filePath.lastIndexOf('/') + 1); // 这里指定上传的文件名
-    let imgName = fimeName.replace("wx13962aec62527f48.o6zAJs8WlIx74E8SjIajoVgs2mzM.", "");
-    // console.log("imgName=", imgName);
-    cos.postObject({
-      Bucket: config.Bucket,
-      Region: config.Region,
-      Key: fimeName,
-      FilePath: filePath,
-      onProgress: function (info) {
-        // console.log("图片上传-->", JSON.stringify(info));
-      }
-    }, function (err, data) {
-      // console.log(err || data);
-      console.log("图片上传--> res=", data);
-      if (err && err.error) {
-        wx.showModal({ title: '返回错误', content: '请求失败：' + err.error.Message + '；状态码：' + err.statusCode, showCancel: false });
-      } else if (err) {
-        wx.showModal({ title: '请求出错', content: '请求出错：' + err + '；状态码：' + err.statusCode, showCancel: false });
-      } else {
-        //XNVaqtyziQYse93cd82f974a6eb7e82d44b3cedefa00.png
-        // console.log("imagePath=", imagePath)
-        // console.log("data.headers.locationn=", data)
-        // console.log("imgIndex=", imgIndex, isNaN(imgIndex));
-        if (!isNaN(imgIndex) && imgIndex > -1) {
-          let listPicUrl = that.data.prod.listPicUrl;
-          let listPic = {};
-          listPic.path = imgPath + imgName;
-          listPic.isadd = false;
-          let oldlistPic = {};
-          oldlistPic.path = listPicUrl[imgIndex].path;
-          oldlistPic.isadd = listPicUrl[imgIndex].isadd;
-          if (oldlistPic.isadd) {
-            // 如果是加号按钮
-            listPicUrl[imgIndex] = listPic;
-            if (imgIndex < 3)
-              listPicUrl[imgIndex + 1] = oldlistPic
-          }
-          that.setData({ 'prod.listPicUrl': listPicUrl })
-        } else {
-          that.setData({ 'prod.primaryPicUrl': imgPath + imgName })
-        }
-      }
-    });
-  },
-
   onPullDownRefresh: function () {  //下拉刷新  
+	this.refresh();
   },
   onLoad: function (options) {
     if (options && options.id){
+	  this.setData({
+		mode : 'update'
+	  });
       wx.setNavigationBarTitle({
-        title: "修改辅料"
-      })
+        title: "修改${cName}"
+      });
+	  this.data.form.id = options.id;
+	  this.refresh();
     }else{
+	  this.setData({
+		mode : 'save'
+	  });
       wx.setNavigationBarTitle({
-        title: "新增辅料"
+        title: "新增${cName}"
       })
     }
     
+  },
+  refresh(){
+	const that = this;
+	  ${clsUpp}Api.findById(this.data.form.${idName} , (res)=>{
+		if(res.code == 0){
+			that.setData({
+				form : {... res.data}
+			});
+		}else{
+			 util.showErrorToast(res.errorMsg);
+		}
+	  });
   },
   onReady: function () {
     // 页面渲染完成
@@ -172,4 +62,52 @@ Page({
   onUnload: function () {
     // 页面关闭
   },
+  validate(){
+	const that = this;
+	#foreach($fi in $fList)
+	#if($fi.name != $idName)
+	if(!that.data.form.${fi.name}){
+		util.showErrorToast("${fi.comment}不能为空");
+		return false;
+	}
+	#end
+	#end
+	return true;
+  },
+  doSave(){
+	const that = this;
+	if(!that.validate()){
+		return ;
+	}
+	if(this.data.mode == 'save'){
+		${clsUpp}Api.save(that.data.form,(res)=>{
+			if(res.code == 0){
+				util.showSuccessToast('保存成功!')
+				 wx.reLaunch({
+				  url: '../${clsUpp}List',
+				})
+			}else{
+				util.showErrorToast(res.errorMsg);
+			}
+		});
+	}else{
+		${clsUpp}Api.update(that.data.form,(res)=>{
+			if(res.code == 0){
+				util.showSuccessToast('修改成功!')
+				 wx.reLaunch({
+				  url: '../${clsUpp}List',
+				})
+			}else{
+				util.showErrorToast(res.errorMsg);
+			}
+		});
+	}
+  },
+  #foreach($fi in $fList)
+  
+  onChange${fi.upper_camel}(event){
+	  //修改 ${fi.comment}
+	  this.data.form.${fi.name} = event.detail
+  },
+  #end
 });

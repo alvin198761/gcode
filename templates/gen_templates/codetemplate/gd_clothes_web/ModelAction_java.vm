@@ -48,10 +48,11 @@ public class ${clsUpp}Action {
     */
     @ApiOperation(value = "删除[${cName}]", notes = "返回影响记录行数")
     @PostMapping( "delete" )
-    public RestfullResp<Integer> delete(@RequestParam("id") ${idType} id) {
-            return new RestfullResp<>(service.delete(new ${idType}[] { id }));
+    public RestfullResp<Integer> delete(@RequestParam("id") ${idType} [] id) {
+            return new RestfullResp<>(service.delete(id));
         }
 
+		
     /**
     * @方法说明： 修改[${cName}]记录
     */
@@ -152,23 +153,5 @@ public class ${clsUpp}Action {
     		return new RestfullResp<>(service.findById(id));
     	}
 
-    /**
-    * @方法说明： 验证方法
-    */
-    @ApiOperation(value = "按条件验证方法[${cName}]相关相信息", notes = "返回验证结果")
-    @ApiImplicitParams(
-    {
-        @ApiImplicitParam(paramType = "body", dataType = "${clsUpp}Cond", name = "cond", value = "${cName}", required = true) ,
-        @ApiImplicitParam(name = "Authorization", value = "Token",required = true, dataType = "string", paramType = "header")
-    })
-	@PostMapping( "validate")
-    public RestfullResp<Integer> validate(@RequestBody ${clsUpp}Cond cond, Principal principal) {
-                // 此处写验证逻辑
-                // cond.setfield(...)
-                // int count=service.queryCount(cond)
-                // if(count = 0){
-                // }
-    		return new RestfullResp<>(1);
-      }
 }
 
