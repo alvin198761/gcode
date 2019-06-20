@@ -111,6 +111,8 @@ public class CodeDao extends BaseDao {
 		sb.append(" WHEN DATA_TYPE = 'decimal' THEN 'BigDecimal'");
 		sb.append(" WHEN DATA_TYPE = 'boolean' OR DATA_TYPE = 'bit' THEN 'Boolean'");
 		sb.append(" ELSE CONCAT ('无效数据类型', DATA_TYPE) END type");
+		sb.append(" ,character_maximum_length as length ");
+		sb.append(" ,column_key as column_key ");
 		sb.append(" FROM INFORMATION_SCHEMA.COLUMNS WHERE 1 = 1");
 		sb.append(cond.getCondition());
 		sb.append(" ORDER BY ORDINAL_POSITION");

@@ -13,4 +13,8 @@ public class Field {
 	private String lower_camel; //单峰驼
 	private String upper_camel; //双峰驼
 
+
+	private Integer length; //字符长度
+	private String column_key;//键
+
 }
