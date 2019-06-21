@@ -34,7 +34,7 @@ public class ${upp} {
         #end
         
     @ApiModelProperty(value = "${fi.comment}", dataType = "${fi.type}")
-    private ${fi.type} ${fi.name} ;//  ${fi.comment}
+    private ${fi.type} ${fi.lower_camel} ;//  ${fi.comment}
     #end
 
     //此处可添加查询显示辅助字段

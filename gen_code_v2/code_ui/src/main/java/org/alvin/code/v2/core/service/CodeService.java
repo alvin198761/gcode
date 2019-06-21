@@ -75,7 +75,7 @@ public class CodeService {
 			String low = upp.toLowerCase();// 类名小写(只用包路径)
 			String lowUpp = Utils.firstLower(upp);// 驼峰变量类名(首字母小写)
 			String idType = Utils.keyType(fList);// 主键数据类型
-			String idName = fList.get(0).getName();
+			Field idField = fList.stream().filter(item -> item.getColumn_key().equals("PRI")).findFirst().get();
 
 			//组装对象
 			JSONObject jsonObject = new JSONObject();
@@ -84,13 +84,13 @@ public class CodeService {
 			jsonObject.put("cName", cName);
 			jsonObject.put("lowUpp", lowUpp);
 			jsonObject.put("idType", idType);
-			jsonObject.put("id", fList.get(0));
+			jsonObject.put("id",idField);
 			jsonObject.put("cond", cond);
 			jsonObject.put("table", table.getT_name());
 			jsonObject.put("tName", table.getT_name());
 			jsonObject.put("comment" , table.getComment());
 			jsonObject.put("c_name" , table.getC_name());
-			jsonObject.put("idName", fList.get(0).getName());
+			jsonObject.put("idName", idField.getName());
 			//类名称
 			jsonObject.put("clsUpp", upp);
 			jsonObject.put("upp", upp);
@@ -101,11 +101,14 @@ public class CodeService {
 			jsonObject.put("insertValuesFields", Utils.add(fList, ":", ",", true, "insert"));
 			jsonObject.put("replaceFields", Utils.add(fList, "", ",", false, "sql"));
 			jsonObject.put("replaceValuesFields", Utils.add(fList));
-			jsonObject.put("paramsFields", Utils.add(fList, "vo.get", "(),", false));
+			jsonObject.put("paramsFields", Utils.addV1(fList, "vo.get", "(),", false));
 			jsonObject.put("updateFields", Utils.add(fList, "", "=?,", true, "sql"));
-			jsonObject.put("updateParams", Utils.add(fList, "vo.get", "(),", true) + ",vo.get" + Utils.firstUpper(idName) + "()");
+			jsonObject.put("updateParams", Utils.addV1(fList, "vo.get", "(),", true) + ",vo.get" + idField.getName() + "()");
 			jsonObject.put("selectItems", Utils.add(fList, "t.", ","));
 			jsonObject.put("caseMapper", Utils.caseMapper(fList));
+			//v2 需要兼容的东西
+			jsonObject.put("paramsFieldsV2", Utils.addV2(fList, "vo.get", "(),", false));
+			jsonObject.put("updateParamsV2", Utils.addV2(fList, "vo.get", "(),", true) + ",vo.get" + idField.getUpper_camel() + "()");
 
 			//其他附属数据
 			List<String> importList = Lists.newArrayList();

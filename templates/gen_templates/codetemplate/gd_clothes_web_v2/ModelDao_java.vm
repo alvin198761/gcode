@@ -83,13 +83,13 @@ public class ${clsUpp}Dao extends BaseDao{
         List<Object> values = new ArrayList<>();
         #foreach ($fie in $fList)
         #if ($fie.name == ${idName})
-        	#set($idGetName = 'vo.get' + $fie.bigName + '()')        
+        	#set($idGetName = 'vo.get' + $fie.upper_camel + '()')        
         #end
         #if ($fie.name != ${idName})
 
-        if(vo.get${fie.bigName}() != null){
+        if(vo.get${fie.upper_camel}() != null){
         	fields.add(" ${fie.name} = ? ");
-        	values.add(vo.get${fie.bigName}());
+        	values.add(vo.get${fie.upper_camel}());
         }	
         #end
         #end
