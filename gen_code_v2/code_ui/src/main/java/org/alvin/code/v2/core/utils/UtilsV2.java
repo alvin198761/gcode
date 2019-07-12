@@ -21,8 +21,8 @@ import java.util.zip.ZipOutputStream;
  * @date 2018-02-15
  */
 
-public class Utils {
-	private static Log logger = LogFactory.getLog(Utils.class);
+public class UtilsV2 {
+	private static Log logger = LogFactory.getLog(UtilsV2.class);
 
 	public static void setTime() {
 	}
@@ -63,40 +63,7 @@ public class Utils {
 		return sb.delete(sb.length() - 1, sb.length()).append(")");
 	}
 
-//	/**
-//	 * @方法说明: 类注释
-//	 */
-//	public static String classNote(String auth, String name, String time) {
-//		return String.format("\r\n\r\n/**\r\n * @类说明:%s\r\n * @author:%s\r\n * @date:%s\r\n **/", name, auth, time);
-//	}
-//
-//	/**
-//	 * @方法说明: 方法注释
-//	 */
-//	public static String methodNote(String name) {
-//		return String.format("\r\n\r\n	/**\r\n	 * @方法说明:%s\r\n	 **/", name);
-//	}
-//
-//	/**
-//	 * @方法说明: 页面注释
-//	 */
-//	public static String pageNote(String cName, String auth, String time) {
-//		return String.format("/*%s,作者:%s,日期:%s*/", cName, auth, time);
-//	}
 
-	/**
-	 * @方法说明: 首字母大写
-	 */
-	public static String firstUpper(String word) {
-		return word.substring(0, 1).toUpperCase() + word.substring(1, word.length());
-	}
-
-	/**
-	 * @方法说明: 首字母小写
-	 */
-	public static String firstLower(String word) {
-		return word.substring(0, 1).toLowerCase() + word.substring(1, word.length());
-	}
 
 	/**
 	 * @方法说明: 写文件

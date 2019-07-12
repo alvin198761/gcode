@@ -12,6 +12,7 @@ import org.alvin.code.v2.core.model.CodeCond;
 import org.alvin.code.v2.core.model.Field;
 import org.alvin.code.v2.core.model.Table;
 import org.alvin.code.v2.core.utils.Utils;
+import org.alvin.code.v2.core.utils.UtilsV2;
 import org.alvin.code.v2.core.utils.VelocityUtil;
 import org.alvin.code.v2.sys.pro.EntityConfig;
 import org.alvin.code.v2.sys.pro.FieldConfig;
@@ -106,6 +107,9 @@ public class CodeService {
 			jsonObject.put("updateParams", Utils.add(fList, "vo.get", "(),", true) + ",vo.get" + Utils.firstUpper(idName) + "()");
 			jsonObject.put("selectItems", Utils.add(fList, "t.", ","));
 			jsonObject.put("caseMapper", Utils.caseMapper(fList));
+			//v2
+			jsonObject.put("paramsFields_v2", UtilsV2.add(fList, "vo.get", "(),", false));
+			jsonObject.put("updateParams_v2", Utils.add(fList, "vo.get", "(),", true) + ",vo.get" +fList.get(0).getUpper_camel() + "()");
 
 			//其他附属数据
 			List<String> importList = Lists.newArrayList();
