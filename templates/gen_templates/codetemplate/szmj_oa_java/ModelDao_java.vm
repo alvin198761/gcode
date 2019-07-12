@@ -87,9 +87,9 @@ public class ${clsUpp}Dao extends BaseDao{
         #end
         #if ($fie.name != ${idName})
 
-        if(vo.get${fie.getUpper_camel}() != null){
+        if(vo.get${fie.upper_camel}() != null){
         	fields.add(" ${fie.name} = ? ");
-        	values.add(vo.get${fie.getUpper_camel}());
+        	values.add(vo.get${fie.upper_camel}());
         }	
         #end
         #end

@@ -12,6 +12,7 @@ import lombok.experimental.Accessors;
 import org.alvin.code.gen.beans.BaseCondition;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import java.util.List;
 
 
 /**
