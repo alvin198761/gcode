@@ -21,9 +21,9 @@ module.exports = {
     });
 
     var resp = {
-         "resultCode": 200,
-         "resultMsg": "请求成功",
-         "resultData":data
+         "code": 200,
+         "errorMsg": "请求成功",
+         "data":data
          };
 
     setTimeout(function () {
@@ -33,9 +33,9 @@ module.exports = {
 
   'POST /api/${lowUpp}/update': function (req, res, next) {
     var resp = {
-           "resultCode": 200,
-           "resultMsg": "请求成功",
-           "resultData":1
+           "code": 200,
+           "errorMsg": "请求成功",
+           "data":1
            };
     setTimeout(function () {
       res.json(resp);
@@ -44,9 +44,9 @@ module.exports = {
 
   'POST /api/${lowUpp}/save': function (req, res, next) {
    var resp = {
-         "resultCode": 200,
-         "resultMsg": "请求成功",
-         "resultData":1
+         "code": 200,
+         "errorMsg": "请求成功",
+         "data":1
          };
     setTimeout(function () {
       res.json(resp);
@@ -66,9 +66,9 @@ module.exports = {
       }]
     });
       var resp = {
-         "resultCode": 200,
-         "resultMsg": "请求成功",
-         "resultData":data.content
+         "code": 200,
+         "errorMsg": "请求成功",
+         "data":data.content
          };
 
         setTimeout(function () {
@@ -79,9 +79,9 @@ module.exports = {
 
   'POST /api/${lowUpp}/delete': function (req, res, next) {
      var resp = {
-       "resultCode": 200,
-       "resultMsg": "请求成功",
-       "resultData":1
+       "code": 200,
+       "errorMsg": "请求成功",
+       "data":1
        };
     setTimeout(function () {
       res.json(resp);

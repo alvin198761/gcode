@@ -9,6 +9,7 @@ import org.alvin.code.gen.utils.SqlUtil;
 import org.alvin.code.gen.beans.BaseDao;
 import org.alvin.code.gen.utils.Page;
 import com.google.common.base.Joiner;
+import com.szmiaojia.oa.common.CommCons;
 
 /**
 * @类说明: ${cName}--数据访问层
@@ -176,8 +177,8 @@ public class ${clsUpp}Dao extends BaseDao{
     * @方法说明：按条件查询${cName}记录个数
     */
     public int deleteLogic(${idType} ids[]) {
-    	String sql = "UPDATE ${tName} SET delete_remark=1 WHERE ${idName}" + SqlUtil.ArrayToIn(ids);
-    	return jdbcTemplate.update(sql);
+    	String sql = "UPDATE ${tName} SET status=? WHERE ${idName}" + SqlUtil.ArrayToIn(ids);
+    	return jdbcTemplate.update(sql ,  new Object[]{CommCons.STATUS_REMOVE});
     }
 
     /**

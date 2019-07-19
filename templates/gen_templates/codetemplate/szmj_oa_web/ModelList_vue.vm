@@ -76,10 +76,14 @@
         const that = this;
         that.loading = true;
         const requestData = {...that.form, page: that.page - 1, size: that.size};
-        that.${dollar}postByForm("/api/${lowUpp}/queryPage", requestData).then(res => {
-		          that.loading = false;
-		          that.dataList = res.resultData.content;
-		          that.total = res.resultData.totalElements;
+        that.${dollar}postBody("/api/${lowUpp}/queryPage", requestData).then(res => {
+             if(res.code !=  0){
+                 that.${dollar}message.error(res.errorMsg)
+              }else {
+  		          that.loading = false;
+  		          that.dataList = res.data.content;
+  		          that.total = res.data.totalElements;
+              }
 		        });
       },
       doAdd() {
@@ -96,9 +100,9 @@
           type: 'warning'
         }).then(() => {
           that.${dollar}post("/api/${lowUpp}/delete", {id: row.${idName}}).then(res =>{
-		              if(res.resultCode != 200){
-		               that.${dollar}message.error(res.resultMsg)
-                      }else {
+		        if(res.code !=  0){
+		           that.${dollar}message.error(res.errorMsg)
+            }else {
 					   that.${dollar}message.success("删除成功！")
 					   that.refresh();						 
 					  }

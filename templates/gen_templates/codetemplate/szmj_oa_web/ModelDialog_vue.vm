@@ -45,13 +45,13 @@
               if (!valid) {
                 return;
               }
-              that.${dollar}postByForm("/api/${lowUpp}/" + that.dialogMode, that.form).then(res => {
-                 if(res.resultCode == 200){
+              that.${dollar}postBody("/api/${lowUpp}/" + that.dialogMode, that.form).then(res => {
+                 if(res.code == 0){
                       that.show = false;
                       that.${dollar}message.success(that.title + "成功!");
                       that.refresh();
                 }else {
-                      that.${dollar}message.error(res.resultMsg);
+                      that.${dollar}message.error(res.errorMsg);
                 }
               });
         });
