@@ -61,7 +61,7 @@
         dataList: [],
         form: {
         #foreach($field in $fList)
-            ${field.name} : null,// ${field.comment}
+            ${field.lower_camel} : null,// ${field.comment}
         #end
         },
         loading: false
