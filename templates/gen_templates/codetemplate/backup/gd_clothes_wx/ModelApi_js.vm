@@ -1,0 +1,69 @@
+import Api from './Api.js';
+
+const ${clsUpp}Api = ${clsUpp}Api || {};
+
+/**
+*新增[${cName}]记录
+*/
+${clsUpp}Api.save = (${lowUpp},success, fail, complete) =>{
+	Api.executeBody('/api/${lowUpp}/save',${lowUpp},success,fail,complete);
+}
+
+/**
+*删除[${cName}]记录
+*/
+${clsUpp}Api.deleteById = (id,success, fail, complete) =>{
+	Api.executeFormData('/api/${lowUpp}/delete',{id: id.join(',')},success,fail,complete);
+}
+
+
+/**
+*修改[${cName}]记录 ,必须传入完整对象,不然会有数据丢失
+*/
+${clsUpp}Api.update = (${lowUpp},success, fail, complete) =>{
+	Api.executeBody('/api/${lowUpp}/update',${lowUpp},success,fail,complete);
+}
+
+/**
+*修改[${cName}]记录 ,只需要传入修改的属性,和主键即可
+*/
+${clsUpp}Api.updateNotNull = (${lowUpp},success, fail, complete) =>{
+	Api.executeBody('/api/${lowUpp}/updateNotNull',${lowUpp},success,fail,complete);
+}
+
+/**
+*按条件查询分页[${cName}]列表 ,page : 从0开始,size: 默认为10
+*/
+${clsUpp}Api.queryPage = (${lowUpp}Cond,success, fail, complete) =>{
+	Api.executeBody('/api/${lowUpp}/queryPage',${lowUpp}Cond,success,fail,complete);
+}
+
+/**
+*按条件查询分页[${cName}]列表 
+*/
+${clsUpp}Api.queryList = (${lowUpp}Cond,success, fail, complete) =>{
+	Api.executeBody('/api/${lowUpp}/queryList',${lowUpp}Cond,success,fail,complete);
+}
+
+/**
+*按条件查询一个 ${cName} 对象
+*/
+${clsUpp}Api.findOne = (${lowUpp}Cond,success, fail, complete) =>{
+	Api.executeBody('/api/${lowUpp}/findOne',${lowUpp}Cond,success,fail,complete);
+}
+
+/**
+*按条件查询一个 ${cName} 对象
+*/
+${clsUpp}Api.queryCount = (${lowUpp}Cond,success, fail, complete) =>{
+	Api.executeBody('/api/${lowUpp}/queryCount',${lowUpp}Cond,success,fail,complete);
+}
+
+/**
+*按条件查询一个 ${cName} 对象
+*/
+${clsUpp}Api.findById = (id,success, fail, complete) =>{
+	Api.executeFormData('/api/${lowUpp}/findById',{${idName}: id},success,fail,complete);
+}
+
+export default ${clsUpp}Api;

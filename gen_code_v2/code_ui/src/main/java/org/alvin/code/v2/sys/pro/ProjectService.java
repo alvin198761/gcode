@@ -155,9 +155,9 @@ public class ProjectService {
 			jsonObject.put("insertValuesFields", Utils.add(fList, ":", ",", true, "insert"));
 			jsonObject.put("replaceFields", Utils.add(fList, "", ",", false, "sql"));
 			jsonObject.put("replaceValuesFields", Utils.add(fList));
-			jsonObject.put("paramsFields", Utils.add(fList, "vo.get", "(),", false));
+			jsonObject.put("paramsFields", Utils.addV2(fList, "vo.get", "(),", false));
 			jsonObject.put("updateFields", Utils.add(fList, "", "=?,", true, "sql"));
-			jsonObject.put("updateParams", Utils.add(fList, "vo.get", "(),", true) + ",vo.get" + Utils.firstUpper(idName) + "()");
+			jsonObject.put("updateParams", Utils.addV2(fList, "vo.get", "(),", true) + ",vo.get" + Utils.firstUpper(idName) + "()");
 			jsonObject.put("selectItems", Utils.add(fList, "t.", ","));
 
 			StringBuilder sb = new StringBuilder();

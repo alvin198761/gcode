@@ -1,0 +1,30 @@
+package ${pName};
+
+#foreach($importItem in $importList)
+    ${importItem}
+#end
+
+/**
+* @类说明：${cName}--实体类
+* @auth : ${auth}
+* @date : ${time}
+*/
+
+public class ${clsUpp}{
+
+    #foreach ($fi in $fList)
+    private ${fi.type}  ${fi.name} ;//  ${fi.comment}
+    #end
+
+    //新增属性
+
+    #foreach ($fi in $fList)
+    public ${fi.type} get${fi.bigName} (){
+    return this.${fi.name};
+    }
+
+    public void set${fi.bigName}(${fi.type} ${fi.name}) {
+    this.${fi.name} = ${fi.name};
+    }
+    #end
+}

@@ -44,7 +44,6 @@ public class Utils {
 		return noId ? sb.delete(0, sb.indexOf(",") + 1).delete(sb.length() - 1, sb.length()) : sb.delete(sb.length() - 1, sb.length());
 	}
 
-	public static StringBuilder add(List<Field> list, String prefix, String suffix, boolean noId) {
 	public static StringBuilder addV1(List<Field> list, String prefix, String suffix, boolean noId) {
 		StringBuilder sb = new StringBuilder();
 		list.forEach(item -> sb.append(prefix.concat(Utils.firstUpper(item.getName())).concat(suffix)));

@@ -1,0 +1,146 @@
+<xw-block title="条件搜索" >
+  <van-row custom-class="head" >
+    <van-col offset="1" span="17">
+      <van-search value="{{ searchForm.search }}" background="#FF2D55" placeholder="请输入搜索关键词" use-action-slot bind:change="onSearch" show-action="{{true}}">
+      </van-search>
+    </van-col>
+    <van-col span="3"  >
+      <van-icon name="filter-o" custom-class="padingtop6" size="65rpx" bind:click="showSearchBar" />
+    </van-col>
+    <van-col span="3">
+      <van-icon name="plus" custom-class="padingtop6" size="65rpx" bind:click="add" />
+    </van-col>
+  </van-row>
+
+  <van-row custom-class="tabshead">
+     <!--  入库  start  -->
+        <van-row custom-class="opmenuAll">
+          <van-col wx:if="{{show.selectAll}}" span="6">
+            <van-row gutter="1">
+              <van-col>
+                <van-icon name="passed" size="45rpx" bind:click="doSelectAll" />
+              </van-col>
+              <van-col>
+                取消
+              </van-col>
+            </van-row>
+          </van-col>
+          <van-col wx:else span="6">
+            <van-row gutter="1">
+              <van-col>
+                <van-icon name="circle" size="45rpx" bind:click="doSelectAll" />
+              </van-col>
+              <van-col>
+                全选
+              </van-col>
+            </van-row>
+          </van-col>
+          <van-col offset="10" span="4" custom-class="imgrgiht" >
+            <van-icon name="delete" data-id="-1" size="45rpx" bind:click="deleteAll" />
+          </van-col>
+          <van-col span="4" custom-class="imgrgiht">
+            <van-icon name="more-o" data-id="-1" size="45rpx" bind:click="opAllshow" />
+          </van-col>
+        </van-row>
+
+        <van-row wx:for="{{dataList}}" wx:for-item="items" wx:for-index="rowindex" wx:key="{{rowindex}}"  custom-class="listrow {{items.select?'selectdata':''}}">
+          <!--  列表左侧  start  -->
+          <van-col wx:if="{{items.select}}" span="2">
+            <van-icon name="passed" custom-class="margintop45" data-rowindex="{{rowindex}}" size="45rpx" bind:click="doSelectOne" />
+          </van-col>
+          <van-col wx:else span="2">
+            <van-icon name="circle" custom-class="margintop45" data-rowindex="{{rowindex}}" size="45rpx" bind:click="doSelectOne" />
+          </van-col>
+           <van-col span="4" data-obj="{{items}}" bindtap='showDetailBar'>
+				查看详情
+          </van-col>
+          <!--  列表左侧  end  -->
+          <!--  列表右侧  start  -->
+          <van-col custom-class="listrow--right" span="18">
+            <van-row>
+              <van-col span="20">
+			  #foreach($fi in $fList)
+				{{items.${fi.name}}}
+			  #end
+			  </van-col>
+              <van-col span="4">{{items.id}}</van-col>
+            </van-row>
+            <van-row>
+              <van-col span="16">20个</van-col>
+              <van-col span="4" custom-class="imgrgiht">
+                <van-icon name="delete" data-id="{{items.id}}" size="45rpx" bind:click="deletes" />
+              </van-col>
+              <van-col span="4" custom-class="imgrgiht">
+                <van-icon name="edit" data-id="{{items.id}}" size="45rpx" bind:click="edits" />
+              </van-col>
+            </van-row>
+          </van-col>
+          <!--  列表右侧  end  -->
+        </van-row>
+        <!--  入库  end  -->
+       
+  </van-row>
+</xw-block>
+
+
+<xw-block>
+  <!-- 搜索条件  start  -->
+  <van-popup show="{{ show.searchdia }}" custom-class="isConditionPopup" overlay="{{false}}" position="top" bind:close="showSearchBar">
+	 #foreach($fi in $fList)
+	 #if ($fi.type == "Date" && $fi.name != $idName)
+		<van-field value="{{ searchForm.${fi.name} }}" placeholder="${fi.comment}"  bind:change="onChange${fi.upper_camel}" /> 
+		 <!--  <van-datetime-picker  type="datetime"  value="{{ searchForm.${fi.name}  }}"  bind:change="onChange${fi.upper_camel}" /> -->
+	 #end
+	 #if ($fi.type != "Date" && $fi.name != $idName)
+	   <van-field value="{{ searchForm.${fi.name} }}" placeholder="${fi.comment}"  bind:change="onChange${fi.upper_camel}" /> 
+	  #end
+	 #end
+     <van-row gutter="20">
+     <van-col span="12">
+      <van-button type="info" size="large" bindtap="resetSearch" >重 置</van-button>
+     </van-col>
+     <van-col span="12">
+      <van-button type="info" size="large" bindtap="search" >搜 索</van-button>
+     </van-col>
+     </van-row>
+  </van-popup>
+  <!-- 搜索条件  end -->
+</xw-block>
+
+
+<xw-block>
+  <!-- 详细数据  start  -->
+  <van-popup show="{{ show.datadeta }}" position="top" bind:close="showdatadeta">
+    <van-row custom-class="datadeta">
+      <van-col span="24">
+        <van-row>
+          <van-col custom-class="detatitle" span="24">${cName}详情</van-col>
+        </van-row>
+		#foreach ($fi in $fList)
+		#if($fi.name != $idName)
+		<van-row gutter="4">
+          <van-col span='8'>${fi.comment}：</van-col>
+          <van-col span='16'>{{detailObj.${fi.name}}}</van-col>
+        </van-row>
+		#end
+		#end
+      </van-col>
+	  <van-col span="24">
+			<van-button type="info" size="large" bindtap="closeDetail" >关 闭</van-button>
+       </van-col>
+    </van-row>
+  </van-popup>
+  <!-- 详细数据  end -->
+</xw-block>
+
+<xw-block>
+  <!-- 多选操作  start  -->
+  <van-popup show="{{ show.opAllshow }}" position="top" bind:close="closeopAllshow">
+    <van-cell-group>
+      <van-cell title="删 除" bind:click="deleteAll"></van-cell>
+    </van-cell-group>
+  </van-popup>
+  <!-- 多选操作  end -->
+</xw-block>
+
+<van-dialog id="van-dialog" />

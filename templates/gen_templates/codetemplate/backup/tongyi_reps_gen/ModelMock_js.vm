@@ -1,0 +1,91 @@
+/*${cName}模拟数据},作者:${auth},日期:${time}*/
+'use strict';
+var Mock = require('mockjs')
+var Random = Mock.Random;
+module.exports = {
+
+  'POST /api/${lowUpp}/queryPage': function (req, res, next) {
+    var data = Mock.mock({
+      'content|10': [{
+        #foreach($field in $fList)
+            #if (${field.type} == "String")
+                ${field.name} : "@word(5,10)",// ${field.comment}
+            #else
+                ${field.name}: "@integer(100,200)",//${field.comment}
+            #end
+        #end
+      }],
+      'number': '@integer(100,200)',
+      'size': 10,
+      'totalElements': 500,
+    });
+    setTimeout(function () {
+      res.json({
+            data: data,
+            code: 0,
+            errorMsg: ''
+        });
+    }, 500);
+  },
+
+  'POST /api/${lowUpp}/update': function (req, res, next) {
+    setTimeout(function () {
+      res.json({
+            data: 1,
+            code: 0,
+            errorMsg: ''
+            });
+    }, 500);
+  },
+
+  'POST /api/${lowUpp}/save': function (req, res, next) {
+    setTimeout(function () {
+        res.json({
+        data: 1,
+        code: 0,
+        errorMsg: ''
+        });
+    }, 500);
+  },
+
+  'POST /api/${lowUpp}/queryList': function (req, res, next) {
+    var data = Mock.mock({
+      'content|10': [{
+        #foreach($field in $fList)
+            #if (${field.type} == "String")
+                ${field.name} : "@word(5,10)",// ${field.comment}
+            #else
+                ${field.name}: "@integer(100,200)",//${field.comment}
+            #end
+        #end
+      }]
+    });
+    setTimeout(function () {
+        res.json({
+            data: data,
+            code: 0,
+            errorMsg: ''
+        });
+    }, 500);
+  },
+
+  'POST /api/${lowUpp}/delete': function (req, res, next) {
+        setTimeout(function () {
+            res.json({
+                data: 1,
+                code: 0,
+                errorMsg: ''
+            });
+        }, 500);
+  },
+
+    "POST /api/card/queryCount": function (req, res, next) {
+        setTimeout(function () {
+            res.json({
+                data: 100,
+                code: 0,
+                errorMsg: ''
+            });
+        }, 500);
+    },
+}

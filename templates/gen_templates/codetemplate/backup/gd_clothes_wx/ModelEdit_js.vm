@@ -1,0 +1,113 @@
+import Page from '../../../../common/page';
+import ${clsUpp}Api from '../../../../utils/${clsUpp}Api.js'
+var util = require('../../../../utils/util.js');
+
+Page({
+  data: {
+    but : {
+      savebutloading : false,
+      savebutdisabled : false,
+    },
+	mode: 'save', // save or  update
+	form: { //要显示的数据
+		#foreach($fi in $fList)
+			${fi.name}:null, 
+		#end
+	}
+  },
+  onPullDownRefresh: function () {  //下拉刷新  
+	this.refresh();
+  },
+  onLoad: function (options) {
+    if (options && options.id){
+	  this.setData({
+		mode : 'update'
+	  });
+      wx.setNavigationBarTitle({
+        title: "修改${cName}"
+      });
+	  this.data.form.id = options.id;
+	  this.refresh();
+    }else{
+	  this.setData({
+		mode : 'save'
+	  });
+      wx.setNavigationBarTitle({
+        title: "新增${cName}"
+      })
+    }
+    
+  },
+  refresh(){
+	const that = this;
+	  ${clsUpp}Api.findById(this.data.form.${idName} , (res)=>{
+		if(res.code == 0){
+			that.setData({
+				form : {... res.data}
+			});
+		}else{
+			 util.showErrorToast(res.errorMsg);
+		}
+	  });
+  },
+  onReady: function () {
+    // 页面渲染完成
+  },
+  onShow: function () {
+    // 页面显示
+  },
+  onHide: function () {
+    // 页面隐藏
+  },
+  onUnload: function () {
+    // 页面关闭
+  },
+  validate(){
+	const that = this;
+	#foreach($fi in $fList)
+	#if($fi.name != $idName)
+	if(!that.data.form.${fi.name}){
+		util.showErrorToast("${fi.comment}不能为空");
+		return false;
+	}
+	#end
+	#end
+	return true;
+  },
+  doSave(){
+	const that = this;
+	if(!that.validate()){
+		return ;
+	}
+	if(this.data.mode == 'save'){
+		${clsUpp}Api.save(that.data.form,(res)=>{
+			if(res.code == 0){
+				util.showSuccessToast('保存成功!')
+				 wx.reLaunch({
+				  url: '../${clsUpp}List',
+				})
+			}else{
+				util.showErrorToast(res.errorMsg);
+			}
+		});
+	}else{
+		${clsUpp}Api.update(that.data.form,(res)=>{
+			if(res.code == 0){
+				util.showSuccessToast('修改成功!')
+				 wx.reLaunch({
+				  url: '../${clsUpp}List',
+				})
+			}else{
+				util.showErrorToast(res.errorMsg);
+			}
+		});
+	}
+  },
+  #foreach($fi in $fList)
+  
+  onChange${fi.upper_camel}(event){
+	  //修改 ${fi.comment}
+	  this.data.form.${fi.name} = event.detail
+  },
+  #end
+});
