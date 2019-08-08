@@ -2,7 +2,9 @@ package ${pName};
 
 import java.security.Principal;
 import java.util.List;
-import com.gd.clo.common.aop.NoRepeatSubmit;
+import java.util.Date;
+import com.szmiaojia.oa.common.CommCons;
+import com.szmiaojia.oa.common.controller.PrincipalAction;
 import org.alvin.code.gen.utils.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 @Api(value = "[${cName}]控制器", description = "[${cName}]相关操作")
 @RestController
 @RequestMapping("/api/${lowUpp}")
-public class ${clsUpp}Action {
+public class ${clsUpp}Action extends PrincipalAction{
 
     @Autowired
 	private ${clsUpp}Service service; //注入[${cName}]业务逻辑类
@@ -30,15 +32,16 @@ public class ${clsUpp}Action {
     @ApiOperation(value = "新增[${cName}]", notes = "返回影响记录行数")
     @ApiImplicitParams(
     {
-        @ApiImplicitParam(paramType = "body", dataType = "${clsUpp}", name = "${lowUpp}", value = "${cName}", required = true) ,
-        @ApiImplicitParam(name = "Authorization", value = "Token",required = true, dataType = "string", paramType = "header")
+        @ApiImplicitParam(paramType = "body", dataType = "${clsUpp}", name = "${lowUpp}", value = "${cName}", required = true) 
     })
     @ApiResponses({
         @ApiResponse(code = 0, message = "操作成功")
     })
-
     @PostMapping("save")
 	public RestfullResp<Integer> save(@RequestBody ${clsUpp} ${lowUpp}, Principal principal) {
+            ${lowUpp}.setAuthor(getUserId(principal));
+            ${lowUpp}.setCreateTime(new Date());
+            ${lowUpp}.setStatus(CommCons.STATUS_ENABLED);
     		return new RestfullResp<>(service.save(${lowUpp}));
     	}
     
@@ -47,8 +50,9 @@ public class ${clsUpp}Action {
     * @方法说明： 删除[${cName}]记录
     */
     @ApiOperation(value = "删除[${cName}]", notes = "返回影响记录行数")
+    @ApiImplicitParams({ @ApiImplicitParam(name = "id", value = "[${cName}]的主键", required = true, dataType = "array", paramType = "query")})
     @PostMapping( "delete" )
-    public RestfullResp<Integer> delete(@RequestParam("id") ${idType} [] id) {
+    public RestfullResp<Integer> delete(@RequestParam("id") ${idType} [] id, Principal principal) {
             return new RestfullResp<>(service.delete(id));
         }
 
@@ -57,10 +61,12 @@ public class ${clsUpp}Action {
     * @方法说明： 修改[${cName}]记录
     */
     @ApiOperation(value = "修改[${cName}]", notes = "返回影响记录行数,(必须传入完整对象,否则会有数据丢失)")
-    @ApiImplicitParams(
+     @ApiImplicitParams(
     {
-        @ApiImplicitParam(paramType = "body", dataType = "${clsUpp}", name = "${lowUpp}", value = "${cName}", required = true) ,
-        @ApiImplicitParam(name = "Authorization", value = "Token",required = true, dataType = "string", paramType = "header")
+        @ApiImplicitParam(paramType = "body", dataType = "${clsUpp}", name = "${lowUpp}", value = "${cName}", required = true) 
+    })
+    @ApiResponses({
+        @ApiResponse(code = 0, message = "操作成功")
     })
     @PostMapping("update")
     public RestfullResp<Integer> update(@RequestBody ${clsUpp} ${lowUpp}, Principal principal) {
@@ -71,10 +77,12 @@ public class ${clsUpp}Action {
     * @方法说明： 修改[${cName}]记录
     */
     @ApiOperation(value = "修改[${cName}]", notes = "返回影响记录行数(传入需要修改的属性和主键即可,其他可以为空)")
-    @ApiImplicitParams(
+     @ApiImplicitParams(
     {
-        @ApiImplicitParam(paramType = "body", dataType = "${clsUpp}", name = "${lowUpp}", value = "${cName}", required = true) ,
-        @ApiImplicitParam(name = "Authorization", value = "Token",required = true, dataType = "string", paramType = "header")
+        @ApiImplicitParam(paramType = "body", dataType = "${clsUpp}", name = "${lowUpp}", value = "${cName}", required = true) 
+    })
+    @ApiResponses({
+        @ApiResponse(code = 0, message = "操作成功")
     })
     @PostMapping("updateNotNull")
     public RestfullResp<Integer> updateNotNull(@RequestBody ${clsUpp} ${lowUpp}, Principal principal) {
@@ -85,13 +93,14 @@ public class ${clsUpp}Action {
     * @方法说明： 按条件查询分页[${cName}]列表
     */
     @ApiOperation(value = "按条件查询分页[${cName}]列表", notes = "返回分页[${cName}]列表")
-    @ApiImplicitParams(
+     @ApiImplicitParams(
     {
-        @ApiImplicitParam(paramType = "body", dataType = "${clsUpp}Cond", name = "cond", value = "${cName}", required = true) ,
-        @ApiImplicitParam(name = "Authorization", value = "Token",required = true, dataType = "string", paramType = "header")
+        @ApiImplicitParam(paramType = "body", dataType = "${clsUpp}Cond", name = "cond", value = "${cName}", required = true) 
+    })
+    @ApiResponses({
+        @ApiResponse(code = 0, message = "操作成功")
     })
     @PostMapping( "queryPage")
-	@NoRepeatSubmit
     public RestfullResp<Page<${clsUpp}>> queryPage(@RequestBody ${clsUpp}Cond cond, Principal principal) {
         return new RestfullResp<>(service.queryPage(cond));
     }
@@ -102,11 +111,12 @@ public class ${clsUpp}Action {
     @ApiOperation(value = "按条件查询不分页[${cName}]列表", notes = "返回不分页[${cName}]列表")
     @ApiImplicitParams(
     {
-         @ApiImplicitParam(paramType = "body", dataType = "${clsUpp}Cond", name = "cond", value = "${cName}", required = true) ,
-        @ApiImplicitParam(name = "Authorization", value = "Token",required = true, dataType = "string", paramType = "header")
+        @ApiImplicitParam(paramType = "body", dataType = "${clsUpp}Cond", name = "cond", value = "${cName}", required = true) 
+    })
+    @ApiResponses({
+        @ApiResponse(code = 0, message = "操作成功")
     })
 	@PostMapping("queryList")
-	@NoRepeatSubmit
     public RestfullResp<List<${clsUpp}>> queryList(@RequestBody ${clsUpp}Cond cond, Principal principal) {
     		return new RestfullResp<>(service.queryList(cond));
     }
@@ -117,11 +127,12 @@ public class ${clsUpp}Action {
     @ApiOperation(value = "按条件查询一个 ${cName} 对象", notes = "返回 ${cName}对象")
     @ApiImplicitParams(
     {
-        @ApiImplicitParam(paramType = "body", dataType = "${clsUpp}Cond", name = "cond", value = "${cName}", required = true) ,
-        @ApiImplicitParam(name = "Authorization", value = "Token",required = true, dataType = "string", paramType = "header")
+        @ApiImplicitParam(paramType = "body", dataType = "${clsUpp}Cond", name = "cond", value = "${cName}", required = true) 
+    })
+    @ApiResponses({
+        @ApiResponse(code = 0, message = "操作成功")
     })
 	@PostMapping("findOne")
-	@NoRepeatSubmit
     public RestfullResp<${clsUpp}> findOne(@RequestBody ${clsUpp}Cond cond, Principal principal) {
     		return new RestfullResp<>(service.findOne(cond));
     }
@@ -132,12 +143,13 @@ public class ${clsUpp}Action {
     @ApiOperation(value = "按条件查询[${cName}]记录个数", notes = "返回记录个数")
     @ApiImplicitParams(
     {
-        @ApiImplicitParam(paramType = "body", dataType = "${clsUpp}Cond", name = "cond", value = "${cName}", required = true) ,
-        @ApiImplicitParam(name = "Authorization", value = "Token",required = true, dataType = "string", paramType = "header")
+        @ApiImplicitParam(paramType = "body", dataType = "${clsUpp}Cond", name = "cond", value = "${cName}", required = true) 
     })
-	@PostMapping( "queryCount")
-	@NoRepeatSubmit
-	public RestfullResp<Long> queryCount(@RequestBody ${clsUpp}Cond cond) {
+    @ApiResponses({
+        @ApiResponse(code = 0, message = "操作成功")
+    })
+	@PostMapping("queryCount")
+	public RestfullResp<Long> queryCount(@RequestBody ${clsUpp}Cond cond, Principal principal) {
 		return new RestfullResp<>(service.queryCount(cond));
 	}
                 
@@ -145,11 +157,9 @@ public class ${clsUpp}Action {
     * @方法说明： 按主键查询单条[${cName}]记录
     */
     @ApiOperation(value = "按主键查询单个[${cName}]记录", notes = "返回单个[${cName}]对象")
-    @ApiImplicitParams({ @ApiImplicitParam(name = "id", value = "[${cName}]的主键", required = true, dataType = "${idType}", paramType = "query"),
-    @ApiImplicitParam(name = "Authorization", value = "Token",required = true, dataType = "string", paramType = "header") })
-    @PostMapping( "findById")
-	@NoRepeatSubmit
-    public RestfullResp<${clsUpp}> findById(@RequestParam("id") ${idType} id) {
+    @ApiImplicitParams({ @ApiImplicitParam(name = "id", value = "[${cName}]的主键", required = true, dataType = "${idType}", paramType = "query")})
+    @PostMapping("findById")
+    public RestfullResp<${clsUpp}> findById(@RequestParam("id") ${idType} id, Principal principal) {
     		return new RestfullResp<>(service.findById(id));
     	}
 

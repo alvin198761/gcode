@@ -117,6 +117,7 @@ public class CodeService {
 			jsonObject.put("importList", importList);
 			//
 			jsonObject.put("dollar", "$");
+			jsonObject.put("sharp", "#");
 			//java 代码生成
 			parseVmTemplate(vms, outPath, jsonObject, cond, low, suffix, fileEngine);
 		}

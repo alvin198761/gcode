@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="${pName}.${clsUpp}Dao" >
+  <resultMap id="BaseResultMap" type="${pName}.${clsUpp}" >
+   #foreach ($fi in $fList)
+    <id column="${fi.name}" property="${fi.lower_camel}" jdbcType="${fi.dbType}" />
+	#end
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    ${selectItems}
+  </sql>
+  
+   <delete id="delete">
+    delete from ${tName}
+    where ${id.name} in 
+	<foreach collection="array" index="index" item="item" open="(" separator="," close=")">
+     ${sharp}{item}
+    </foreach>
+  </delete>
+  
+   <update id="update" parameterType="${pName}.${clsUpp}">
+        update ${tName}
+        <set>
+		 #foreach ($fi in $fList)
+			#if (fi.name != id.name)
+			${fi.name} = ${sharp}{${fi.lower_camel},jdbcType=${fi.dbType}},
+			#end
+		#end    
+		${id.name} = ${sharp}{${id.lower_camel},jdbcType=${id.dbType}}
+        </set>
+        where ${id.name} = ${sharp}{${id.lower_camel},jdbcType=${fi.dbType}} 
+    </update>
+	
+	<update id="updateNotNull" parameterType="${pName}.${clsUpp}">
+        update ${tName}
+        <set>
+		 #foreach ($fi in $fList)
+		 #if (fi.name != id.name)
+			 <if test="${fi.lower_camel} != null">
+                ${fi.name} = ${sharp}{${fi.lower_camel},jdbcType=${fi.dbType}},
+            </if>
+			#end
+		 #end    
+		 ${id.name} = ${sharp}{${id.lower_camel},jdbcType=${id.dbType}}
+        </set>
+        where ${id.name} = ${sharp}{${id.lower_camel},jdbcType=${fi.dbType}} 
+    </update>
+ 
+  <insert id="insertSelective" parameterType="${pName}.${clsUpp}Cond" useGeneratedKeys="true" keyProperty="${id.lower_camel}">
+        insert into ${tName}
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+         #foreach ($fi in $fList)
+			<if test="${fi.lower_camel} != null">
+                 ${fi.name},
+            </if>
+		 #end   
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+		#foreach ($fi in $fList)
+			<if test="${fi.lower_camel} != null">
+                 ${sharp}{${fi.lower_camel},jdbcType=${fi.dbType}},
+            </if>
+		 #end   
+        </trim>
+    </insert>
+	
+	 <select id="queryList" resultType="${pName}.${clsUpp}" parameterType="${pName}.${clsUpp}Cond">
+	   select 
+		<include refid="Base_Column_List" />
+		from ${tName} as t
+		where 1=1
+		#foreach ($fi in $fList)
+			<if test="${fi.lower_camel} != null">
+				and ${fi.name} = ${sharp}{${fi.lower_camel},jdbcType=${fi.dbType}},
+			</if>
+		 #end  
+		 order by t.${id.name} desc
+    </select>
+	
+	<select id="findOne" resultType="${pName}.${clsUpp}" parameterType="${pName}.${clsUpp}Cond">
+	   select 
+		<include refid="Base_Column_List" />
+		from ${tName} as t
+		where 1=1
+		#foreach ($fi in $fList)
+			<if test="${fi.lower_camel} != null">
+				and ${fi.name} = ${sharp}{${fi.lower_camel},jdbcType=${fi.dbType}},
+			</if>
+		 #end  
+		 order by t.${id.name} desc LIMIT 0,1
+    </select>
+	
+	<select id="findById" resultType="${pName}.${clsUpp}" parameterType="${pName}.${clsUpp}Cond">
+	   select 
+		<include refid="Base_Column_List" />
+		from ${tName} as t
+		where t.${id.name} =  ${sharp}{${id.lower_camel},jdbcType=${id.dbType}} 
+    </select>
+	
+	<select id="queryCount" resultType="java.lang.Long" parameterType="${pName}.${clsUpp}Cond">
+	   select count(t.${id.name})
+		from ${tName} as t
+		where 1=1
+		#foreach ($fi in $fList)
+			<if test="${fi.lower_camel} != null">
+				and ${fi.name} = ${sharp}{${fi.lower_camel},jdbcType=${fi.dbType}},
+			</if>
+		 #end  
+    </select>
+  
+	  <update id="deleteLogic" parameterType="${pName}.${clsUpp}">
+			update ${tName}
+			<set>
+			 status = -1  
+			</set>
+			where ${id.name} in 
+			<foreach collection="array" index="index" item="item" open="(" separator="," close=")">
+					${sharp}{item}
+			</foreach>
+		</update>
+  
+   
+</mapper>

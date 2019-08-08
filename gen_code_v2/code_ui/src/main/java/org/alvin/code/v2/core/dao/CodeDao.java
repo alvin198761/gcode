@@ -99,20 +99,21 @@ public class CodeDao extends BaseDao {
 		sb.append(" SELECT COLUMN_NAME NAME,");
 		sb.append(" CASE WHEN COLUMN_COMMENT = '' THEN COLUMN_NAME ELSE COLUMN_COMMENT	END COMMENT,");
 		sb.append(
-				" CASE WHEN DATA_TYPE='varchar' OR DATA_TYPE='text' OR DATA_TYPE='char' OR DATA_TYPE='longtext' OR DATA_TYPE='mediumtext' THEN 'String'");
-		sb.append(" WHEN DATA_TYPE = 'tinyint' THEN 'Byte'");
-		sb.append(" WHEN DATA_TYPE = 'smallint' THEN 'Short'");
-		sb.append(" WHEN DATA_TYPE = 'int' OR DATA_TYPE = 'mediumint' THEN 'Integer'");
+				" CASE WHEN DATA_TYPE='varchar' OR DATA_TYPE='text' OR DATA_TYPE='char' OR DATA_TYPE='longtext' OR DATA_TYPE='mediumtext' THEN 'java.lang.String'");
+		sb.append(" WHEN DATA_TYPE = 'tinyint' THEN 'java.lang.Byte'");
+		sb.append(" WHEN DATA_TYPE = 'smallint' THEN 'java.lang.Short'");
+		sb.append(" WHEN DATA_TYPE = 'int' OR DATA_TYPE = 'mediumint' THEN 'java.lang.Integer'");
 		sb.append(
-				" WHEN DATA_TYPE = 'datetime' OR DATA_TYPE = 'timestamp' OR DATA_TYPE = 'date' OR DATA_TYPE = 'time' THEN 'Date'");
-		sb.append(" WHEN DATA_TYPE = 'bigint' THEN 'Long'");
-		sb.append(" WHEN DATA_TYPE = 'float' THEN 'Float'");
-		sb.append(" WHEN DATA_TYPE = 'double' THEN 'Double'");
-		sb.append(" WHEN DATA_TYPE = 'decimal' THEN 'BigDecimal'");
-		sb.append(" WHEN DATA_TYPE = 'boolean' OR DATA_TYPE = 'bit' THEN 'Boolean'");
+				" WHEN DATA_TYPE = 'datetime' OR DATA_TYPE = 'timestamp' OR DATA_TYPE = 'date' OR DATA_TYPE = 'time' THEN 'java.util.Date'");
+		sb.append(" WHEN DATA_TYPE = 'bigint' THEN 'java.lang.Long'");
+		sb.append(" WHEN DATA_TYPE = 'float' THEN 'java.lang.Float'");
+		sb.append(" WHEN DATA_TYPE = 'double' THEN 'java.lang.Double'");
+		sb.append(" WHEN DATA_TYPE = 'decimal' THEN 'java.math.BigDecimal'");
+		sb.append(" WHEN DATA_TYPE = 'boolean' OR DATA_TYPE = 'bit' THEN 'java.lang.Boolean'");
 		sb.append(" ELSE CONCAT ('无效数据类型', DATA_TYPE) END type");
 		sb.append(" ,character_maximum_length as length ");
 		sb.append(" ,column_key as column_key ");
+		sb.append(" ,upper(DATA_TYPE) as dbType ");
 		sb.append(" FROM INFORMATION_SCHEMA.COLUMNS WHERE 1 = 1");
 		sb.append(cond.getCondition());
 		sb.append(" ORDER BY ORDINAL_POSITION");

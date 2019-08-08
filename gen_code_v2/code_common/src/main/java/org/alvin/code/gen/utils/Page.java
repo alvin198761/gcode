@@ -20,6 +20,15 @@ public class Page<T> {
 	@ApiModelProperty(notes = "总记录数", required = true)
 	private long totalElements;
 
+	public Page(){}
+
+	public Page(int pageNum ,int pageSize ,int total ,List<T> content){
+		this.number = pageNum;
+		this.size = pageSize;
+		this.totalElements = total;
+		this.content.addAll(content);
+	}
+
 	public int getNumber() {
 		return number;
 	}

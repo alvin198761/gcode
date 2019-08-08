@@ -17,4 +17,6 @@ public class Field {
 	private Integer length; //字符长度
 	private String column_key;//键
 
+	private String dbType; //数据库类型
+
 }
