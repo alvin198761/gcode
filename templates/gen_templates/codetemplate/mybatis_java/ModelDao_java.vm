@@ -53,4 +53,9 @@ public interface ${clsUpp}Dao {
     * @方法说明：按条件查询${cName}记录个数
     */
     int deleteLogic(${idType} ids[]);
+	
+	/**
+    * @方法说明： 批量添加 ${cName}
+    */
+	int insertBatch(List<${clsUpp}> list);
 }

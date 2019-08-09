@@ -110,7 +110,7 @@ public class CodeDao extends BaseDao {
 		sb.append(" WHEN DATA_TYPE = 'double' THEN 'java.lang.Double'");
 		sb.append(" WHEN DATA_TYPE = 'decimal' THEN 'java.math.BigDecimal'");
 		sb.append(" WHEN DATA_TYPE = 'boolean' OR DATA_TYPE = 'bit' THEN 'java.lang.Boolean'");
-		sb.append(" ELSE CONCAT ('无效数据类型', DATA_TYPE) END type");
+		sb.append(" ELSE CONCAT ('无效数据类型', DATA_TYPE) END allTypeName");
 		sb.append(" ,character_maximum_length as length ");
 		sb.append(" ,column_key as column_key ");
 		sb.append(" ,upper(DATA_TYPE) as dbType ");

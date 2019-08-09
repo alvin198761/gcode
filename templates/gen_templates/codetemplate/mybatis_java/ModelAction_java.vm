@@ -3,8 +3,6 @@ package ${pName};
 import java.security.Principal;
 import java.util.List;
 import java.util.Date;
-import com.szmiaojia.oa.common.CommCons;
-import com.szmiaojia.oa.common.controller.PrincipalAction;
 import org.alvin.code.gen.utils.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 @Api(value = "[${cName}]控制器", description = "[${cName}]相关操作")
 @RestController
 @RequestMapping("/api/${lowUpp}")
-public class ${clsUpp}Action extends PrincipalAction{
+public class ${clsUpp}Action{
 
     @Autowired
 	private ${clsUpp}Service service; //注入[${cName}]业务逻辑类
@@ -39,9 +37,6 @@ public class ${clsUpp}Action extends PrincipalAction{
     })
     @PostMapping("save")
 	public RestfullResp<Integer> save(@RequestBody ${clsUpp} ${lowUpp}, Principal principal) {
-            ${lowUpp}.setAuthor(getUserId(principal));
-            ${lowUpp}.setCreateTime(new Date());
-            ${lowUpp}.setStatus(CommCons.STATUS_ENABLED);
     		return new RestfullResp<>(service.save(${lowUpp}));
     	}
     

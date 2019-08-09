@@ -33,8 +33,8 @@ public class ${clsUpp}Service {
 	*/
 	@Transactional
 	public int delete(${idType} ids[]) {
-		return dao.deleteLogic(ids);//逻辑删除
-		//return dao.delete(ids);//物理删除
+		//return dao.deleteLogic(ids);//逻辑删除
+		return dao.delete(ids);//物理删除
 	}
 
 	/**
@@ -88,5 +88,13 @@ public class ${clsUpp}Service {
 	*/
 	public long queryCount(${clsUpp}Cond cond) {
 		return dao.queryCount(cond);
+	}
+	
+	/**
+	* @方法说明： 批量添加 ${cName}
+	*/
+	@Transactional
+	public int insertBatch(List<${clsUpp}> list){
+		return dao.insertBatch(list);
 	}
 }

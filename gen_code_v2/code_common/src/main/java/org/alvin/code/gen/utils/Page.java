@@ -22,7 +22,7 @@ public class Page<T> {
 
 	public Page(){}
 
-	public Page(int pageNum ,int pageSize ,int total ,List<T> content){
+	public Page(int pageNum ,int pageSize ,long total ,List<T> content){
 		this.number = pageNum;
 		this.size = pageSize;
 		this.totalElements = total;

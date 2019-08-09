@@ -18,5 +18,6 @@ public class Field {
 	private String column_key;//键
 
 	private String dbType; //数据库类型
+	private String allTypeName;//类型全称
 
 }
