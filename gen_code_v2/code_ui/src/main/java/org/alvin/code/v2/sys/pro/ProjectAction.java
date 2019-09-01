@@ -1,6 +1,5 @@
 package org.alvin.code.v2.sys.pro;
 
-import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,7 +35,7 @@ public class ProjectAction {
 	@RequestMapping("genProject")
 	public String genProject(@RequestBody ProjectConfig projectConfig) throws IOException {
 		save(projectConfig);//先保存
-		return this.projectService.genProject(projectConfig.getName());
+		return this.projectService.genProject(projectConfig.getName() ,projectConfig.getTemplateName());
 	}
 
 	@RequestMapping("genEntity")
@@ -65,67 +64,5 @@ public class ProjectAction {
 	@RequestMapping("list")
 	public List<ProjectConfig> list() {
 		return this.projectService.getProjects();
-	}
-
-	@GetMapping("test")
-	public void test() {
-		ProjectConfig projectConfig = new ProjectConfig();
-		projectConfig.setAuthor("alvin - 111");
-		projectConfig.setName("test");
-		projectConfig.setBase_package("org.alvin.test");
-		projectConfig.setRemark("测试项目");
-
-		EntityConfig entityConfig = new EntityConfig();
-		Date date = new Date();
-		String dateText = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date);
-		entityConfig.setIdName("uid");
-		entityConfig.setLabalName("name");
-		entityConfig.setName("UserBean");
-		entityConfig.setFields(Lists.newArrayList());
-
-		FieldConfig fieldConfig = new FieldConfig();
-		fieldConfig.setIsNull("not null");
-		fieldConfig.setLength(11);
-		fieldConfig.setName("uid");
-		fieldConfig.setSql_type("bigint(11)");
-		fieldConfig.setRemark("用户ID");
-		fieldConfig.setType("java.lang.Long");
-		entityConfig.getFields().add(fieldConfig);
-
-		fieldConfig = new FieldConfig();
-		fieldConfig.setIsNull("null");
-		fieldConfig.setLength(50);
-		fieldConfig.setName("uname");
-		fieldConfig.setSql_type("varchar(50)");
-		fieldConfig.setRemark("用户名称");
-		fieldConfig.setType("java.lang.String");
-		entityConfig.getFields().add(fieldConfig);
-
-		fieldConfig = new FieldConfig();
-		fieldConfig.setIsNull("null");
-		fieldConfig.setLength(50);
-		fieldConfig.setName("test");
-		fieldConfig.setSql_type("varchar(150)");
-		fieldConfig.setRemark("测试");
-		fieldConfig.setType("java.lang.String");
-		entityConfig.getFields().add(fieldConfig);
-
-		fieldConfig = new FieldConfig();
-		fieldConfig.setIsNull("null");
-		fieldConfig.setLength(50);
-		fieldConfig.setName("time");
-		fieldConfig.setSql_type("datetime");
-		fieldConfig.setRemark("日期");
-		fieldConfig.setType("java.util.Date");
-		entityConfig.getFields().add(fieldConfig);
-		entityConfig.setRemark("测试类");
-		projectConfig.setEntitys(Lists.newArrayList(entityConfig));
-
-		this.save(projectConfig);
-		try {
-			this.genProject(projectConfig);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 	}
 }

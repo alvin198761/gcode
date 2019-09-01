@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 @Service
 public class ProjectTemplateService {
 
-	private static final File TEMPLATE_DIR = new File("../../templates/templates_list");
+	public static final File TEMPLATE_DIR = new File("../../templates/templates_list");
 
 	/**
 	 * 保存项目

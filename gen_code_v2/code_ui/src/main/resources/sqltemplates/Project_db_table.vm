@@ -1,0 +1,43 @@
+/*
+alvin 198761 gcode v2.0.1
+
+Server         : localhost
+Host           : localhost:3306
+Database       : ${project.name}_DB
+
+DB CHARACTER SET utf8 COLLATE utf8_general_ci
+OR
+DB CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci
+
+TABLE CHARSET utf8 COLLATE utf8_general_ci
+OR
+TABLE CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci
+
+Date: ${time}
+*/
+DROP DATABASE IF EXISTS  ${project.name}_DB;
+
+CREATE DATABASE ${project.name}_DB DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+USE ${project.name}_DB;
+
+SET FOREIGN_KEY_CHECKS=0;
+
+#foreach($entity in $entitys)
+DROP TABLE IF EXISTS `${entity.name}`;
+
+/*==============================================================*/
+/* Table: `${entity.name}`                                       */
+/*==============================================================*/
+CREATE TABLE `${entity.name}`
+(
+    #foreach ($fi in $entity.fields)
+        #if ($fi.name == $idName)
+        `${fi.name}`  ${fi.sql_type} NOT NULL AUTO_INCREMENT COMMENT '${fi.remark}',
+        #else
+        `${fi.name}`  ${fi.sql_type} ${fi.isNull} COMMENT '${fi.remark}',
+        #end
+    #end
+PRIMARY KEY (`${entity.idName}`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='${remark}';
+#end

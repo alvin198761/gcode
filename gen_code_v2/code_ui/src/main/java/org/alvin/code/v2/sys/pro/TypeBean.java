@@ -5,10 +5,6 @@ import lombok.Data;
 @Data
 public class TypeBean {
 
-
-	public TypeBean() {
-	}
-
 	public TypeBean(String typeName, String db_type, Integer defaultLength) {
 		this.typeName = typeName;
 		this.db_type = db_type;

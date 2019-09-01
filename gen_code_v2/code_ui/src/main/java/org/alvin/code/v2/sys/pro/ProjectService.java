@@ -1,17 +1,26 @@
 package org.alvin.code.v2.sys.pro;
 
 import com.alibaba.fastjson.JSONObject;
+import com.google.common.base.CaseFormat;
 import com.google.common.collect.Lists;
-import org.alvin.code.v2.core.model.Field;
 import org.alvin.code.v2.core.utils.Utils;
 import org.alvin.code.v2.core.utils.VelocityUtil;
+import org.alvin.code.v2.sys.template.ProjectTemplateConfig;
+import org.alvin.code.v2.sys.template.ProjectTemplateFile;
+import org.alvin.code.v2.sys.template.ProjectTemplateService;
+import org.alvin.utils.ZipUtils;
+import org.apache.velocity.app.VelocityEngine;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,357 +28,358 @@ import java.util.stream.Collectors;
 @Service
 public class ProjectService {
 
-	@Value("${gen.project.datadir}")
-	private String projectDataDir;
+    @Value("${gen.project.datadir}")
+    private String projectDataDir;
 
-	@Value("${gen.project.outdir}")
-	private String prjectOutDir;
+    @Value("${gen.project.outdir}")
+    private String prjectOutDir;
 
-
-	/**
-	 * 生成项目，返回生成后的路径
-	 *
-	 * @param projectConfig
-	 * @return
-	 */
-	public int save(ProjectConfig projectConfig) {
-		File file = new File(projectDataDir, projectConfig.getName().concat(".json"));
-		file.getParentFile().mkdirs();
-		try {
-			Files.write(Paths.get(file.toURI()), JSONObject.toJSONBytes(projectConfig));
-			return 1;
-		} catch (IOException e) {
-			e.printStackTrace();
-			return 0;
-		}
-	}
-
-	/**
-	 * 生成项目
-	 *
-	 * @param projectName
-	 * @return
-	 */
-	public String genProject(String projectName) throws IOException {
-		File file = new File(prjectOutDir, projectName);
-		deleteFile(file);
-		file = new File(projectDataDir, projectName.concat(".json"));
-		try {
-			ProjectConfig config = JSONObject.parseObject(Files.readAllBytes(Paths.get(file.toURI())), ProjectConfig.class);
-			initProject(config);
-			String zipPath = zipProject(config);
-			return zipPath;
-		} catch (Exception ex) {
-			throw ex;
-		}
-	}
-
-	private String zipProject(ProjectConfig config) {
-		return "";
-	}
+    @Autowired
+    private ProjectTemplateService projectTemplateService;
 
 
-	private void initProject(ProjectConfig projectConfig) throws IOException {
-		JSONObject config = new JSONObject();
-		config.put("project", projectConfig);
-		config.put("dollar", "$");
-		//项目目录
-		File outFileDir = new File(prjectOutDir, projectConfig.getName());
-		outFileDir.mkdirs();
-		//第一层目录文件
-		File outSrcFile = mkdir(outFileDir, "src");
-		File sourceDir = new File(System.getProperty("user.dir"), "project_templates");
-		VelocityUtil.parse("/project_templates/pom.xml", config, new File(outFileDir, "pom.xml").getAbsolutePath(), VelocityUtil.fileVelocityEngine(sourceDir.getParentFile().getAbsolutePath()));
-		//第二层目录文件
-		File outMainFile = mkdir(outSrcFile, "main");
-		File outJavaFile = mkdir(outMainFile, "java");
-		//创建包路径
-		File outPackageFile = mkdir(outJavaFile, projectConfig.getBase_package().replace('.', '/'));
-		//打包文件
-		File assembly = mkdir(outMainFile, "assembly");
-		VelocityUtil.parse("/project_templates/assembly/assembly.xml", config, new File(assembly, "assembly.xml").getAbsolutePath(), VelocityUtil.fileVelocityEngine(outMainFile.getAbsolutePath()));
-		//配置文件
-		File outResourceDir = mkdir(outMainFile, "resources");
-		copyDir(new File(sourceDir, "resources"), outResourceDir, config, System.getProperty("user.dir"));
-		//web项目
-		File webapp = mkdir(outMainFile, "webapp");
-		copyDir(new File(sourceDir, "vue_2_cli3"), webapp, config, System.getProperty("user.dir"));
-		//基础代码
-		copyDir(new File(sourceDir, "base_code"), outPackageFile, config, System.getProperty("user.dir"));
-		//生成数据库代码
-		File sqlDir = mkdir(outMainFile, "sql");
-		copyDir(new File(sourceDir, "sql"), sqlDir, config, System.getProperty("user.dir"));
-		//生成实体类，查询条件类，控制器，业务类，dao,前端页面
-		genCode(projectConfig, sourceDir, outFileDir);
+    /**
+     * 生成项目，返回生成后的路径
+     *
+     * @param projectConfig
+     * @return
+     */
+    public int save(ProjectConfig projectConfig) {
+        File file = new File(projectDataDir, projectConfig.getName().concat(".json"));
+        file.getParentFile().mkdirs();
+        try {
+            Files.write(Paths.get(file.toURI()), JSONObject.toJSONBytes(projectConfig));
+            return 1;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return 0;
+        }
+    }
 
-	}
+    /**
+     * 生成项目
+     *
+     * @param projectName
+     * @param templateName
+     * @return
+     */
+    public String genProject(String projectName, String templateName) throws IOException {
+        File file = new File(prjectOutDir, projectName);
+        deleteFile(file);
+        file = new File(projectDataDir, projectName.concat(".json"));
+        try {
+            ProjectConfig config = JSONObject.parseObject(Files.readAllBytes(Paths.get(file.toURI())), ProjectConfig.class);
+            ProjectTemplateConfig templateConfig = this.projectTemplateService.getTemplateByName(templateName);
+            return genCodeByTemplate(config, templateConfig);
+        } catch (Exception ex) {
+            throw ex;
+        }
+    }
 
-	private void genCode(ProjectConfig projectConfig, File sourceDir, File outFileDir) throws IOException {
-		List<File> vms = Lists.newArrayList(new File(sourceDir, "entity").listFiles());
-		for (EntityConfig table : projectConfig.getEntitys().stream().filter(item -> item.getType() == 0).collect(Collectors.toList())) {
-			List<Field> fList = table.getFields().stream().filter(item -> item.getName() != null).map(item -> {
-				Field field = new Field();
-				field.setBigName(Utils.firstUpper(item.getName()));
-				field.setComment(item.getRemark());
-				field.setName(item.getName());
-				if (item.getType().equals("ref")) {
-					//找到原来的对象，然后找到对象的主键的类型
-					EntityConfig refEntity = projectConfig.getEntitys().stream().filter(eitem -> eitem.getName().equals(item.getRef_name())).findFirst().get();
-					if (refEntity.getType().intValue() == 0) {
-						field.setType(refEntity.getFields().stream().filter(fitem -> refEntity.getIdName().equals(fitem.getName())).findFirst().get().getType());
-					} else {
-						field.setType("java.lang.String");
-					}
-				} else {
-					field.setType(item.getType());
-				}
-				return field;
-			}).collect(Collectors.toList());
+    /**
+     * 根据模板生成项目
+     *
+     * @param projectConfig
+     * @param templateConfig
+     */
+    private String genCodeByTemplate(ProjectConfig projectConfig, ProjectTemplateConfig templateConfig) throws IOException {
+        //创建跟目录
+        //项目目录
+        File outFileDir = new File(prjectOutDir, projectConfig.getName());
+        outFileDir.mkdirs();
+        //实体类生成数据库
+        genTable(projectConfig);
+        //循环所有模板,根据模板类型处理
+        LinkedList<ProjectTemplateFile> files = Lists.newLinkedList();
+        files.addAll(templateConfig.getTemplateFiles());
+        JSONObject project = calcProject(projectConfig);
+        VelocityEngine engine = VelocityUtil.fileVelocityEngine(new File(ProjectTemplateService.TEMPLATE_DIR.getAbsolutePath(), templateConfig.getName()).getAbsolutePath());
+        for (ProjectTemplateFile f : templateConfig.getTemplateFiles()) {
+            //  1 普通模板 2 实体模板 3 非模板 4 目录
+            if (f.getType() == 4) {
+                //创建目录
+                new File(outFileDir, f.getPath()).mkdirs();
+                continue;
+            }
+            if (f.getType() == 3) {
+                //直接复制
+                Path templateFile = Paths.get(ProjectTemplateService.TEMPLATE_DIR.getAbsolutePath(), templateConfig.getName(), f.getPath());
+                Path distPath = Paths.get(projectDataDir, f.getPath());
+                try {
+                    Files.copy(templateFile, distPath);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                continue;
+            }
+            if (f.getType() == 2) {
+                //循环替换,还要创建目录
+                for (EntityConfig entityConfig : projectConfig.getEntities()) {
+                    genEntityFile(projectConfig, templateConfig, entityConfig, f, project, engine);
+                }
+                continue;
+            }
+            if (f.getType() == 1) {
+                //非实体属性,全部加载
+                genProjectFile(projectConfig, f, project, engine);
+                continue;
+            }
+        }
+        File file = new File(System.getProperty("java.io.tmpdir"));
+        File zipPath = new File(file, projectConfig.getName().concat(".zip"));
+        ZipUtils.doCompress(outFileDir, zipPath);
+        return zipPath.getAbsolutePath();
+    }
 
-			String cName = table.getRemark();// 表注释中文名
-			String upp = table.getName();// 驼峰类名(首字母大写)
-			String low = upp.toLowerCase();// 类名小写(只用包路径)
-			String lowUpp = Utils.firstLower(upp);// 驼峰变量类名(首字母小写)
+    /**
+     * 生成数据库表
+     *
+     * @param projectConfig
+     */
+    private void genTable(ProjectConfig projectConfig) throws IOException {
+        JSONObject entityConfig = new JSONObject();
+        entityConfig.put("entitys", projectConfig.getEntities());
+        entityConfig.put("project", projectConfig);
+        //生成sql文件
+        String content = VelocityUtil.parse("/sqltemplates/Project_db_table.vm", entityConfig, VelocityUtil.classPathVelocityEngine());
+        Path sqlPath = Paths.get(prjectOutDir, projectConfig.getName(), projectConfig.getName().concat(".sql"));
+        Files.write(sqlPath, content.getBytes("utf-8"));
+        //执行sql
+//        AntUtil.importSql(projectConfig.getDbConfig().getDriverName(),
+//                projectConfig.getDbConfig().getUrl(),
+//                projectConfig.getDbConfig().getUsername(),
+//                projectConfig.getDbConfig().getPassword(), sqlPath.toFile().getAbsolutePath());
+    }
 
-			FieldConfig idField = table.getFields().stream().filter(item -> item.getName().equals(table.getIdName())).findFirst().get();
-			String idName = idField.getName();
+    /**
+     * 实体模板替换
+     *
+     * @param projectConfig
+     * @param templateConfig
+     * @param entityConfig
+     * @param f
+     * @param project
+     * @param engine
+     */
+    private void genEntityFile(ProjectConfig projectConfig, ProjectTemplateConfig templateConfig, EntityConfig entityConfig, ProjectTemplateFile f, JSONObject project, VelocityEngine engine) throws IOException {
+        //2.计算出目标文件的位置
+        Path projectFile = Paths.get(prjectOutDir, projectConfig.getName(), entityConfig.getName(), f.getPath());
+        //3.创建目录
+        try {
+            Files.createDirectories(projectFile.getParent());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        //4.模板执行
+        String baseUrl = new File(ProjectTemplateService.TEMPLATE_DIR, templateConfig.getName()).getCanonicalPath();
+        VelocityEngine fileEngine = VelocityUtil.fileVelocityEngine(baseUrl);
+        String suffix = ".vm";
+        for (EntityConfig entity : projectConfig.getEntities()) {
+            entity.getVar().setUpperCamel(CaseFormat.LOWER_CAMEL.to(CaseFormat.UPPER_CAMEL, entity.getName()));
+            entity.getVar().setLowerCamel(CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_CAMEL, entity.getName()));
+            //计算出包名次
+            Path srcDirPath = Paths.get(prjectOutDir, projectConfig.getName(), entityConfig.getName(), projectConfig.getSrcDir());
+            Path entityPath = Paths.get(prjectOutDir, projectConfig.getName(), f.getPath());
+            String packagePath = entityPath.getParent().toFile().getAbsolutePath();
+            String srcDirPathStr = srcDirPath.toFile().getAbsolutePath();
+            String packageName = packagePath.substring(srcDirPathStr.length()).replaceAll("/", ".");
+            entity.getVar().setPackageName(packageName);
+            entity.getVar().setAllTypeName(packageName.concat(".").concat(entity.getVar().getUpperCamel()));
+            entity.getVar().setTableName(CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, entity.getVar().getUpperCamel()));
+            //用工参数
+            FieldConfig idField = entity.getFields().stream().map(item -> {
+                item.setAllTypeName(item.getType());
+                item.setUpperCamel(CaseFormat.LOWER_CAMEL.to(CaseFormat.UPPER_CAMEL, item.getName()));
+                item.setLowerCamel(item.getName());
+                item.setColName(CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, item.getName()));
+                item.setBigName(Utils.firstUpper(item.getName()));
+                item.setLowerName(item.getName().toLowerCase());
+                if (item.getAllTypeName().indexOf(".") != -1) {
+                    int index = item.getAllTypeName().lastIndexOf(".");
+                    item.setType(item.getAllTypeName().substring(index + 1));
+                } else {
+                    item.setType(item.getAllTypeName());
+                }
+                return item;
+            }).filter(item -> item.getName().equals(entity.getIdName())).findFirst().get();// 字段列表
+            String upp = CaseFormat.LOWER_CAMEL.to(CaseFormat.UPPER_CAMEL, entityConfig.getName());// 驼峰类名(首字母大写)
+            String low = upp.toLowerCase();// 类名小写(只用包路径)
 
-			//组装对象
-			JSONObject jsonObject = new JSONObject();
-			jsonObject.put("fList", fList);
-			jsonObject.put("auth", projectConfig.getAuthor());
-			jsonObject.put("cName", cName);
-			jsonObject.put("lowUpp", lowUpp);
-			jsonObject.put("idType", idField.getType());
-			jsonObject.put("table", table);
-			jsonObject.put("id", idField);
-			jsonObject.put("tName", table.getName());
-			jsonObject.put("idName", idField.getName());
-			jsonObject.put("time", projectConfig.getDate());
-			//类名称
-			jsonObject.put("upp", upp);
-			jsonObject.put("clsUpp", upp);
-			//各种参数追加
-			jsonObject.put("selectFields", Utils.add(fList, "t.", ",", false, "select"));
-			jsonObject.put("insertFields", Utils.add(fList, "", ",", true, "insert"));
-			jsonObject.put("insertValuesFields", Utils.add(fList, ":", ",", true, "insert"));
-			jsonObject.put("replaceFields", Utils.add(fList, "", ",", false, "sql"));
-			jsonObject.put("replaceValuesFields", Utils.add(fList));
-			jsonObject.put("paramsFields", Utils.addV2(fList, "vo.get", "(),", false));
-			jsonObject.put("updateFields", Utils.add(fList, "", "=?,", true, "sql"));
-			jsonObject.put("updateParams", Utils.addV2(fList, "vo.get", "(),", true) + ",vo.get" + Utils.firstUpper(idName) + "()");
-			jsonObject.put("selectItems", Utils.add(fList, "t.", ","));
+            //组装对象
+            List<String> colList = entity.getFields().stream().map(FieldConfig::getColName).collect(Collectors.toList());
+            entity.getVar().setSelectItems(colList.stream().map(item -> "t.".concat(item)).collect(Collectors.joining(",")));
+            entity.getVar().setInsertFields(colList.stream().collect(Collectors.joining(",")));
+            entity.getVar().setInsertValuesFields(colList.stream().map(item -> ":".concat(item)).collect(Collectors.joining(",")));
+            entity.getVar().setReplaceValuesFields(colList.stream().map(item -> "?").collect(Collectors.joining(",")));
+            entity.getVar().setUpdateFields(colList.stream().map(item -> item.concat("=?")).collect(Collectors.joining(",")));
+            entity.getVar().setParamsFields(entityConfig.getFields().stream().map(item -> "vo.".concat(item.getUpperCamel()).concat("()")).collect(Collectors.joining(",")));
+            String updateParams = entity.getFields().stream().filter(FieldConfig::getIsKey).map(item -> "vo.".concat(item.getUpperCamel()).concat("()")).collect(Collectors.joining(","));
+            entity.getVar().setUpdateParams(updateParams.concat(",vo.".concat(idField.getUpperCamel()).concat("()")));
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("id", idField);
+            jsonObject.put("entity", entityConfig);
+            jsonObject.put("packageName", packageName);
+            jsonObject.putAll(project);
+            //java 代码生成
+            VelocityUtil.parseEntityTemplate(Lists.newArrayList(f.getPath()), entityPath.toFile().getAbsolutePath(), jsonObject, packageName, low, suffix, fileEngine);
+        }
+    }
 
-			StringBuilder sb = new StringBuilder();
-			table.getFields().stream().filter(item -> item.getType() == "ref").forEach(item -> {
-				EntityConfig refEntity = projectConfig.getEntitys().stream().filter(eitem -> eitem.getName().equals(item.getRef_name())).findFirst().get();
-				if (refEntity.getType() == 0) {
-					sb.append(" left join " + refEntity.getName() + " as " + refEntity.getName().toLowerCase() + " on " + refEntity.getName().toLowerCase() + "." + refEntity.getIdName() + " = t." + table.getIdName() + " ");
-				}
-			});
+    /**
+     * 非实体模板
+     *
+     * @param projectConfig
+     * @param f
+     * @param project
+     * @param engine
+     */
+    private void genProjectFile(ProjectConfig projectConfig, ProjectTemplateFile f, JSONObject project, VelocityEngine engine) {
+        //2.计算出目标文件的位置
+        Path projectFile = Paths.get(prjectOutDir, projectConfig.getName(), f.getPath());
+        //3.创建目录
+        try {
+            Files.createDirectories(projectFile.getParent());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        //4.模板执行
+        VelocityUtil.parse(f.getPath(), project, projectFile.toAbsolutePath().toFile().getAbsolutePath(), engine);
+    }
 
-			jsonObject.put("joinTables", sb.toString());
-			//其他附属数据
-			List<String> importList = Lists.newArrayList();
-			importList.add(Utils.dateImport(fList));
-			importList.add(Utils.bigImport(fList));
-			jsonObject.put("importList", importList);
-			//
-			jsonObject.put("dollar", "$");
-			//java 代码生成
-			parseVmTemplate(vms, projectConfig, jsonObject, upp, low, outFileDir);
-		}
-	}
+    /**
+     * 建立项目变量规范
+     *
+     * @param projectConfig
+     * @return
+     */
+    private JSONObject calcProject(ProjectConfig projectConfig) {
+        String dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+        JSONObject project = new JSONObject();
+        project.put("dollar", "$");
+        project.put("sharp", "#");
+        project.put("time", dateFormat);
+        //融合变量,project dyn 放在一起,如果变量重名,以project 为准
+        projectConfig.setTemplateName(null);
+        JSONObject dyn = projectConfig.getDynAttrs();
+        project.put("project", projectConfig);
+        dyn.putAll(project.getJSONObject("project"));
+        project.put("project", dyn);
+        return project;
+    }
 
 
-	/**
-	 * 只生成java 类，目前
-	 *
-	 * @param vms
-	 * @param projectConfig
-	 * @param jsonObject
-	 * @param upp
-	 * @param low
-	 * @throws IOException
-	 */
-	public void parseVmTemplate(List<File> vms, ProjectConfig projectConfig, JSONObject jsonObject, String upp, String low, File outSysDir) throws IOException {
-		//循环模板，进行合并
-		jsonObject.put("pName", projectConfig.getBase_package());
-		jsonObject.put("upp", upp);
-		jsonObject.put("low", low);
-		//固定的目录
-		String prefix = System.getProperty("user.dir");
-		File outMainFile = mkdir(outSysDir, "src/main");
-		File outJavaFile = mkdir(outMainFile, "java");
-		File webapp = mkdir(outMainFile, "webapp");
-		File outPackageFile = mkdir(outJavaFile, projectConfig.getBase_package().replace('.', '/'));
-		File mockDir = mkdir(webapp, "mock");
-		File webViewDir = mkdir(webapp, "src/views/sys/" + low);
-		File sysDir = mkdir(outPackageFile, "sys/" + low);
-		//固定的规则，还有待改进
-		for (File vmFile : vms) {
-			String vm = vmFile.getAbsolutePath();
-			//获得文件名称
-			System.out.println("template file :" + vm);
-			String distName = vmFile.getName().replace("Model", upp);
-			String templateName = vmFile.getAbsolutePath().substring(prefix.length()).replace('\\', '/');
-			File templateFile = new File(templateName);
-			System.out.println("=================start VelocityEngine==================");
-			String outPath;
-			if (vmFile.getName().toLowerCase().endsWith(".vue")) {
-				outPath = new File(webViewDir, distName).getAbsolutePath();
-			} else if (vmFile.getName().endsWith("Mock.js")) {
-				outPath = new File(mockDir, distName).getAbsolutePath();
-			} else {
-				outPath = new File(sysDir, distName).getAbsolutePath();
-			}
-			VelocityUtil.parse(templateFile.getName(), jsonObject, outPath, VelocityUtil.fileVelocityEngine(templateFile.getParentFile().getAbsolutePath()));
-			System.out.println("=================end VelocityEngine==================");
-		}
-	}
+    private void deleteFile(File file) {
+        LinkedList<File> files = new LinkedList<>();
+        files.add(file);
+        while (!files.isEmpty()) {
+            File f = files.removeFirst();
+            if (!f.isDirectory()) {
+                f.delete();
+                continue;
+            }
+            File[] fs = f.listFiles();
+            if (fs == null || fs.length == 0) {
+                f.delete();
+                continue;
+            }
+            for (File subF : fs) {
+                files.addLast(subF);
+            }
+            files.addLast(f);
+        }
+    }
 
-	private String findFkType(String ref_name, ProjectConfig projectConfig) {
-		EntityConfig entityConfig = projectConfig.getEntitys().stream().filter(item -> item.getName().equals(ref_name)).findFirst().get();
-		return entityConfig.getFields().stream().filter(item -> item.getName().equals(entityConfig.getIdName())).findFirst().get().getType();
-	}
+    /**
+     * 生成实体类
+     *
+     * @param projectName
+     * @param entityName
+     * @return
+     */
+    public String genEntity(String projectName, String entityName) {
 
-	private void copyDir(File sourceDir, File targetDir, JSONObject config, String prefix) throws IOException {
-		targetDir.mkdirs();
-		LinkedList<File> files = new LinkedList<>(Lists.newArrayList(sourceDir.listFiles()));
-		while (!files.isEmpty()) {
-			File f = files.removeFirst();
-			String path = f.getAbsolutePath().substring(sourceDir.getAbsolutePath().length());
-			File targetFile = new File(targetDir, path);
-			if (f.isDirectory()) {
-				//文件夹直接创建
-				targetFile.mkdirs();
-				files.addAll(Lists.newArrayList(f.listFiles()));
-				continue;
-			}
-			String templateName = f.getAbsolutePath().substring(prefix.length()).replace('\\', '/');
-			File templateFile = new File(templateName);
-			VelocityUtil.parse(templateFile.getName(), config, targetFile.getAbsolutePath(), VelocityUtil.fileVelocityEngine(templateFile.getParentFile().getAbsolutePath()));
-		}
-	}
+        return null;
+    }
 
-	private File mkdir(File parent, String child) {
-		File file = new File(parent, child);
-		file.mkdirs();
-		return file;
-	}
+    /**
+     * 类型列表
+     *
+     * @return
+     */
+    public List<TypeBean> getTypes() {
+        List<TypeBean> types = Lists.newArrayList();
+        types.add(new TypeBean("java.lang.String", "VARCHAR", 50));
+        types.add(new TypeBean("java.lang.Byte", "TINYINT", 50));
+        types.add(new TypeBean("java.lang.Integer", "INT", 4));
+        types.add(new TypeBean("java.lang.Long", "BIGINT", 11));
+        types.add(new TypeBean("java.lang.Boolean", "bit", 0));
+        types.add(new TypeBean("引用", "ref", 0));
+        types.add(new TypeBean("java.lang.Float", "FLOAT", 11));
+        types.add(new TypeBean("java.util.Date", "DATETIME", 11));
+        return types;
+    }
 
-	private void deleteFile(File file) {
-		LinkedList<File> files = new LinkedList<>();
-		files.add(file);
-		while (!files.isEmpty()) {
-			File f = files.removeFirst();
-			if (!f.isDirectory()) {
-				f.delete();
-				continue;
-			}
-			File[] fs = f.listFiles();
-			if (fs == null || fs.length == 0) {
-				f.delete();
-				continue;
-			}
-			for (File subF : fs) {
-				files.addLast(subF);
-			}
-			files.addLast(f);
-		}
-	}
+    /**
+     * 获取所有的项目
+     *
+     * @return
+     */
+    public List<ProjectConfig> getProjects() {
+        File file = new File(projectDataDir);
+        if (!file.exists()) {
+            file.mkdirs();
+        }
+        if (!file.isDirectory()) {
+            return Lists.newArrayList();
+        }
+        return Lists.newArrayList(file.listFiles((dir, name) -> name.toLowerCase().endsWith(".json")))
+                .stream()
+                .map(item ->
+                        {
+                            try {
+                                return JSONObject.parseObject(Files.readAllBytes(Paths.get(item.toURI())), ProjectConfig.class);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            return (ProjectConfig) null;
+                        }
+                ).filter(item -> item != null).collect(Collectors.toList());
+    }
 
-	/**
-	 * 生成实体类
-	 *
-	 * @param projectName
-	 * @param entityName
-	 * @return
-	 */
-	public String genEntity(String projectName, String entityName) {
+    /**
+     * 删除项目，
+     *
+     * @param projectName
+     * @return
+     */
+    public int deleteProject(String projectName) {
+        File file = new File(projectDataDir, projectName.concat(".json"));
+        if (file.exists()) {
+            if (file.delete()) {
+                return 1;
+            }
+        }
+        return 0;
+    }
 
-		return null;
-	}
-
-	/**
-	 * 类型列表
-	 *
-	 * @return
-	 */
-	public List<TypeBean> getTypes() {
-		List<TypeBean> types = Lists.newArrayList();
-		types.add(new TypeBean("java.lang.String", "VARCHAR", 50));
-		types.add(new TypeBean("java.lang.Byte", "TINYINT", 50));
-		types.add(new TypeBean("java.lang.Integer", "INT", 4));
-		types.add(new TypeBean("java.lang.Long", "BIGINT", 11));
-		types.add(new TypeBean("java.lang.Boolean", "bit", 0));
-		types.add(new TypeBean("引用", "ref", 0));
-		types.add(new TypeBean("java.lang.Float", "FLOAT", 11));
-		types.add(new TypeBean("java.util.Date", "DATETIME", 11));
-		return types;
-	}
-
-	/**
-	 * 获取所有的项目
-	 *
-	 * @return
-	 */
-	public List<ProjectConfig> getProjects() {
-		File file = new File(projectDataDir);
-		if (!file.exists()) {
-			file.mkdirs();
-		}
-		if (!file.isDirectory()) {
-			return Lists.newArrayList();
-		}
-		return Lists.newArrayList(file.listFiles((dir, name) -> name.toLowerCase().endsWith(".json")))
-				.stream()
-				.map(item ->
-						{
-							try {
-								return JSONObject.parseObject(Files.readAllBytes(Paths.get(item.toURI())), ProjectConfig.class);
-							} catch (IOException e) {
-								e.printStackTrace();
-							}
-							return (ProjectConfig) null;
-						}
-				).filter(item -> item != null).collect(Collectors.toList());
-	}
-
-	/**
-	 * 删除项目，
-	 *
-	 * @param projectName
-	 * @return
-	 */
-	public int deleteProject(String projectName) {
-		File file = new File(projectDataDir, projectName.concat(".json"));
-		if (file.exists()) {
-			if (file.delete()) {
-				return 1;
-			}
-		}
-		return 0;
-	}
-
-	/**
-	 * 删除实体类
-	 *
-	 * @param projectName
-	 * @param entityName
-	 * @return
-	 */
-	public int deleteEntity(String projectName, String entityName) {
-		File file = new File(projectDataDir, projectName.concat(".json"));
-		try {
-			ProjectConfig config = JSONObject.parseObject(Files.readAllBytes(Paths.get(file.toURI())), ProjectConfig.class);
-			config.setEntitys(config.getEntitys().stream().filter(item ->
-					!item.getName().equals(entityName)
-			).collect(Collectors.toList()));
-			return save(config);
-		} catch (IOException e) {
-			e.printStackTrace();
-			return 0;
-		}
-	}
+    /**
+     * 删除实体类
+     *
+     * @param projectName
+     * @param entityName
+     * @return
+     */
+    public int deleteEntity(String projectName, String entityName) {
+        File file = new File(projectDataDir, projectName.concat(".json"));
+        try {
+            ProjectConfig config = JSONObject.parseObject(Files.readAllBytes(Paths.get(file.toURI())), ProjectConfig.class);
+            config.setEntities(config.getEntities().stream().filter(item ->
+                    !item.getName().equals(entityName)
+            ).collect(Collectors.toList()));
+            return save(config);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return 0;
+        }
+    }
 }

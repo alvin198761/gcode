@@ -1,6 +1,6 @@
 <template>
     <div>
-        <el-table :data="form.entitys" border
+        <el-table :data="form.entities" border
                   size="small">
             <el-table-column prop="type" label="类型"   width="180" placeholder="请选择类型" >
                 <template slot-scope="props">
@@ -25,9 +25,9 @@
                     <el-button type="text" size="small" @click="editDialog(props.row)" :disabled="props.row.type == 1">编辑属性
                     </el-button>
                     <el-button type="text" size="small"
-                               @click="removeArray(form.entitys,props.row)">删除
+                               @click="removeArray(form.entities,props.row)">删除
                     </el-button>
-                    <el-button type="text" size="small" @click="form.entitys.push({})">追加
+                    <el-button type="text" size="small" @click="form.entities.push({})">追加
                     </el-button>
                 </template>
             </el-table-column>

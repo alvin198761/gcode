@@ -20,12 +20,9 @@ import org.springframework.stereotype.Repository;
 
 import javax.annotation.PostConstruct;
 import java.io.File;
-import java.io.IOException;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import java.util.regex.Matcher;
@@ -133,16 +130,16 @@ public class CodeDao extends BaseDao {
 			JSONObject jsonObject = new JSONObject(item);
 			FieldConfig fieldConfig = new FieldConfig();
 			fieldConfig.setName(jsonObject.getString("COLUMN_NAME"));
-			fieldConfig.setSql_type(jsonObject.getString("COLUMN_TYPE"));
+			fieldConfig.setSqlType(jsonObject.getString("COLUMN_TYPE"));
 			String regex = "([^()]+)[(](\\d+)[)]";
 			Pattern pattern = Pattern.compile(regex);
-			Matcher m = pattern.matcher(fieldConfig.getSql_type());
+			Matcher m = pattern.matcher(fieldConfig.getSqlType());
 			if (m.find()) {
 				fieldConfig.setType(SqlUtil.typeMap(m.group(1)));
 				fieldConfig.setLength(Integer.valueOf(m.group(2)));
 				System.out.println(m.group(1) + "----" + SqlUtil.typeMap(m.group(1)));
 			} else {
-				fieldConfig.setType(SqlUtil.typeMap(fieldConfig.getSql_type()));
+				fieldConfig.setType(SqlUtil.typeMap(fieldConfig.getSqlType()));
 //				fieldConfig.setLength(0);
 			}
 			fieldConfig.setIsNull(jsonObject.getString("IS_NULLABLE").equals("NO") ? "NOT NULL" : "NULL");

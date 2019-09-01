@@ -35,28 +35,28 @@ public class SqlUtil {
     // @Deprecated
     public static String ArrayToIn(String ids) {// 字符IN字符窜
         String[] arr = ids.split(",");
-        return " IN ('" + joiner(arr, ",") + "')";
+        return " IN ('" + joiner(arr, "','") + "')";
     }
 
     /**
      * @方法说明:把组数拼接成IN语句
      */
     public static String ArrayToIn(Long ids[]) {
-        return " IN ('" + joiner(ids,",") + "')";
+        return " IN ('" + joiner(ids,"','") + "')";
     }
 
     /**
      * @方法说明:把组数拼接成IN语句
      */
     public static String ArrayToIn(Integer ids[]) {
-        return " IN ('" + joiner(ids,",") + "')";
+        return " IN ('" + joiner(ids,"','") + "')";
     }
 
     /**
      * @方法说明:把List拼接成IN语句(数值型)
      */
     public static String ArrayToIn(List<?> ids) {// 数值IN字符窜
-        return " ('" + joiner(ids,",") + "')";
+        return " ('" + joiner(ids,"','") + "')";
     }
 
     /**

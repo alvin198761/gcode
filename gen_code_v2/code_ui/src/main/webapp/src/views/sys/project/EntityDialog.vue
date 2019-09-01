@@ -31,10 +31,12 @@
                     <el-select v-model="props.row.ref_name" :disabled="props.row.type != 'ref'"
                                @change="(val) => changeRefName(val,props.row)" placeholder="请选择类型引用类">
                         <el-option size="small"
-                                   v-for="item in project.entitys"
+                                   v-for="item in project.entities"
                                    :key="item.name"
                                    :label="item.name"
-                                   :value="item.name">
+                                   :value="item.name"
+                                   :disabled="item.name == form.name"
+                        >
                             <span style="float: left">{{ item.name }}({{item.type == 0 ? '实体类' : '字典常量'}})</span>
                         </el-option>
                     </el-select>
@@ -155,7 +157,7 @@
                     },
                     {
                         value: 'ref',
-                        label: 'ref'
+                        label: '引用'
                     },
                 ]
             }
@@ -262,10 +264,10 @@
                     this.$message.error("标签不能为空")
                     return ;
                 }
-                for (let i = 0; i < this.project.entitys.length; i++) {
-                    let entity = this.project.entitys[i];
+                for (let i = 0; i < this.project.entities.length; i++) {
+                    let entity = this.project.entities[i];
                     if (entity.name == this.entity.name) {
-                        this.project.entitys.splice(i, 1, this.entity);
+                        this.project.entities.splice(i, 1, this.entity);
                         break;
                     }
                 }

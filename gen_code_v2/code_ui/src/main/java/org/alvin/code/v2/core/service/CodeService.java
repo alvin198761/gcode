@@ -115,7 +115,6 @@ public class CodeService {
             //v2 需要兼容的东西
             jsonObject.put("paramsFieldsV2", Utils.addV2(fList, "vo.get", "(),", false));
             jsonObject.put("updateParamsV2", Utils.addV2(fList, "vo.get", "(),", true) + ",vo.get" + idField.getUpper_camel() + "()");
-
             //其他附属数据
             List<String> importList = Lists.newArrayList();
             importList.add(Utils.dateImport(fList));
@@ -125,7 +124,7 @@ public class CodeService {
             jsonObject.put("dollar", "$");
             jsonObject.put("sharp", "#");
             //java 代码生成
-            parseVmTemplate(vms, outPath, jsonObject, cond, low, suffix, fileEngine);
+            VelocityUtil.parseEntityTemplate(vms, outPath, jsonObject, cond.getPackageName(), low, suffix, fileEngine);
         }
         Map<String, Object> res = Maps.newHashMap();
         File file = new File(outPath);
@@ -135,42 +134,6 @@ public class CodeService {
         return new RestfullResp<>(res);
     }
 
-
-    /**
-     * 只生成java 类，目前
-     *
-     * @param vms
-     * @param baseUrl
-     * @param jsonObject
-     * @param cond
-     * @param low
-     * @param suffix
-     * @throws IOException
-     */
-    public void parseVmTemplate(List<String> vms, String baseUrl, JSONObject jsonObject, CodeCond cond, String low, String suffix, VelocityEngine engine) throws IOException {
-        //循环模板，进行合并
-        for (String vm : vms) {
-            //获得文件名称
-            log.info("template file :" + vm);
-            File baseDir = new File(baseUrl, vm);
-            //计算包名
-            String pName = cond.getPackageName().concat(".").concat(low);
-            File fileName = new File(vm);
-            String vmName = fileName.getName().substring(0, fileName.getName().lastIndexOf(suffix));
-            String fileType = vmName.substring(vmName.lastIndexOf("_")).replace('_', '.');
-            String upp = vmName.replaceAll("Model", jsonObject.getString("clsUpp"));
-            upp = upp.substring(0, upp.length() - fileType.length());
-            jsonObject.put("upp", upp);
-            String path = baseDir.getParentFile().getAbsolutePath().concat("/").concat(low).concat("/").concat(upp);
-
-            log.info("target file :" + path + fileType);
-            log.info("=================start VelocityEngine==================");
-            jsonObject.put("pName", pName);
-            Files.createDirectories(Paths.get(path).getParent());
-            VelocityUtil.parse(vm, jsonObject, path + fileType, engine);
-            log.info("=================end VelocityEngine==================");
-        }
-    }
 
     /**
      * @功能描述: 查询数据库中表名列表
