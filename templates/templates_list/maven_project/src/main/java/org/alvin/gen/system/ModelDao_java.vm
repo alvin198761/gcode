@@ -1,0 +1,164 @@
+package ${packageName};
+
+import com.google.common.base.Joiner;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import org.alvin.code.jdbc.JDBCBaseDao;
+import org.alvin.code.jdbc.beans.Page;
+import org.alvin.code.jdbc.utils.SqlUtil;
+import org.alvin.mini_inject.annotations.MiniComponent;
+
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+/**
+* @类说明: ${entity.labelName}--数据逻辑层
+* @author: ${auth}
+* @date : ${time}
+**/
+@MiniComponent
+public class ${entity.var.upperCamel}Dao extends JDBCBaseDao {
+
+    /**
+     * @方法说明： 新增${entity.labelName}记录
+     */
+    public int save(${entity.var.upperCamel} vo) throws SQLException {
+        StringBuilder sql = new StringBuilder();
+        sql.append("INSERT INTO ${entity.var.tableName} (${entity.var.insertFields}) ");
+        sql.append(" VALUES (${entity.var.insertValuesFields})");
+        Object[] params ={ ${entity.var.paramsFields} };
+        System.out.println(SqlUtil.showSql(sql.toString(), params));//显示SQL语句
+        return this.update(sql.toString(), params);
+    }
+
+    /**
+     * @方法说明：批量插入${entity.labelName}记录
+     */
+    public int[] insertBatch(List<${entity.var.upperCamel}> list) throws SQLException {
+        StringBuilder sql = new StringBuilder();
+        sql.append("INSERT INTO ${entity.var.tableName} (${entity.var.insertFields}) ");
+        sql.append(" VALUES (${entity.var.insertValuesFields})");
+        List<Object[]> params = list.stream().map(vo -> {
+            Object[] p = {${entity.var.paramsFields}};
+            return p;
+        }).collect(Collectors.toList());
+        return this.update(sql.toString(), params);
+    }
+
+    /**
+     * @方法说明：物理删除${entity.labelName}记录(多条)
+     */
+    public int delete(${entity.var.id.allTypeName} [] ids) throws SQLException {
+        String sql = "DELETE FROM ${entity.var.tableName} WHERE ${entity.var.id.colName} " + SqlUtil.ArrayToIn(ids);
+        return this.update(sql);
+    }
+
+    /**
+     * @方法说明：更新${entity.labelName}记录
+     */
+    public int update(${entity.var.upperCamel} vo) throws SQLException {
+       StringBuilder sql = new StringBuilder();
+        sql.append("UPDATE ${entity.var.tableName} SET ${entity.var.updateFields} ");
+        sql.append(" WHERE ${entity.var.id.colName}=? ");
+        Object[] params = {${entity.var.updateParams}};
+        return this.update(sql.toString(), params);
+    }
+
+
+    /**
+     * @方法说明：更新${entity.labelName}记录,不为空的都更新掉
+     */
+    public int updateNotNull(${entity.var.upperCamel} vo) throws SQLException {
+        List<String> fields = new ArrayList<>();
+        List<Object> values = new ArrayList<>();
+        #foreach ($fie in $entity.fList)
+        if(vo.get${fie.upperCamel}() != null){
+        	fields.add(" ${fie.colName} = ? ");
+        	values.add(vo.get${fie.upperCamel}());
+        }	
+        #end
+        if(fields.isEmpty()){
+        	return 0;
+        }
+        StringBuilder sql = new StringBuilder();
+        sql.append("UPDATE ${entity.var.tableName} SET ");
+        sql.append(Joiner.on(",").join(fields));
+        sql.append(" WHERE ${entity.var.id.colName}=? ");
+        values.add(vo.get${entity.var.id.upperCamel}());
+        Object[] params = values.toArray();
+        return this.update(sql.toString(), params);
+    }
+
+    /**
+     * @方法说明：按条件查询分页${entity.labelName}列表
+     */
+    public Page<${entity.var.upperCamel}> queryPage(${entity.var.upperCamel}Cond cond) throws SQLException {
+        StringBuilder sb = new StringBuilder("SELECT ");
+        sb.append(" ${entity.var.selectItems} ");
+        sb.append(" FROM ${entity.var.tableName} t ");
+        sb.append(" WHERE 1=1 ");
+        sb.append(cond.getCondition());
+        sb.append(cond.getOrderSql());//增加排序子句;
+		System.out.println(SqlUtil.showSql(sb.toString(), cond.getArray()));//显示SQL语句
+        return queryPage(sb.toString(), cond, ${entity.var.upperCamel}.class);
+    }
+
+    /**
+     * @方法说明：按条件查询不分页${entity.labelName}列表
+     */
+    public List<${entity.var.upperCamel}> queryList(${entity.var.upperCamel}Cond cond) throws SQLException {
+        StringBuilder sb = new StringBuilder("SELECT ");
+        sb.append(" ${entity.var.selectItems} ");
+        sb.append(" FROM ${entity.var.tableName} t ");
+        sb.append(" WHERE 1=1 ");
+        sb.append(cond.getCondition());
+        sb.append(cond.getOrderSql());//增加排序子句;
+		System.out.println(SqlUtil.showSql(sb.toString(), cond.getArray()));//显示SQL语句
+        return this.queryList(sb.toString(), cond, ${entity.var.upperCamel}.class);
+    }
+
+    /**
+     * @方法说明：按条件查询一个${entity.labelName}对象
+     */
+    public ${entity.var.upperCamel} findOne(${entity.var.upperCamel}Cond cond) throws SQLException {
+        StringBuilder sb = new StringBuilder("SELECT ");
+        sb.append(" ${entity.var.selectItems} ");
+        sb.append(" FROM ${entity.var.tableName} t ");
+        sb.append(" WHERE 1=1 ");
+        sb.append(cond.getCondition());
+        sb.append(" limit 0,1");
+        return this.findOne(sb.toString(), cond.getArray(), ${entity.var.upperCamel}.class);
+    }
+
+    /**
+     * @方法说明：按ID查找单个${entity.labelName}实体
+     */
+    public ${entity.var.upperCamel} findById(${id.allTypeName} id) throws SQLException {
+        StringBuilder sb = new StringBuilder("SELECT ");
+        sb.append(" ${entity.var.selectItems} ");
+        sb.append(" FROM ${entity.var.tableName} t ");
+        sb.append(" WHERE 1=1 ");
+        sb.append(" AND t.${id.name}=?");
+        return this.findOne(sb.toString(), new Object[]{id}, ${entity.var.upperCamel}.class);
+    }
+
+    /**
+     * @方法说明：按条件查询${entity.labelName}记录个数
+     */
+    public long queryCount(${entity.var.upperCamel}Cond cond) throws SQLException {
+        String countSql = "SELECT COUNT(1) FROM ${entity.var.tableName} t WHERE 1=1 " + cond.getCondition();
+        return this.findCell(countSql, cond.getArray(), Long.class);
+    }
+
+    /**
+     * @方法说明：按条件查询收寄信息记录个数
+     */
+    public int deleteLogic(${id.allTypeName} [] ids) throws SQLException {
+        String sql = "UPDATE ${entity.var.tableName} SET status=? WHERE ${entity.var.id.colName}" + SqlUtil.ArrayToIn(ids);
+        return this.update(sql, new Object[]{-1});
+    }
+
+}

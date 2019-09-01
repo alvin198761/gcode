@@ -1,0 +1,48 @@
+package ${packageName} ;
+
+import lombok.Getter;
+import lombok.Setter;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
+import org.alvin.code.jdbc.beans.BaseCondition;
+import java.util.List;
+
+
+/**
+* @类说明: ${entity.labelName}--查询条件实体类
+* @author: ${auth}
+* @date : ${time}
+**/
+@Setter
+@Getter
+@Builder
+@Accessors(chain = true)
+@AllArgsConstructor
+@NoArgsConstructor 
+public class ${entity.var.upperCamel}Cond extends BaseCondition {
+
+
+    /**
+    * @方法说明: 拼加自定义条件
+    **/
+    @Override
+    public void addCondition() {
+    #foreach ($fie in $entity.fields)
+        #if($fie.type == "String")
+        add(${fie.lowerCamel} , " AND t.${fie.colName} LIKE ? " ,3);
+        #else
+        add(${fie.lowerCamel} , " AND t.${fie.colName} = ? " );
+        #end
+    #end
+     add(ids, "AND t.id IN ");
+    }
+
+    //feilds
+    #foreach ($fie in $entity.fields)
+    private  ${fie.allTypeName}  ${fie.lowerCamel} ;//  ${fie.remark}
+    #end
+
+    private List<${$entity.var.id.allTypeName}> ids;// 主键列表
+}

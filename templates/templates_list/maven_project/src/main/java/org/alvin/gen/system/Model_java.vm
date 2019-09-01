@@ -1,0 +1,29 @@
+package ${packageName} ;
+
+import lombok.Getter;
+import lombok.Setter;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
+/**
+* @类说明: ${entity.labelName}--实体类
+* @author: ${auth}
+* @date : ${time}
+**/
+@Setter
+@Getter
+@Builder
+@Accessors(chain = true)	
+@AllArgsConstructor
+@NoArgsConstructor
+public class ${entity.var.upperCamel} {
+
+    //数据库中的字段
+    #foreach ($fi in $entity.fields)
+    private ${fi.allTypeName} ${fi.lowerCamel} ;//  ${fi.remark}
+    #end
+
+    //此处可添加查询显示辅助字段
+
+}
