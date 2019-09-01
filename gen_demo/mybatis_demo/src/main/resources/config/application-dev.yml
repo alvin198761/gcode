@@ -1,0 +1,21 @@
+db_name : erp_laozhang
+db_port: 3306
+db_ip: 47.98.132.116:${db_port}
+
+spring:
+  datasource:
+    driverClassName: com.mysql.jdbc.Driver
+    url: jdbc:mysql://${db_ip}/${db_name}?useUnicode=true&characterEncoding=utf-8&useSSL=false
+    username: root
+    password: T_dl123456
+
+
+mybatis:
+  mapper-locations: classpath*:mbmapper/*.xml
+  configuration:
+    call-setters-on-nulls: true
+    cache-enabled: true
+
+logging:
+    level:
+      org.alvin.mybatis.system: debug
