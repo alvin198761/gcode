@@ -1,7 +1,5 @@
 import {post} from '../utils/http';
 
-export  default {
-
 #foreach($fun in $methods)
 /**
  * ${fun.note}
@@ -11,9 +9,7 @@ export  default {
  #end
  * @returns ${fun.description}
  */
-${fun.name}(payload){
+export const ${fun.name} = (payload) =>{
     return post(${fun.url},payload);
 },
 #end
-
-}
