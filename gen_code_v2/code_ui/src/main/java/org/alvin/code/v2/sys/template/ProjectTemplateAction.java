@@ -14,11 +14,8 @@ import javax.swing.filechooser.FileSystemView;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Enumeration;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * 项目模板业务

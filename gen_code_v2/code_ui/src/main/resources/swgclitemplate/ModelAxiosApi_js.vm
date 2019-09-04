@@ -1,0 +1,19 @@
+import {post} from '../utils/http';
+
+export  default {
+
+#foreach($fun in $methods)
+/**
+ * ${fun.note}
+ * @params payload
+ #foreach($param in $fun.params)
+ *  @param ${param.name} | 是否必传： ${param.required} | 描述：${param.description} | 前端类型： ${param.type} |传参类型： ${param.in}
+ #end
+ * @returns ${fun.description}
+ */
+${fun.name}(payload){
+    return post(${fun.url},payload);
+},
+#end
+
+}

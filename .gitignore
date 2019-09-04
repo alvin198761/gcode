@@ -1,6 +1,8 @@
 *.iml
-gen_code_v2/code_jdbc/target/classes/org/alvin/code/jdbc/JDBCBaseDao.class
-gen_code_v2/code_jdbc/target/code_jdbc-2.0-SNAPSHOT.jar
-gen_code_v2/code_jdbc/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst
-gen_code_v2/code_jdbc/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst
+gen_code_v2/code_jdbc/target/
 gen_code_v2/code_ui/code_ui.iml
+gen_code_v2/code_ui/src/main/resources/static
+gen_code_v2/code_ui/src/main/resources/templates
+code_ui/src/main/resources/static
+code_ui/src/main/resources/templates
+*.class
