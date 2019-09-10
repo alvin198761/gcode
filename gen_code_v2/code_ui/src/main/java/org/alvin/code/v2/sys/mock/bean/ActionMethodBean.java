@@ -1,7 +1,10 @@
 package org.alvin.code.v2.sys.mock.bean;
 
 import com.alibaba.fastjson.JSONObject;
+import com.google.common.collect.Lists;
 import lombok.Data;
+
+import java.util.List;
 
 @Data
 public class ActionMethodBean {
@@ -19,5 +22,9 @@ public class ActionMethodBean {
 //	private List<Map<Integer, String>> responseMsg;//响应错误信息
 //	private String paramsStr;//显示的参数拼装结果
 	private String consumes;
+	//是否有路径参数
+	private boolean hasPath = false;
+	//路径参数集合
+	private String pathParams;
 
 }

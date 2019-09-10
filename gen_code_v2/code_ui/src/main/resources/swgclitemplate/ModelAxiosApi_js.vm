@@ -9,7 +9,7 @@ import {post} from '../utils/http';
  #end
  * @returns ${fun.description}
  */
-export const ${fun.name} = (payload) =>{
+export const ${fun.name} = (${fun.pathParams}payload) =>{
     return post(${fun.url},payload);
 },
 #end

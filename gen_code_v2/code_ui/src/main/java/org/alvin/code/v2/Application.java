@@ -5,6 +5,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ComponentScans;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 @SpringBootApplication
 @ComponentScans({
 		@ComponentScan("org.alvin.*")
