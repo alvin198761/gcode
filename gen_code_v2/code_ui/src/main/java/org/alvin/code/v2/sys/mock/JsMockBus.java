@@ -157,7 +157,7 @@ public class JsMockBus implements InitializingBean {
         //处理path 参数
         if (methodBean.isHasPath()) {
             int index = url.indexOf("/{");
-            String tmpUrl = url.substring(0, index - 1);
+            String tmpUrl = url.substring(0, index );
             if(!pathParams.isEmpty()){
                 tmpUrl += "'";
             }
