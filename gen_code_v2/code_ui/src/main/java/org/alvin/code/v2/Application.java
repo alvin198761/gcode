@@ -5,17 +5,16 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ComponentScans;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 @SpringBootApplication
 @ComponentScans({
-		@ComponentScan("org.alvin.*")
+        @ComponentScan("org.alvin.*")
 })
 public class Application {
 
-	public static void main(String[] args) {
+    public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);
-	}
+    }
 
 }
+
+
