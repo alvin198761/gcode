@@ -72,7 +72,7 @@ import {Message, Modal} from 'iview';
           if (!valid) {
             return;
           }
-          that.${dollar}http.postBody("/api/${lowUpp}/" + that.dialogMode, JSON.stringify(that.form)).then(res => {
+          that.${dollar}postBody("/api/${lowUpp}/" + that.dialogMode, JSON.stringify(that.form)).then(res => {
           that.show = false;
           that.refresh();
           Message.success({ content: '保存${cName}信息成功'});
