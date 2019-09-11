@@ -11,5 +11,5 @@ import {post} from '../utils/http';
  */
 export const ${fun.name} = (${fun.pathParams}payload) =>{
     return post(${fun.url},payload);
-},
+};
 #end
