@@ -46,6 +46,8 @@ public class CodeService {
     private VmFileService vmFileService;
     @Value("${db_name}")
     private String table_schema;
+    @Autowired
+    private JDBC2MbTypeService jdbc2MbTypeService;
 
     private static final File outBaseDir = new File("../../templates/gen_templates/codetemplate");
 
@@ -74,6 +76,7 @@ public class CodeService {
                 } else {
                     item.setType(item.getAllTypeName());
                 }
+                item.setMb_db_type(this.jdbc2MbTypeService.getType(item.getDbType()));
                 return item;
             }).collect(Collectors.toList());// 字段列表
             String cName = table.getC_name();// 表注释中文名

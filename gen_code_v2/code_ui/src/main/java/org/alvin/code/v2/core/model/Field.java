@@ -20,4 +20,6 @@ public class Field {
 	private String dbType; //数据库类型
 	private String allTypeName;//类型全称
 
+	private String mb_db_type ;//mybatis 数据库类型
+
 }

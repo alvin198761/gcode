@@ -6,20 +6,21 @@
                         <i-col>
                             #foreach($field in $fList)
                             <FormItem label="${field.comment}" prop="${field.lower_camel}">
-                            #if ($field.allTypeName == "java.util.Date")
-                            <DatePicker type="date" placeholder="${field.comment}" v-model="form.${field.lower_camel}" clearable></DatePicker>
+                            #if($field.name == $id.name)
+                            #elseif ($field.allTypeName == "java.util.Date")
+                            <DatePicker type="date" placeholder="${field.comment}" v-model="form.${field.lower_camel}" style="width: 100%" clearable></DatePicker>
                              #elseif($field.allTypeName == "java.lang.Long")
-                            <InputNumber placeholder="${field.comment}" v-model="form.${field.lower_camel}" clearable></InputNumber>
+                            <InputNumber placeholder="${field.comment}" v-model="form.${field.lower_camel}"  style="width: 100%"  clearable></InputNumber>
                             #elseif($field.allTypeName == "java.lang.Integer")
-                            <InputNumber placeholder="${field.comment}" v-model="form.${field.lower_camel}" clearable></InputNumber>
+                            <InputNumber placeholder="${field.comment}" v-model="form.${field.lower_camel}"  style="width: 100%"  clearable></InputNumber>
                             #elseif($field.allTypeName == "java.lang.Integer")
-                            <InputNumber placeholder="${field.comment}" v-model="form.${field.lower_camel}" clearable></InputNumber>
+                            <InputNumber placeholder="${field.comment}" v-model="form.${field.lower_camel}"  style="width: 100%" clearable></InputNumber>
                             #elseif($field.allTypeName == "java.lang.Double")
-                            <InputNumber placeholder="${field.comment}" v-model="form.${field.lower_camel}" clearable></InputNumber>
+                            <InputNumber placeholder="${field.comment}" v-model="form.${field.lower_camel}" style="width: 100%"  clearable></InputNumber>
                             #elseif($field.allTypeName == "java.lang.Short")
-                            <InputNumber placeholder="${field.comment}" v-model="form.${field.lower_camel}" clearable></InputNumber>
+                            <InputNumber placeholder="${field.comment}" v-model="form.${field.lower_camel}" style="width: 100%" clearable></InputNumber>
                             #elseif($field.allTypeName == "java.lang.Byte")
-                            <Select placeholder="${field.comment}" v-model="form.${field.lower_camel}" clearable>
+                            <Select placeholder="${field.comment}" v-model="form.${field.lower_camel}" style="width: 100%"  clearable>
                             <Option   value="-1"  >-请选择-</Option>
                             </Select>
                             #else
@@ -72,7 +73,7 @@ import {Message, Modal} from 'iview';
           if (!valid) {
             return;
           }
-          that.${dollar}postBody("/api/${lowUpp}/" + that.dialogMode, JSON.stringify(that.form)).then(res => {
+          that.${dollar}postBody("/api/${lowUpp}/" + that.dialogMode, that.form).then(res => {
           that.show = false;
           that.refresh();
           Message.success({ content: '保存${cName}信息成功'});
