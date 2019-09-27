@@ -119,7 +119,11 @@
 		<trim   suffixOverrides=",">
 		#foreach ($fi in $fList)
 			<if test="${fi.lower_camel} != null">
-				and t.`${fi.name}` = ${sharp}{${fi.lower_camel},jdbcType=${fi.mb_db_type}},
+				#if($fi.allTypeName == 'java.lang.String')
+					and t.`${fi.name}` like CONCAT('%',${sharp}{${fi.lower_camel},jdbcType=${fi.mb_db_type}},'%' ) ,
+				#else
+					and t.`${fi.name}` = ${sharp}{${fi.lower_camel},jdbcType=${fi.mb_db_type}},
+				#end
 			</if>
 		 #end  
 		 </trim>
@@ -134,7 +138,11 @@
 		<trim   suffixOverrides=",">
 		#foreach ($fi in $fList)
 			<if test="${fi.lower_camel} != null">
-				and t.`${fi.name}` = ${sharp}{${fi.lower_camel},jdbcType=${fi.mb_db_type}},
+				#if($fi.allTypeName == 'java.lang.String')
+					and t.`${fi.name}` like CONCAT('%',${sharp}{${fi.lower_camel},jdbcType=${fi.mb_db_type}},'%' ) ,
+				#else
+					and t.`${fi.name}` = ${sharp}{${fi.lower_camel},jdbcType=${fi.mb_db_type}},
+				#end
 			</if>
 		 #end  
 		 </trim>
@@ -155,7 +163,11 @@
 		<trim   suffixOverrides=",">
 		#foreach ($fi in $fList)
 			<if test="${fi.lower_camel} != null">
-				and t.`${fi.name}` = ${sharp}{${fi.lower_camel},jdbcType=${fi.mb_db_type}},
+				#if($fi.allTypeName == 'java.lang.String')
+					and t.`${fi.name}` like CONCAT('%',${sharp}{${fi.lower_camel},jdbcType=${fi.mb_db_type}},'%' ) ,
+				#else
+					and t.`${fi.name}` = ${sharp}{${fi.lower_camel},jdbcType=${fi.mb_db_type}},
+				#end
 			</if>
 		 #end  
 		 </trim>

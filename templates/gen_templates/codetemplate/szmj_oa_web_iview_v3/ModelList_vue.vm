@@ -70,7 +70,7 @@ import ${clsUpp}ListExpand from './${clsUpp}ListExpand.vue';
       const that = this;
       return {
         tableHeader: [
-          { type: 'expand',  width: 50, render: (h, params) => { return h(${clsUpp}Expand, {  props: {row: params.row}  })  }  },
+          { type: 'expand',  width: 50, render: (h, params) => { return h(${clsUpp}ListExpand, {  props: {row: params.row}  })  }  },
           #foreach($field in $fList)
                   {title: '${field.comment}', key: '${field.lower_camel}', slot:'col_${field.lower_camel}' },
           #end

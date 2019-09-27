@@ -52,6 +52,7 @@ public class CodeService {
     private static final File outBaseDir = new File("../../templates/gen_templates/codetemplate");
 
     public RestfullResp<Map<String, Object>> create(CodeCond cond) throws Exception {
+        cond.setPackageName("com.szmj.logistics.energy_calc.system");
         String suffix = ".vm";
         String dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
 

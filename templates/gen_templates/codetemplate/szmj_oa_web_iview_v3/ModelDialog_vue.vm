@@ -5,9 +5,9 @@
                   <Row>
                         <i-col>
                             #foreach($field in $fList)
+                            #if($field.name != $id.name)
                             <FormItem label="${field.comment}" prop="${field.lower_camel}">
-                            #if($field.name == $id.name)
-                            #elseif ($field.allTypeName == "java.util.Date")
+                            #if ($field.allTypeName == "java.util.Date")
                             <DatePicker type="date" placeholder="${field.comment}" v-model="form.${field.lower_camel}" style="width: 100%" clearable></DatePicker>
                              #elseif($field.allTypeName == "java.lang.Long")
                             <InputNumber placeholder="${field.comment}" v-model="form.${field.lower_camel}"  style="width: 100%"  clearable></InputNumber>
@@ -27,6 +27,7 @@
                             <Input placeholder="${field.comment}" v-model="form.${field.lower_camel}" clearable/>
                             #end
                             </FormItem>
+                            #end
                             #end
                             </i-col>
                       </Row>

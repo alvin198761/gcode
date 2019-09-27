@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 public abstract class JDBCBaseDao {
 
 
-    private static final int BATCH_SIZE = 2;
+    private static final int BATCH_SIZE = 1000;
 
 
     public int update(String sql) throws SQLException {
