@@ -55,6 +55,7 @@
         <repository>
             <id>alvin_maven_repo</id>
             <url>file:E:/github_dir_2018/maven-repo/repository/</url>
+            <!--<url>file:D:/tangzhichao/github_workspace/maven-repo/repository/</url>-->
         </repository>
     </distributionManagement>
 
