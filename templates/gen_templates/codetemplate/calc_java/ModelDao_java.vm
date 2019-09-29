@@ -9,8 +9,6 @@ import org.alvin.code.gen.utils.SqlUtil;
 import org.alvin.code.gen.beans.BaseDao;
 import org.alvin.code.gen.utils.Page;
 import com.google.common.base.Joiner;
-import com.szmiaojia.oa.common.CommCons;
-
 /**
 * @类说明: ${cName}--数据访问层
 * @author: ${auth}
@@ -37,7 +35,7 @@ public class ${clsUpp}Dao extends BaseDao{
         StringBuilder sql = new StringBuilder();
         sql.append("REPLACE INTO ${tName} (${replaceFields})");
         sql.append(" VALUES ${replaceValuesFields} ");
-        Object[] params ={ ${paramsFields_v2} };
+        Object[] params ={ ${paramsFieldsV2} };
         //logger.info(SqlUtil.showSql(sql.toString(), params));//显示SQL语句
         return jdbcTemplate.update(sql.toString(), params);
     }
@@ -71,7 +69,7 @@ public class ${clsUpp}Dao extends BaseDao{
         StringBuilder sql = new StringBuilder();
         sql.append("UPDATE ${tName} SET ${updateFields} ");
         sql.append(" WHERE ${idName}=? ");
-        Object[] params = {${updateParams_v2}};
+        Object[] params = {${updateParamsV2}};
         return jdbcTemplate.update(sql.toString(), params);
       }
 
@@ -178,7 +176,7 @@ public class ${clsUpp}Dao extends BaseDao{
     */
     public int deleteLogic(${idType} ids[]) {
     	String sql = "UPDATE ${tName} SET status=? WHERE ${idName}" + SqlUtil.ArrayToIn(ids);
-    	return jdbcTemplate.update(sql ,  new Object[]{CommCons.STATUS_REMOVE});
+    	return jdbcTemplate.update(sql ,  new Object[]{-1});
     }
 
     /**
