@@ -1,7 +1,6 @@
 package ${pName};
 import java.util.List;
 import org.alvin.code.gen.utils.Page;
-import com.github.pagehelper.PageHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -57,9 +56,7 @@ public class ${clsUpp}Service {
 	* @方法说明： 按条件查询分页${cName}列表
 	*/
 	public Page<${clsUpp}> queryPage(${clsUpp}Cond cond) {
-		com.github.pagehelper.Page page = PageHelper.startPage(cond.getPage(), cond.getSize(), true);
-		dao.queryList(cond);
-		return new Page(page.getPageNum() ,page.getPageSize() ,page.getTotal() ,page.getResult());
+		return this.dao.queryPage(cond);
 	}
 
 	/**
@@ -89,12 +86,5 @@ public class ${clsUpp}Service {
 	public long queryCount(${clsUpp}Cond cond) {
 		return dao.queryCount(cond);
 	}
-	
-	/**
-	* @方法说明： 批量添加 ${cName}
-	*/
-	@Transactional
-	public int insertBatch(List<${clsUpp}> list){
-		return dao.insertBatch(list);
-	}
+
 }
