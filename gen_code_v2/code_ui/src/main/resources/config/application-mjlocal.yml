@@ -2,12 +2,15 @@ db_name : mj_lng_calc
 db_port: 3306
 db_ip: localhost:${db_port}
 
+
 spring:
   datasource:
     driverClassName: com.mysql.jdbc.Driver
     url: jdbc:mysql://${db_ip}/${db_name}?useUnicode=true&characterEncoding=utf-8&useSSL=false
     username: root
     password:
+
+
 
 #server: 
 #    ssl: 

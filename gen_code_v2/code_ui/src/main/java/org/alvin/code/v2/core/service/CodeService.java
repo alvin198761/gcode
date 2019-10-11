@@ -108,7 +108,7 @@ public class CodeService {
             //各种参数追加
             jsonObject.put("selectFields", Utils.add(fList, "t.", ",", false, "select"));
             jsonObject.put("insertFields", Utils.add(fList, "", ",", true, "insert"));
-            jsonObject.put("insertValuesFields", Utils.add(fList, ":", ",", true, "insert"));
+            jsonObject.put("insertValuesFields", Utils.addV2(fList, ":", ",", true, "insert"));
             jsonObject.put("replaceFields", Utils.add(fList, "", ",", false, "sql"));
             jsonObject.put("replaceValuesFields", Utils.add(fList));
             jsonObject.put("paramsFields", Utils.addV1(fList, "vo.get", "(),", false));
