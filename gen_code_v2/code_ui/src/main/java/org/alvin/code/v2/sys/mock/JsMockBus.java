@@ -10,6 +10,7 @@ import org.alvin.code.v2.sys.mock.bean.ActionMethodBean;
 import org.alvin.code.v2.sys.mock.bean.JSMockApiConfig;
 import org.alvin.code.v2.sys.mock.service.HttpClientService;
 import org.alvin.utils.ZipUtils;
+import org.apache.velocity.app.VelocityEngine;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -51,7 +52,9 @@ public class JsMockBus implements InitializingBean {
         String dir = "D:/mock_gen_dir";
         new File(dir).mkdirs();
 
-        String templateName = "/swgclitemplate/Model" + config.getCtype() + "Api_js.vm";
+        String templateName = "swgclitemplate/Model" + config.getCtype() + "Api_js.vm";
+        File outBaseDir = new File("../../templates/gen_templates");
+        VelocityEngine engine = VelocityUtil.fileVelocityEngine(outBaseDir.getAbsolutePath());
         config.getTags().stream().forEach(item -> {
             ActionBean actionBean = new ActionBean();
             actionBean.setAuthor("唐植超");
@@ -60,7 +63,7 @@ public class JsMockBus implements InitializingBean {
             actionBean.setNote(item.getString("description"));
             createActionMethods(actionBean, jsonObject.getJSONObject("paths"));
             File output = new File(dir + "/" + actionBean.getActionName() + ".js");
-            VelocityUtil.parse(templateName, actionBean, output.getAbsolutePath(), VelocityUtil.classPathVelocityEngine());
+            VelocityUtil.parse(templateName, actionBean, output.getAbsolutePath(),engine);
         });
         String file = "D:/swagger_api_client_mock.zip";
         ZipUtils.doCompress(dir, file);

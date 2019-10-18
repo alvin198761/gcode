@@ -141,7 +141,9 @@ public class ProjectService {
         entityConfig.put("entitys", projectConfig.getEntities());
         entityConfig.put("project", projectConfig);
         //生成sql文件
-        String content = VelocityUtil.parse("/sqltemplates/Project_db_table.vm", entityConfig, VelocityUtil.classPathVelocityEngine());
+        File outBaseDir = new File("../../templates/gen_templates");
+        VelocityEngine engine = VelocityUtil.fileVelocityEngine(outBaseDir.getAbsolutePath());
+        String content = VelocityUtil.parse("sqltemplates/Project_db_table.vm", entityConfig, engine);
         Path sqlPath = Paths.get(prjectOutDir, projectConfig.getName(), projectConfig.getName().concat(".sql"));
         Files.write(sqlPath, content.getBytes("utf-8"));
         //执行sql

@@ -184,7 +184,10 @@ public class CodeService {
      * @return
      */
     public String designPreview(EntityConfig entityConfig) throws IOException {
-        return VelocityUtil.parse("/sqltemplates/Mysql_createTable.vm", entityConfig, VelocityUtil.classPathVelocityEngine());
+        VelocityEngine engine = VelocityUtil.fileVelocityEngine(outBaseDir.getParentFile().getAbsolutePath());
+        return VelocityUtil.parse("sqltemplates/Mysql_createTable.vm", entityConfig, engine);
+
+//        return VelocityUtil.parse("/sqltemplates/Mysql_createTable.vm", entityConfig, VelocityUtil.classPathVelocityEngine());
     }
 
     /**

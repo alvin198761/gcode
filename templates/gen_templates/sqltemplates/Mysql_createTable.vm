@@ -7,9 +7,9 @@ CREATE TABLE `${name}`
 (
 #foreach ($fi in $fields)
     #if ($fi.name == $idName)
-   `${fi.name}`  ${fi.sql_type} NOT NULL AUTO_INCREMENT COMMENT '${fi.remark}',
+   `${fi.name}`  ${fi.sqlType} NOT NULL AUTO_INCREMENT COMMENT '${fi.remark}',
     #else
-   `${fi.name}`  ${fi.sql_type} ${fi.isNull} COMMENT '${fi.remark}',
+   `${fi.name}`  ${fi.sqlType} ${fi.isNull} COMMENT '${fi.remark}',
     #end
 #end
 PRIMARY KEY (`${idName}`)
