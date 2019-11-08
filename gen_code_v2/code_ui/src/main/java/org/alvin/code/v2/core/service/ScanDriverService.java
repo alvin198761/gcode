@@ -19,8 +19,12 @@ public class ScanDriverService {
 
 	/**
 	 * 扫描业务类
-	 *
+	 * 	 *
+	 * 	 * @param packageURL
+	 * 	 * @throws Exception
 	 * @param packageURL
+	 * @param suffix
+	 * @return
 	 * @throws Exception
 	 */
 	public List<String> doScanService(String packageURL , String suffix) throws Exception {

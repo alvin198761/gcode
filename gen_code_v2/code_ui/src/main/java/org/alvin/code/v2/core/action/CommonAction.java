@@ -12,22 +12,28 @@ import org.springframework.web.bind.annotation.ResponseBody;
  */
 @Controller
 public class CommonAction {
-	/**
-	 * @功能描述: 进入主页面的跳转
-	 */
-	@RequestMapping(path = "/", method = RequestMethod.GET)
-	public String index() {
-		return "index";
-	}
+    /**
+     * @功能描述: 进入主页面的跳转
+     */
+    @RequestMapping(path = "/", method = RequestMethod.GET)
+    public String index() {
+        return "index";
+    }
 
-	@RequestMapping(path = "/login", method = RequestMethod.GET)
-	public String login() {
-		return "login";
-	}
+    @RequestMapping(path = "/login", method = RequestMethod.GET)
+    public String login() {
+        return "login";
+    }
 
-	@RequestMapping("/api/heartbeat")
-	@ResponseBody
-	public Long heartbeat() {
-		return System.currentTimeMillis();
-	}
+
+    @RequestMapping(path = "/test", method = RequestMethod.GET)
+    public String test() {
+        return "test";
+    }
+
+    @RequestMapping("/api/heartbeat")
+    @ResponseBody
+    public Long heartbeat() {
+        return System.currentTimeMillis();
+    }
 }
