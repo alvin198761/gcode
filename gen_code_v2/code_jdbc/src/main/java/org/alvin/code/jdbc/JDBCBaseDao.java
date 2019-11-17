@@ -155,7 +155,7 @@ public abstract class JDBCBaseDao {
             while (resultSet.next()) {
                 Map<String, Object> item = new HashMap<>();
                 for (int i = 1; i <= data.getColumnCount(); i++) {
-                    String key = data.getColumnName(i);
+                    String key = data.getColumnLabel(i);
                     Object value = resultSet.getObject(key);
                     item.put(key, value);
                 }
@@ -186,7 +186,7 @@ public abstract class JDBCBaseDao {
             Map<String, Object> item = new HashMap<>();
             if (resultSet.next()) {
                 for (int i = 1; i <= data.getColumnCount(); i++) {
-                    String key = data.getColumnName(i);
+                    String key = data.getColumnLabel(i);
                     Object value = resultSet.getObject(key);
                     item.put(key, value);
                 }
@@ -240,7 +240,7 @@ public abstract class JDBCBaseDao {
             Map<String, Object> item = new HashMap<>();
             if (resultSet.next()) {
                 for (int i = 1; i <= data.getColumnCount(); i++) {
-                    String key = data.getColumnName(i);
+                    String key = data.getColumnLabel(i);
                     Object value = resultSet.getObject(key);
                     item.put(key, value);
                 }
