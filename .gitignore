@@ -22,3 +22,5 @@ gen_code_v2/code_jdbc/src/main/resources/rebel.xml
 gen_code_v2/code_utils/src/main/resources/rebel.xml
 gen_code_v2/code_common/src/main/resources/rebel.xml
 gen_code_v2/code_ui/src/main/resources/rebel.xml
+gen_code_v3/.idea
+gen_code_v3/target
