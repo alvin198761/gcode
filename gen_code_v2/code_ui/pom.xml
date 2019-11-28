@@ -12,9 +12,9 @@
     <artifactId>code_ui</artifactId>
     <dependencies>
         <!--<dependency>-->
-            <!--<groupId>org.springframework.boot</groupId>-->
-            <!--<artifactId>spring-boot-devtools</artifactId>-->
-            <!--<optional>true</optional>-->
+        <!--<groupId>org.springframework.boot</groupId>-->
+        <!--<artifactId>spring-boot-devtools</artifactId>-->
+        <!--<optional>true</optional>-->
         <!--</dependency>-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -135,6 +135,7 @@
                     <mainClass>org.alvin.code.v2.Application</mainClass>
                 </configuration>
             </plugin>
+
         </plugins>
     </build>
 
