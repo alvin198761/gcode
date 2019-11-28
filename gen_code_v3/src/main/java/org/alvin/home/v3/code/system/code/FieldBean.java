@@ -18,10 +18,13 @@ public class FieldBean {
     private String mb_db_type;//mybatis 数据库类型
     //v3 新增的字段
     //外键
-    private boolean isFk;
-    private String fkTable;
-    private String fkCol;
+    private boolean isFk; //是否外键
+    private String fkTable; //外键对应的表
+    private String fkCol; //外键对应的列
 
     //主键
-    private boolean isPk;
+    private boolean isPk; //是否主键 主键可以多个
+
+    //设置
+    private boolean isLabel;//是否是显示字段
 }
