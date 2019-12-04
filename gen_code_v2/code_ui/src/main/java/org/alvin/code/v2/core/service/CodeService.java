@@ -22,13 +22,8 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -52,7 +47,7 @@ public class CodeService {
     private static final File outBaseDir = new File("../../templates/gen_templates/codetemplate");
 
     public RestfullResp<Map<String, Object>> create(CodeCond cond) throws Exception {
-        cond.setPackageName("com.szmj.logistics.energy_calc.system");
+        //cond.setPackageName("com.szmj.logistics.energy_calc.system");
         String suffix = ".vm";
         String dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
 
@@ -98,6 +93,7 @@ public class CodeService {
             jsonObject.put("cond", cond);
             jsonObject.put("table", table.getT_name());
             jsonObject.put("tName", table.getT_name());
+            jsonObject.put("tShortName", Arrays.asList(table.getT_name().split("_")).stream().map(v -> v.substring(0,1)).collect(Collectors.joining("")));
             jsonObject.put("comment", table.getComment());
             jsonObject.put("c_name", table.getC_name());
             jsonObject.put("idName", idField.getName());
