@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.alvin.code.gen.beans.BaseDao;
 import org.alvin.code.gen.utils.SqlUtil;
+import org.alvin.code.v2.core.doc.DocField;
+import org.alvin.code.v2.core.doc.DocTable;
 import org.alvin.code.v2.core.model.CodeCond;
 import org.alvin.code.v2.core.model.Field;
 import org.alvin.code.v2.core.model.Table;
@@ -245,5 +247,21 @@ public class CodeDao extends BaseDao {
 //        t.constraint_type = 'PRIMARY KEY'
 //        AND t.table_schema = 'mj_lng_calc'
 //        AND t.table_name = 'calc_car_mileage'
+    }
+
+    public List<DocField> queryFields(String dbName ,String tableName) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" SELECT  column_name, column_comment, column_type, is_nullable,");
+        sb.append(" IF (column_key = 'pri', '是', '')  pri ");
+        sb.append(" FROM");
+        sb.append(" information_schema.columns");
+        sb.append(" WHERE table_schema = '"+dbName+"' AND table_name = ?");
+        return jdbcTemplate.query(sb.toString(), new Object[] { tableName }, new BeanPropertyRowMapper<>(DocField.class));
+    }
+
+    public List<DocTable> queryTables(String dbName) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("SELECT table_name  ,table_comment FROM information_schema.TABLES WHERE table_schema = '"+dbName+"'");
+        return jdbcTemplate.query(sb.toString(), new BeanPropertyRowMapper<>(DocTable.class));
     }
 }

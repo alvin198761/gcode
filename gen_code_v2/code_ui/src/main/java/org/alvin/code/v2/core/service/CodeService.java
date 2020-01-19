@@ -8,6 +8,7 @@ import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
 import org.alvin.code.gen.beans.RestfullResp;
 import org.alvin.code.v2.core.dao.CodeDao;
+import org.alvin.code.v2.core.doc.DocService;
 import org.alvin.code.v2.core.model.CodeCond;
 import org.alvin.code.v2.core.model.Field;
 import org.alvin.code.v2.core.model.Table;
@@ -43,6 +44,8 @@ public class CodeService {
     private String table_schema;
     @Autowired
     private JDBC2MbTypeService jdbc2MbTypeService;
+    @Autowired
+    private DocService docService;
 
     private static final File outBaseDir = new File("../../templates/gen_templates/codetemplate");
 
@@ -126,6 +129,7 @@ public class CodeService {
             //java 代码生成
             VelocityUtil.parseEntityTemplate(vms, outPath, jsonObject, cond.getPackageName(), low, suffix, fileEngine);
         }
+        this.docService.genDoc(table_schema,outPath);
         Map<String, Object> res = Maps.newHashMap();
         File file = new File(outPath);
         String fileName = file.getAbsolutePath().concat(".zip");
