@@ -1,0 +1,20 @@
+server:
+  port: 8090
+  compression:
+    enabled: true
+    mime-types: application/json,application/xml,text/html,text/xml,text/plain,application/javascript,text/css
+
+db_name : erp_laozhang
+db_port: 3306
+db_ip: 47.98.132.116:${db_port}
+
+spring:
+  profiles:
+    active: dev
+  datasource:
+    driverClassName: com.mysql.jdbc.Driver
+    url: jdbc:mysql://${db_ip}/${db_name}?useUnicode=true&characterEncoding=utf-8&useSSL=false
+    username: root
+    password: T_dl123456
+
+

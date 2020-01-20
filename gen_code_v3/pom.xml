@@ -20,12 +20,6 @@
             <optional>true</optional>
         </dependency>
 
-        <!-- Spring Boot Elasticsearch 依赖 -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-elasticsearch</artifactId>
-        </dependency>
-
         <!-- Spring Boot Aop 依赖 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -46,6 +40,10 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-jdbc</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-freemarker</artifactId>
         </dependency>
         <dependency>
             <groupId>mysql</groupId>
@@ -97,37 +95,51 @@
     </dependencies>
 
     <build>
+        <finalName>code_3.0.0</finalName>
         <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <configuration>
-                    <mainClass></mainClass>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
-                    <verbose>true</verbose>
-                    <encoding>UTF-8</encoding>
-                </configuration>
-            </plugin>
+            <!-- 大包 -->
+            <!-- <plugin> -->
+            <!-- <groupId>org.springframework.boot</groupId> -->
+            <!-- <artifactId>spring-boot-maven-plugin</artifactId> -->
+            <!-- </plugin> -->
+            <!-- 大包加小包 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
+                <artifactId>maven-jar-plugin</artifactId>
                 <configuration>
-                    <skip>true</skip>
+                    <archive>
+                        <!--主类: 使用清单文件 -->
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <mainClass>org.alvin.home.v3.code.Application</mainClass>
+                            <classpathPrefix>lib/</classpathPrefix>
+                        </manifest>
+                    </archive>
                 </configuration>
+            </plugin>
+            <!-- 拷贝jar包 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/lib</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <version>3.2.0</version>
                 <configuration>
                     <descriptors>
-                        <descriptor>src/main/assembly/assembly.xml</descriptor>
+                        <descriptor>${project.basedir}/src/main/assembly/assembly.xml</descriptor>
                     </descriptors>
                 </configuration>
                 <executions>

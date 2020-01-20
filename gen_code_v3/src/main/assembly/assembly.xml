@@ -11,14 +11,14 @@
         <file>
             <source>${project.build.directory}/${project.build.finalName}.jar</source>
             <outputDirectory>./</outputDirectory>
-            <destName>image-utils.jar</destName>
+            <destName>code_3.0.0.jar</destName>
         </file>
     </files>
 
     <dependencySets>
         <dependencySet>
+            <directory>${project.build.directory}/lib</directory>
             <outputDirectory>/lib</outputDirectory>
         </dependencySet>
     </dependencySets>
-
 </assembly>
