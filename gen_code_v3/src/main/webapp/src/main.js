@@ -36,3 +36,7 @@ new Vue({
   store,
   render: h => h(App)
 })
+// npm cache clean --force
+// template not found
+//第一步执行：git config --global url.“https://”.insteadOf git://
+// 第二步执行：npm install

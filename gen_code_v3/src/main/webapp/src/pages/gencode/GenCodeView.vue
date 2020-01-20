@@ -58,6 +58,7 @@
     },
     computed: {},
     created() {
+      this.refresh();
     },
     methods: {
       refresh(){ //分页查询

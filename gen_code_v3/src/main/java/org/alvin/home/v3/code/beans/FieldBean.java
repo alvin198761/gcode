@@ -10,12 +10,13 @@ public class FieldBean {
 
     private String bigName; //首字母大小
 
-    private String lower_camel; //单峰驼
-    private String upper_camel; //双峰驼
+    private String lowerCamel; //单峰驼
+    private String upperCamel; //双峰驼
     private Integer length; //字符长度
     private String dbType; //数据库类型
     private String allTypeName;//类型全称
-    private String mb_db_type;//mybatis 数据库类型
+    private String mbDbType;//mybatis 数据库类型
+    private String lowerUnderscore;//小写下划线
     //v3 新增的字段
     //外键
     private boolean isFk; //是否外键

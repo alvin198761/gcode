@@ -3,6 +3,8 @@ package org.alvin.home.v3.code.system.gencode;
 import lombok.extern.slf4j.Slf4j;
 import org.alvin.home.v3.code.beans.FieldBean;
 import org.alvin.home.v3.code.beans.TableBean;
+import org.alvin.home.v3.code.system.doc.DocField;
+import org.alvin.home.v3.code.system.doc.DocTable;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.taskdefs.SQLExec;
 import org.apache.tools.ant.types.EnumeratedAttribute;
@@ -21,39 +23,36 @@ public class GenCodeDaoV3 {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
-    @Value("${db_name}")
+    @Value("${gencode.database.name}")
     private String dbName;
 
     /**
      * 根据表名称和数据库获取表信息
      *
-     * @param database
      * @param table
      * @return
      */
-    public TableBean getTable(String database, String table) {
+    public TableBean getTable(String table) {
         return null;
     }
 
     /**
      * 获取表的集合
      *
-     * @param database
      * @param tables
      * @return
      */
-    public List<TableBean> getTable(String database, List<String> tables) {
+    public List<TableBean> getTable(List<String> tables) {
         return null;
     }
 
     /**
      * 获取表的属性
      *
-     * @param database
      * @param table
      * @return
      */
-    public List<FieldBean> getFields(String database, String table) {
+    public List<FieldBean> getFields(String table) {
         return null;
     }
 
@@ -228,4 +227,19 @@ public class GenCodeDaoV3 {
     }
 
 
+    public List<DocField> getDocFields(String tableName) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" SELECT  column_name, column_comment, column_type, is_nullable,");
+        sb.append(" IF (column_key = 'pri', '是', '')  pri ");
+        sb.append(" FROM");
+        sb.append(" information_schema.columns");
+        sb.append(" WHERE table_schema = '" + dbName + "' AND table_name = ?");
+        return jdbcTemplate.query(sb.toString(), new Object[]{tableName}, new BeanPropertyRowMapper<>(DocField.class));
+    }
+
+    public List<DocTable> getDocTables() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("SELECT table_name  ,table_comment FROM information_schema.TABLES WHERE table_schema = '" + dbName + "'");
+        return jdbcTemplate.query(sb.toString(), new BeanPropertyRowMapper<>(DocTable.class));
+    }
 }
