@@ -1,7 +1,7 @@
 package org.alvin.home.v3.code.system.doc;
 
 import lombok.extern.slf4j.Slf4j;
-import org.alvin.home.v3.code.system.gencode.GenCodeDaoV3;
+import org.alvin.home.v3.code.system.gencode.GenCodeDao;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -20,14 +20,14 @@ import java.util.List;
 @Service
 public class DocService {
     @Autowired
-    private GenCodeDaoV3 genCodeDaoV3;
+    private GenCodeDao genCodeDao;
 //    https://www.cnblogs.com/Crysta1/p/10250270.html
     public void genDoc(String dbName, String outDir) throws IOException {
         int row = 0;
         HSSFWorkbook workbook = new HSSFWorkbook(); // 创建工作簿对象
         HSSFSheet sheet = workbook.createSheet("数据库表"); // 创建工作表
 
-        List<DocTable> tables = genCodeDaoV3.getDocTables();
+        List<DocTable> tables = genCodeDao.getDocTables();
         for (DocTable table : tables) {
             HSSFRow rowm = sheet.createRow(row);
             rowm.createCell(0).setCellValue("表名");
@@ -42,7 +42,7 @@ public class DocService {
             rowm.createCell(3).setCellValue("可为空");
             rowm.createCell(4).setCellValue("是主键");
             rowm.createCell(5).setCellValue("规则");
-            List<DocField> docFields = genCodeDaoV3.getDocFields(table.getTable_name());
+            List<DocField> docFields = genCodeDao.getDocFields(table.getTable_name());
             for (DocField field : docFields) {
                 row++;// 字段
                 HSSFRow rowf = sheet.createRow(row);

@@ -1,0 +1,65 @@
+/*${table.comment}模拟数据},作者:${author},日期:${time}*/
+'use strict';
+var Mock = require('mockjs')
+var Random = Mock.Random;
+module.exports = {
+
+  'POST /api/${table.varName}/queryPage': function (req, res, next) {
+    var data = Mock.mock({
+      'content|10': [{
+        #foreach($fi in $fList)
+            #if (${fi.type} == "String")
+                ${fi.lowerCamel} : "@word(5,10)",// ${fi.comment}
+            #elseif (${fi.type} == "Date")
+				${fi.lowerCamel}: new Date(),//${fi.comment}
+			#else
+                ${fi.lowerCamel}: "@integer(100,200)",//${fi.comment}
+            #end
+        #end
+      }],
+      'number': '@integer(100,200)',
+      'size': 10,
+      'totalElements': 500,
+    });
+    setTimeout(function () {
+      res.json(data);
+    }, 500);
+  },
+
+  'POST /api/${table.varName}/update': function (req, res, next) {
+    setTimeout(function () {
+      res.json({});
+    }, 500);
+  },
+
+  'POST /api/${table.varName}/save': function (req, res, next) {
+    setTimeout(function () {
+      res.json({});
+    }, 500);
+  },
+
+  'POST /api/${table.varName}/queryList': function (req, res, next) {
+    var data = Mock.mock({
+      'content|10': [{
+        #foreach($fi in $fList)
+            #if (${fi.type} == "String")
+                ${fi.lowerCamel} : "@word(5,10)",// ${fi.comment}
+            #elseif (${fi.type} == "Date")
+				${fi.lowerCamel}: new Date(),//${fi.comment}
+			#else
+                ${fi.lowerCamel}: "@integer(100,200)",//${fi.comment}
+            #end
+        #end
+      }]
+    });
+    setTimeout(function () {
+      res.json(data.content);
+    }, 500);
+  },
+
+  'POST /api/${table.varName}/delete': function (req, res, next) {
+    setTimeout(function () {
+      res.json({});
+    }, 500);
+  },
+}

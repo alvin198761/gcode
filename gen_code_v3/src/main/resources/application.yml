@@ -6,23 +6,23 @@ server:
 
 db_name : erp_laozhang
 db_port: 3306
-db_ip: 47.98.132.116:${db_port}
-
+db_ip: 47.98.132.116:3306
+gencode:
+  database:
+    name: erp_laozhang
+    port: 3306
+    host: 47.98.132.116:3306
+  template:
+    dir: "../../templates/gen_templates/codetemplate"
 spring:
   profiles:
     active: dev
   datasource:
     driverClassName: com.mysql.jdbc.Driver
-    url: jdbc:mysql://${gencode.database.host}/${gencode.database.name }?useUnicode=true&characterEncoding=utf-8&useSSL=false
+    url: jdbc:mysql://47.98.132.116:3306/erp_laozhang?useUnicode=true&characterEncoding=utf-8&useSSL=false
     username: root
     password: T_dl123456
 
-gencode:
-  database:
-    name : erp_laozhang
-    port: 3306
-    host: 47.98.132.116:${gencode.database.port}
-  template:
-    dir: "../../templates/gen_templates/codetemplate"
+
 
 

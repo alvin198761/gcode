@@ -50,6 +50,23 @@ public class Utils {
 	 * @param suffix 后缀
 	 * @param noId   不包括主键
 	 */
+	public static StringBuilder addV1(List<Field> list, String prefix, String suffix, boolean noId, String wrap) {
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < list.size(); i++) {
+			Field field = list.get(i);
+			//TODO 这个代码是坑
+			sb.append((i != 0 && i % 10 == 0) ? "\"); \r\n\t\t".concat(wrap).concat(".append(\"") : "");
+			sb.append(prefix.concat(field.getName()).concat(suffix));
+		}
+		return noId ? sb.delete(0, sb.indexOf(",") + 1).delete(sb.length() - 1, sb.length()) : sb.delete(sb.length() - 1, sb.length());
+	}
+
+	/**
+	 * @param list   字段列表
+	 * @param prefix 前缀
+	 * @param suffix 后缀
+	 * @param noId   不包括主键
+	 */
 	public static StringBuilder addV2(List<Field> list, String prefix, String suffix, boolean noId, String wrap) {
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < list.size(); i++) {
@@ -64,7 +81,7 @@ public class Utils {
 	public static StringBuilder addV1(List<Field> list, String prefix, String suffix, boolean noId) {
 		StringBuilder sb = new StringBuilder();
 		list.forEach(item -> sb.append(prefix.concat(Utils.firstUpper(item.getName())).concat(suffix)));
-		list.forEach(item -> sb.append(prefix.concat(item.getName()).concat(suffix)));
+//		list.forEach(item -> sb.append(prefix.concat(item.getName()).concat(suffix)));
 		return noId ? sb.delete(0, sb.indexOf(",") + 1).delete(sb.length() - 1, sb.length()) : sb.delete(sb.length() - 1, sb.length());
 	}
 

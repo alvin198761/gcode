@@ -1,4 +1,4 @@
-db_name : erp_laozhang
+db_name : market_erp
 db_port: 3306
 db_ip: 47.98.132.116:${db_port}
 

@@ -6,14 +6,14 @@ import lombok.Data;
 public class FieldBean {
     private String name;// 字段名
     private String comment;// 注释
-    private String type;// 数据类型
+    private String dbType; //数据库类型
+    private Integer length; //字符长度
 
     private String bigName; //首字母大小
-
     private String lowerCamel; //单峰驼
     private String upperCamel; //双峰驼
-    private Integer length; //字符长度
-    private String dbType; //数据库类型
+
+    private String type;// 数据类型
     private String allTypeName;//类型全称
     private String mbDbType;//mybatis 数据库类型
     private String lowerUnderscore;//小写下划线
@@ -24,8 +24,8 @@ public class FieldBean {
     private String fkCol; //外键对应的列
 
     //主键
-    private boolean isPk; //是否主键 主键可以多个
+    private boolean isPk = false; //是否主键 主键可以多个
+    //
+    private String classVarName; //类名称
 
-    //设置
-    private boolean isLabel;//是否是显示字段
 }

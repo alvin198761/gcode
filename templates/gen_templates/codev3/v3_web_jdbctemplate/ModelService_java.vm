@@ -1,0 +1,133 @@
+package ${packageName} ;
+
+/**
+* 类说明: [${table.comment}]--数据逻辑层
+* @author ${author}
+* 生成日期 ${time}
+**/
+@lombok.extern.slf4j.Slf4j
+@org.springframework.stereotype.Service
+public class ${table.className}Service {
+
+	@org.springframework.beans.factory.annotation.Autowired
+	private ${table.className}Dao ${table.varName}Dao; //注入收寄信息数据访问层
+
+	/**
+	* 方法说明：  新增[${table.comment}]记录
+	*/
+	@org.springframework.transaction.annotation.Transactional
+	public int save(${table.className} ${table.varName}) {
+		return this.${table.varName}Dao.save(${table.varName});
+	}
+
+	/**
+	* 方法说明：  删除${table.comment}记录(多条)
+	*/
+	@org.springframework.transaction.annotation.Transactional
+	public int delete(${id.allTypeName} ${id.lowerCamel}) {
+		return this.${table.varName}Dao.deleteLogic(${id.lowerCamel});//逻辑删除
+		//return this.${table.varName}Dao.delete(${id.lowerCamel});//物理删除
+	}
+
+	/**
+	* 方法说明：  更新${table.comment}记录
+	*/
+	@org.springframework.transaction.annotation.Transactional
+	public int update(${table.className} ${table.varName}) {
+		return this.${table.varName}Dao.update(${table.varName}); 
+	}
+
+	 /**
+    * 方法说明：更新${table.comment}记录,不为空的都更新掉
+    */
+    @org.springframework.transaction.annotation.Transactional
+    public int updateNotNull(${table.className} ${table.varName}) {
+		return this.${table.varName}Dao.updateNotNull(${table.varName}); 
+    }
+
+	/**
+	* 方法说明： 按条件查询分页${table.comment}列表
+	*/
+	public org.alvin.code.gen.utils.Page<${table.className}> queryorg.alvin.code.gen.utils.Page(${table.className}Cond ${table.varName}Cond) {
+		${table.varName}Cond.getOrder().put("t.${id.name}" , "desc");
+		return this.${table.varName}Dao.queryorg.alvin.code.gen.utils.Page(${table.varName}Cond);
+	}
+
+	/**
+	* 方法说明： 按条件查询不分页${table.comment}列表(使用范型)
+	*/
+	public java.util.List<${table.className}> queryjava.util.List(${table.className}Cond ${table.varName}Cond) {
+		${table.varName}Cond.getOrder().put("t.${id.name}" , "desc");
+		return this.${table.varName}Dao.queryjava.util.List(${table.varName}Cond);
+	}
+	
+	/**
+	* 方法说明： 按条件查询一个 ${table.comment} 对象
+	*/
+	public ${table.className} findOne(${table.className}Cond ${table.varName}Cond) {
+		return this.${table.varName}Dao.findOne(${table.varName}Cond);
+	}
+
+	/**
+	* 方法说明： 按ID查找单个${table.comment}记录
+	*/
+	public ${table.className} findById(Long id) {
+		return this.${table.varName}Dao.findById(id);
+	}
+
+	/**
+	* 方法说明： 按条件查询${table.comment}记录个数
+	*/
+	public long queryCount(${table.className}Cond ${table.varName}Cond) {
+		return this.${table.varName}Dao.queryCount(${table.varName}Cond);
+	}
+
+
+	/**
+	 * 方法说明: 查询数据包含外键对象和显示标签
+	 *
+	 * @param id
+	 * @return
+	 */
+	public ${table.className}Fk findFkById(Long id) {
+		return this.${table.varName}Dao.findFkById(id);
+	}
+
+	/**
+	 * 方法说明: 查询数据包含外键对象和显示标签
+	 *
+	 * @param ${table.varName}FkCond
+	 * @return
+	 */
+	public ${table.className}Fk findFkOne(${table.className}FkCond ${table.varName}FkCond) {
+		return this.${table.varName}Dao.findFkOne(${table.varName}Cond);
+	}
+
+	/**
+	 * 方法说明: 只显示标签和id的列表
+	 *
+	 * @param ${table.varName}Cond
+	 * @return
+	 */
+	public java.util.List<org.alvin.code.gen.beans.SelectOption> queryLabeljava.util.List(${table.className}Cond ${table.varName}Cond) {
+		${table.varName}Cond.getOrder().put("t.${id.name}" , "desc");
+		return this.${table.varName}Dao.queryLabelList(${table.varName}Cond);
+	}
+
+	/**
+	 * 方法说明：按条件查询不分页${table.comment}列表 (带关系表标签)
+	 */
+	public java.util.List<${table.className}Fk> queryFkjava.util.List(${table.className}FkCond ${table.varName}FkCond) {
+		${table.varName}Cond.getOrder().put("t.${id.name}" , "desc");
+		return this.${table.varName}Dao.queryFkList(${table.varName}FkCond);
+	}
+
+	/**
+	 * 方法说明：按条件查询分页${table.comment}列表
+	 */
+	public org.alvin.code.gen.utils.Page<${table.className}Fk> queryFkorg.alvin.code.gen.utils.Page(${table.className}FkCond ${table.varName}FkCond) {
+		${table.varName}Cond.getOrder().put("t.${id.name}" , "desc");
+		return this.${table.varName}Dao.queryFkPage(${table.varName}FkCond);
+	}
+
+}

@@ -194,7 +194,6 @@ public class CodeDao extends BaseDao {
 
     public String backup(String struts) throws Exception {
         String cmd = "mysqldump  " + struts + " " + database + "  -u" + username + " " + " -p" + password + " -h " + host;
-//		String cmd = "mysqldump --databases  -u" + username + " " + " -p" + password + " -h " + host;
         File file = new File("db_backup", UUID.randomUUID().toString());
         if (!file.exists()) {
             file.getParentFile().mkdirs();

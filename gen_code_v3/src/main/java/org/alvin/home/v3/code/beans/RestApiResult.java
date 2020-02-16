@@ -1,10 +1,8 @@
 package org.alvin.home.v3.code.beans;
 
-import lombok.Builder;
 import lombok.Data;
 
 @Data
-@Builder
 public class RestApiResult<T> {
 
     private int code;
@@ -13,6 +11,7 @@ public class RestApiResult<T> {
 
     public RestApiResult(T data) {
         this.code = 0;
+        this.data = data;
     }
 
     public RestApiResult(int code, String errmsg) {

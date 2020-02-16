@@ -15,10 +15,10 @@
         </file>
     </files>
 
-    <dependencySets>
-        <dependencySet>
-            <directory>${project.build.directory}/lib</directory>
-            <outputDirectory>/lib</outputDirectory>
-        </dependencySet>
-    </dependencySets>
+    <!--<dependencySets>-->
+        <!--<dependencySet>-->
+            <!--<directory>${project.build.directory}/lib</directory>-->
+            <!--<outputDirectory>/lib</outputDirectory>-->
+        <!--</dependencySet>-->
+    <!--</dependencySets>-->
 </assembly>

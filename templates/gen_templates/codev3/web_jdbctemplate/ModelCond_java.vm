@@ -1,0 +1,59 @@
+package ${packageName} ;
+
+/**
+* 类说明: ${table.comment}--查询条件实体类
+* @author ${author}
+* 生成日期 ${time}
+**/
+@lombok.Setter
+@lombok.Getter
+@lombok.experimental.Accessors(chain = true)
+@lombok.Builder	
+@lombok.AllArgsConstructor
+@lombok.NoArgsConstructor
+@io.swagger.annotations.ApiModel(value = "${table.className}", description = "${table.comment}--查询条件实体类")
+public class ${table.className}Cond extends org.alvin.cishan.sys.util.base.BaseCondition {
+
+
+    /**
+    * @方法说明: 拼加自定义条件
+    **/
+    @Override
+    public void addCondition() {
+    #foreach ($fi in $fList)
+        #if($fi.type == "String")
+        add(this.${fi.lowerCamel} , " AND t.${fi.name} LIKE ? " ,3);
+        #else
+        add(this.${fi.lowerCamel} , " AND t.${fi.name} = ? " );
+        #end
+    #end
+		add(this.${id.lowerCamel}List, "AND t.${id.name} IN ");
+	#foreach ($fi in $fList)
+		#if($fi.type == "Date")
+		//${fi.comment} 范围查询
+		add(org.alvin.cishan.sys.util.DateUtil.setStart(this.${fi.lowerCamel}Start ), " AND t.${fi.name} >= ? "); //${fi.comment}开始
+        add(org.alvin.cishan.sys.util.DateUtil.setEnd(this.${fi.lowerCamel}End), " AND t.${fi.name} <= ? "); //  ${fi.comment}结束
+		#end
+	#end
+    }
+
+    //属性
+    #foreach ($fi in $fList)
+	@io.swagger.annotations.ApiModelProperty(value = "${fi.comment}", dataType = "${fi.allTypeName}")
+    private  ${fi.allTypeName}  ${fi.lowerCamel} ;//  ${fi.comment}
+    #end
+	@io.swagger.annotations.ApiModelProperty(value = "要查询的字段", dataType = "java.lang.List")
+	private java.util.List<String> selectedFields; //暂时不放入父类
+	//其他常用条件字段
+	@io.swagger.annotations.ApiModelProperty(value = "${id.comment}", dataType = "java.lang.List")
+    private java.util.List<${id.allTypeName}> ${id.lowerCamel}List;// 主键列表
+	//日期查询范围
+	#foreach ($fi in $fList)
+        #if($fi.type == "Date")
+		@io.swagger.annotations.ApiModelProperty(value = "${fi.comment}开始", dataType = "${fi.allTypeName}")
+		private  ${fi.allTypeName}  ${fi.lowerCamel}Start ;//  ${fi.comment}开始
+		@io.swagger.annotations.ApiModelProperty(value = "${fi.comment}结束", dataType = "${fi.allTypeName}")
+		private  ${fi.allTypeName}  ${fi.lowerCamel}End ;//  ${fi.comment}结束
+		#end
+	#end
+}

@@ -117,10 +117,21 @@
         <finalName>code_3.0.0</finalName>
         <plugins>
             <!-- 大包 -->
-            <!-- <plugin> -->
-            <!-- <groupId>org.springframework.boot</groupId> -->
-            <!-- <artifactId>spring-boot-maven-plugin</artifactId> -->
-            <!-- </plugin> -->
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <!--<configuration>-->
+                    <!--<mainClass>org.alvin.home.v3.code.Application</mainClass>-->
+                    <!--<layout>ZIP</layout>-->
+                    <!--<includes>-->
+                        <!--&lt;!&ndash; 项目启动jar包中排除依赖包 &ndash;&gt;-->
+                        <!--<include>-->
+                            <!--<groupId>non-exists</groupId>-->
+                            <!--<artifactId>non-exists</artifactId>-->
+                        <!--</include>-->
+                    <!--</includes>-->
+                <!--</configuration>-->
+            </plugin>
             <!-- 大包加小包 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

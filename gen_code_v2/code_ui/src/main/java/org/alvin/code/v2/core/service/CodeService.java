@@ -112,7 +112,7 @@ public class CodeService {
             jsonObject.put("replaceValuesFields", Utils.add(fList));
             jsonObject.put("paramsFields", Utils.addV1(fList, "vo.get", "(),", false));
             jsonObject.put("updateFields", Utils.add(fList, "", "=?,", true, "sql"));
-            jsonObject.put("updateParams", Utils.addV1(fList, "vo.get", "(),", true) + ",vo.get" + idField.getName() + "()");
+            jsonObject.put("updateParams", Utils.addV1(fList, "vo.get", "(),", true) + ",vo.get" + Utils.firstUpper(idField.getName()) + "()");
             jsonObject.put("selectItems", Utils.add(fList, "t.", ","));
             jsonObject.put("caseMapper", Utils.caseMapper(fList));
             //v2 需要兼容的东西

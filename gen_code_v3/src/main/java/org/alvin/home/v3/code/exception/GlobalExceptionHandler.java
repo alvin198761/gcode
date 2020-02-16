@@ -1,7 +1,6 @@
 package org.alvin.home.v3.code.exception;
 
 
-import com.google.common.base.Strings;
 import lombok.extern.slf4j.Slf4j;
 import org.alvin.home.v3.code.beans.RestApiResult;
 import org.springframework.http.HttpStatus;
@@ -41,11 +40,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BizException.class)
     public RestApiResult handleBizException(BizException ex) {
         log.error(ex.getMessage(), ex);
-        RestApiResult.RestApiResultBuilder result = RestApiResult.builder().code(ex.getCode());
-        if (Strings.isNullOrEmpty(ex.getErrMsg())) {
-            result.errmsg(ex.getErrMsg());
-        }
-        return result.build();
+        return new RestApiResult(500, ex.getErrMsg());
     }
 
     /**
@@ -60,7 +55,7 @@ public class GlobalExceptionHandler {
     public RestApiResult handleBindException(BindException ex) {
         log.error(ex.getMessage(), ex);
         String msg = ex.getBindingResult().getFieldErrors().stream().map(FieldError::getDefaultMessage).collect(Collectors.joining(";"));
-        return RestApiResult.builder().code(500).errmsg(msg).build();
+        return new  RestApiResult(500,msg);
     }
 
     /**
@@ -74,7 +69,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ValidationException.class)
     public RestApiResult handleValidationException(ValidationException ex) {
         log.error(ex.getMessage(), ex);
-        return RestApiResult.builder().code(500).errmsg(ex.getCause().getMessage()).build();
+        return new  RestApiResult(500,ex.getCause().getMessage());
     }
 
     /**
@@ -89,7 +84,7 @@ public class GlobalExceptionHandler {
     public RestApiResult handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
         log.error(ex.getMessage(), ex);
         String msg = ex.getBindingResult().getFieldErrors().stream().map(FieldError::getDefaultMessage).collect(Collectors.joining(";"));
-        return RestApiResult.builder().code(500).errmsg(msg).build();
+        return new  RestApiResult(500,msg);
     }
 
     /**
@@ -103,7 +98,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MissingServletRequestParameterException.class)
     public RestApiResult handleMissingServletRequestParameterException(MissingServletRequestParameterException ex) {
         log.error(ex.getMessage(), ex);
-        return RestApiResult.builder().code(500).errmsg(ex.getCause().getMessage()).build();
+        return new  RestApiResult(500,ex.getCause().getMessage());
     }
 
     /**
@@ -117,7 +112,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = HttpRequestMethodNotSupportedException.class)
     public RestApiResult handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException ex) {
         log.error(ex.getMessage(), ex);
-        return RestApiResult.builder().code(500).errmsg("服务器错误").build();
+        return new  RestApiResult(500,"服务器错误");
     }
 
     /**
@@ -131,7 +126,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = Exception.class)
     public RestApiResult handleException(Exception ex) {
         log.error(ex.getMessage(), ex);
-        return RestApiResult.builder().code(500).errmsg("服务器错误").build();
+        return new  RestApiResult(500,"服务器错误");
     }
 
 

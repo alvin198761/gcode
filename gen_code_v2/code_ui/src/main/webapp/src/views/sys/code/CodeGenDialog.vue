@@ -1,5 +1,5 @@
 <template>
-    <el-dialog :visible.sync="show" title="代码生成设置" width="60%" :close-on-click-modal="false"
+    <el-dialog :visible.sync="show" title="代码生成设置" width="80%" :close-on-click-modal="false"
                :close-on-press-escape="false">
         <el-form ref="form" :model="form" label-width="80px">
             <el-form-item label="作者">

@@ -1,0 +1,25 @@
+package ${packageName} ;
+
+/**
+* 类说明: ${table.comment}--查询条件实体类
+* @author ${author}
+* 生成日期 ${time}
+**/
+@lombok.Setter
+@lombok.Getter
+@lombok.experimental.Accessors(chain = true)
+@lombok.Builder	
+@lombok.AllArgsConstructor
+@lombok.NoArgsConstructor
+@io.swagger.annotations.ApiModel(value = "${table.className}", description = "${table.comment}--实体类")
+public class ${table.className} {
+
+    //数据库中的字段
+    #foreach ($fi in $fList)
+	@io.swagger.annotations.ApiModelProperty(value = "${fi.comment}", dataType = "${fi.allTypeName}")
+    private ${fi.allTypeName} ${fi.lowerCamel} ;//  ${fi.comment}
+    #end
+
+    //此处可添加查询显示辅助字段
+
+}

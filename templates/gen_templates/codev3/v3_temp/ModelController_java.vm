@@ -1,0 +1,81 @@
+package ${packageName} ;
+import java.util.List;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.alvin.cishan.sys.util.Page;
+import org.springframework.web.bind.annotation.*;
+import lombok.extern.slf4j.Slf4j;
+/**
+* @类说明: ${table.comment}--数据控制器层
+* @author: ${author}
+* @date : ${time}
+**/
+@Slf4j
+@RestController
+@RequestMapping("api/${table.varName}")
+public class ${table.className}Controller {
+
+	@Autowired
+	private ${table.className}Service service; //注入${table.comment}数据逻辑层
+
+    /**
+    * @方法说明：  新增[${table.comment}]记录
+    */
+	@PostMapping("save")
+	public int save(@RequestBody ${table.className} ${table.varName}) {
+		return service.save(${table.varName});
+	}
+
+    /**
+    * @方法说明： 删除市场记录(多条)
+    */
+	@RequestMapping("delete")
+	public int delete(@RequestParam("${id.lowerCamel}") ${id.allTypeName} ${id.lowerCamel}) {
+		return service.delete(new Long[]{${id.lowerCamel}});
+	}
+
+    /**
+    * @方法说明： 修改${table.comment}记录
+    */
+	@PostMapping("update")
+	public int update(@RequestBody ${table.className} ${table.varName}) {
+		return service.update(${table.varName});
+	}
+
+    /**
+    * @方法说明： 按条件查询分页${table.comment}列表
+    */
+	@PostMapping("queryPage")
+	public Page<${table.className}> queryPage(@RequestBody ${table.className}Cond cond ){
+		return service.queryPage(cond);
+	}
+
+    /**
+    * @方法说明： 按条件查询不分页${table.comment}列表
+    */
+	@PostMapping("queryList")
+	public List<${table.className}> queryList(@RequestBody ${table.className}Cond cond ){
+		return service.queryList(cond);
+	}
+
+    /**
+    * @方法说明： 按主键查单个${table.comment}记录
+    */
+	@RequestMapping("findById")
+	public ${table.className} findById(@RequestParam("${id.lowerCamel}") ${id.allTypeName} ${id.lowerCamel}) {
+		return service.findById(${id.lowerCamel});
+	}
+
+    /**
+    * @方法说明： 按条件查询${table.comment}记录个数
+    */
+	@PostMapping("queryCount")
+	public long queryCount(@RequestBody ${table.className}Cond cond ){
+		return service.queryCount(cond);
+	}
+}

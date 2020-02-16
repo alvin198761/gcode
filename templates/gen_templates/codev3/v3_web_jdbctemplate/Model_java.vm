@@ -1,0 +1,23 @@
+package ${packageName} ;
+
+/**
+* @类说明: ${table.comment}--实体类
+* @author: ${author}
+* @date : ${time}
+**/
+@lombok.Setter
+@lombok.Getter
+@lombok.experimental.Accessors(chain = true)
+@lombok.Builder	
+@lombok.AllArgsConstructor
+@lombok.NoArgsConstructor
+public class ${table.className} {
+
+    //数据库中的字段
+    #foreach ($fi in $fList)
+    private ${fi.allTypeName} ${fi.lowerCamel} ;//  ${fi.comment}
+    #end
+
+    //此处可添加查询显示辅助字段
+
+}

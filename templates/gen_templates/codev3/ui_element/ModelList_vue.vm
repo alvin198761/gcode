@@ -1,0 +1,164 @@
+/*${table.comment}管理,作者:${author},日期:${time}*/
+<template>
+      <div>
+            <el-form :inline="true">
+                #foreach($fi in $fList)
+                    <el-form-item label="${fi.comment}">
+						#if ($fi.allTypeName == "java.util.Date")
+						<el-date-picker size="small" v-model="form.${fi.lowerCamel}" type="daterange" range-separator="至"  start-placeholder="${fi.comment}开始" end-placeholder="${fi.comment}结束" clearable style="width: 100%"></el-date-picker>
+						#elseif($fi.allTypeName == "java.lang.Long")
+						<el-input-number placeholder='请输入${fi.comment}' size="small" v-model='form.${fi.lowerCamel}'  clearable style="width: 100%"></el-input-number>
+						#elseif($fi.allTypeName == "java.lang.Integer")
+						<el-input-number placeholder='请输入${fi.comment}' size="small" v-model='form.${fi.lowerCamel}'  clearable style="width: 100%"></el-input-number>
+						#elseif($fi.allTypeName == "java.lang.Double")
+						<el-input-number placeholder='请输入${fi.comment}' size="small" v-model='form.${fi.lowerCamel}'  clearable style="width: 100%"></el-input-number>
+						#elseif($fi.allTypeName == "java.lang.Short")
+						<el-input-number placeholder='请输入${fi.comment}' size="small" v-model='form.${fi.lowerCamel}'  clearable style="width: 100%"></el-input-number>
+						#elseif($fi.allTypeName == "java.lang.Byte")
+						<el-select placeholder="请输入${fi.comment}" size="small" v-model="form.${fi.lowerCamel}" clearable style="width: 100%">
+                            <el-option
+                                    v-for="item in ${fi.lowerCamel}List"
+                                    :key="item.id"
+                                    :label="item.label"
+                                    :value="item.id">
+                            </el-option>
+                        </el-select>
+						#else 
+						<el-input placeholder="请输入${fi.comment}" size="small" v-model="form.${fi.lowerCamel}" clearable style="width: 100%"></el-input>
+						#end
+                    </el-form-item>
+                #end
+				  <el-form-item>
+                        <el-button icon="search" @click="refresh" title="根据输入条件查询" size="small">查询</el-button>
+                        <el-button icon="plus"   @click="doAdd()" title="添加" size="small" type="primary" >添加</el-button>
+                      </el-form-item>
+                </el-form>
+            <el-table :data="dataList" v-loading="loading" element-loading-text="正在加载......" style="width: 100%">
+              <el-table-column type="expand">
+                    <template slot-scope="props">
+                            <el-form>
+                                  <el-row :gutter="10">
+                                      #foreach($fi in $fList)
+                                          <el-col :span="6">
+                                              <el-form-item label="${fi.comment}">{{props.row.${fi.name}}}</el-form-item>
+                                          </el-col>
+                                      #end
+                                      </el-row>
+                                </el-form>
+                        </template>
+                  </el-table-column>
+                #foreach($fi in $fList)
+                    <el-table-column prop="${fi.name}" label="${fi.comment}"></el-table-column>
+                #end
+              <el-table-column label="操作" width="150">
+                    <template slot-scope="props">
+                          <div>
+                                <el-button type="text" @click="doEdit(props.row)">编辑</el-button>
+                                <el-button type="text" @click="doDelete(props.row)">删除</el-button>
+                              </div>
+                        </template>
+                  </el-table-column>
+            </el-table>
+            <br/>
+            <div style="text-align: right" v-if="total > 0">
+              <el-pagination small layout="total,sizes,prev, pager, next" :current-page="page" :total="total" @current-change="(curr) => {this.page = curr ; this.refresh();}"
+               :page-sizes="[10, 15, 20, 100]" @size-change="(s) => {this.size = s ; this.refresh();}" :page-size="size"></el-pagination>
+            </div>
+        <${clsUpp}Dialog ref="dialog" :refresh="refresh"></${clsUpp}Dialog>
+  </div>
+</template>
+<script>
+  import ${clsUpp}Dialog from './${clsUpp}Dialog.vue';
+  import moment from 'moment';
+  export default {
+      components: { ${clsUpp}Dialog },
+      data: function () {
+      return {
+        total: 0,
+        page: 1,
+        size: 20,
+        dataList: [],
+        form: {
+        #foreach($fi in $fList)
+			#if ($fi.allTypeName == "java.util.Date")
+				${fi.lowerCamel} : [moment(),moment()],// ${fi.comment}
+			#else
+				${fi.lowerCamel} : null,// ${fi.comment}
+			#end
+        #end
+        },
+        loading: false,
+		#foreach($fi in $fList)
+			#if($fi.allTypeName == "java.lang.Byte")
+			${fi.lowerCamel}List: [],
+			#end
+		#end
+      }
+    },
+    computed: {},
+    created: function () {
+      this.refresh();
+	  #foreach($fi in $fList)
+			#if($fi.allTypeName == "java.lang.Byte")
+			this.load${fi.upperCamel}List();
+			#end
+		#end
+    },
+    methods: {
+	 #foreach($fi in $fList)
+		#if($fi.allTypeName == "java.lang.Byte")
+		  load${fi.upperCamel}List(){
+			const that = this;
+			//todo
+		  },
+	  	#end
+	#end
+      refresh() {
+        const that = this;
+        that.loading = true;
+		const requestData = {...that.form, page: that.page - 1, size: that.size};
+		#foreach($fi in $fList)
+			#if ($fi.allTypeName == "java.util.Date")
+			requestData.${fi.lowerCamel} = null;
+				if (that.form.${fi.lowerCamel} && that.form.${fi.lowerCamel}.length === 2) {
+					requestData.${fi.lowerCamel}Start=that.form[0];
+					requestData.${fi.lowerCamel}End=that.form[1];
+				}
+			#end
+		#end
+        
+        that.${dollar}postBody("/api/${table.varName}/queryPage", requestData).then(res => {
+			  that.loading = false;
+			  that.dataList = res.data.content;
+			  that.total = res.data.totalElements;
+			}).catch(res => {
+			  that.${dollar}message.error("获取${cName}列表失败：" + res);
+			  that.loading = false;
+			});
+      },
+      doAdd() {
+        this.${dollar}refs["dialog"].addDialog();
+      },
+      doEdit(row) {
+        this.${dollar}refs["dialog"].editDialog(row);
+      },
+      doDelete(row) {
+        const that = this;
+        this.${dollar}confirm('你确定要删除吗?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          that.${dollar}post("/api/${table.varName}/delete", {${id.lowerCamel}: row.${id.lowerCamel}}).then(res => {
+				this.${dollar}message.success("删除成功");
+				that.refresh();
+			  }).catch(res => {
+				that.${dollar}message.error("删除失败：" + res);
+			  });
+        }).catch(() => {
+        });
+      }
+    }
+  }
+</script>
+<style></style>
