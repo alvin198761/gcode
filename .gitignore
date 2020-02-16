@@ -27,3 +27,8 @@ gen_code_v3/target
 gen_code_v2/code_common/src/main/java/rebel.xml
 gen_code_v2/code_jdbc/src/main/java/rebel.xml
 gen_code_v2/code_utils/src/main/java/rebel.xml
+/gen_code_v3/dist
+/gen_code_v3/velocity.log*
+/gen_code_v3/sql.log
+*.log
+gencodev3demo/.idea
