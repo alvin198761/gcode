@@ -22,11 +22,11 @@ public class ${table.className}FkCond extends ${table.className}Cond {
 		super.addCondition();
     #foreach ($fi in $fkLabels)
         #if($fi.type == "String")
-			add(this.${fi.lowerCamel} , " AND ${fi.classVarName}.${fi.name} LIKE ? " ,3);
+			add(this.${fi.classVarName}${fi.upperCamel} , " AND ${fi.classVarName}.${fi.name} LIKE ? " ,3);
 		#elseif($fi.type == "Date")
-			add(this.${fi.lowerCamel} , " AND ${fi.classVarName}.${fi.name} = ? " );
-			add(org.alvin.cishan.sys.util.DateUtil.setStart(this.${fi.lowerCamel}Start ), " AND ${fi.classVarName}.${fi.name} >= ? "); //${fi.comment}开始
-			add(org.alvin.cishan.sys.util.DateUtil.setEnd(this.${fi.lowerCamel}End), " AND ${fi.classVarName}.${fi.name} <= ? "); //  ${fi.comment}结束
+			add(this.${fi.classVarName}${fi.upperCamel}  , " AND ${fi.classVarName}.${fi.name} = ? " );
+			add(org.alvin.cishan.sys.util.DateUtil.setStart(this.${fi.classVarName}${fi.upperCamel}Start ), " AND ${fi.classVarName}.${fi.name} >= ? "); //${fi.comment}开始
+			add(org.alvin.cishan.sys.util.DateUtil.setEnd(this.${fi.classVarName}${fi.upperCamel}End), " AND ${fi.classVarName}.${fi.name} <= ? "); //  ${fi.comment}结束
         #else
 			add(this.${fi.lowerCamel} , " AND ${fi.classVarName}.${fi.name} = ? " );
         #end
@@ -36,13 +36,13 @@ public class ${table.className}FkCond extends ${table.className}Cond {
     //属性
 	#foreach ($fi in $fkLabels)
         @io.swagger.annotations.ApiModelProperty(value = "${fi.comment}", dataType = "${fi.allTypeName}")
-    private  ${fi.allTypeName}  ${fi.lowerCamel} ;//  ${fi.comment}
+    private  ${fi.allTypeName}  ${fi.classVarName}${fi.upperCamel}  ;//  ${fi.comment}
 		//日期查询范围
 		#if($fi.type == "Date")
 			@io.swagger.annotations.ApiModelProperty(value = "${fi.comment}开始", dataType = "${fi.allTypeName}")
-			private  ${fi.allTypeName}  ${fi.lowerCamel}Start ;//  ${fi.comment}开始
+			private  ${fi.allTypeName}  ${fi.classVarName}${fi.upperCamel}Start ;//  ${fi.comment}开始
 			@io.swagger.annotations.ApiModelProperty(value = "${fi.comment}结束", dataType = "${fi.allTypeName}")
-			private  ${fi.allTypeName}  ${fi.lowerCamel}End ;//  ${fi.comment}结束
+			private  ${fi.allTypeName}  ${fi.classVarName}${fi.upperCamel}End ;//  ${fi.comment}结束
 		#end
     #end
 

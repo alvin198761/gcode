@@ -12,7 +12,7 @@ package ${packageName} ;
 @lombok.AllArgsConstructor
 @lombok.NoArgsConstructor
 @io.swagger.annotations.ApiModel(value = "${table.className}Fk", description = "${table.comment}--实体类-外键")
-public class ${table.className}Fk {
+public class ${table.className}Fk extends ${table.className}{
 
     //数据库中的字段
     #foreach ($fi in $fkLabels)

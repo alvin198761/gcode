@@ -93,7 +93,7 @@ public class ${table.className}Dao extends org.alvin.code.gen.beans.BaseDao {
         /**
         * 方法说明： 按条件查询分页${table.comment}列表
         */
-    public org.alvin.cishan.sys.util.Page<${table.className}> queryPage(${table.className}Cond cond) {
+    public org.alvin.code.gen.utils.Page<${table.className}> queryPage(${table.className}Cond cond) {
         StringBuilder sb = new StringBuilder("SELECT ");
         sb.append(this.getSelectedItems(cond));
         sb.append(" FROM ${table.tableName} t ");
@@ -145,7 +145,7 @@ public class ${table.className}Dao extends org.alvin.code.gen.beans.BaseDao {
         sb.append(cond.getCondition());
         sb.append(cond.getOrderSql());//增加排序子句;
         sb.append(" limit 0,1");
-        return jdbcTemplate.queryForObject(sb.toString(), cond.getArray(), new BeanPropertyRowMapper<>(${table.className}.class));
+        return jdbcTemplate.queryForObject(sb.toString(), cond.getArray(), new org.springframework.jdbc.core.BeanPropertyRowMapper<>(${table.className}.class));
     }
     
     /**
@@ -221,9 +221,9 @@ public class ${table.className}Dao extends org.alvin.code.gen.beans.BaseDao {
      * @param cond
      * @return
      */
-    public List<org.alvin.code.gen.beans.SelectOption> queryLabelList(${table.className}Cond cond) {
+    public java.util.List<org.alvin.code.gen.beans.SelectOption> queryLabelList(${table.className}FkCond cond) {
         StringBuilder sb = new StringBuilder("SELECT ");
-        sb.append("t.id as value ,t.name as label");
+        sb.append("t.${id.name} as value ,t.${table.labelCol} as label");
         sb.append(" FROM ${table.tableName} t ");
         sb.append(this.getFkJoinTables());
         sb.append(" WHERE 1=1 ");
@@ -235,7 +235,7 @@ public class ${table.className}Dao extends org.alvin.code.gen.beans.BaseDao {
     /**
      * 方法说明：按条件查询不分页${table.comment}列表 (带关系表标签)
      */
-    public List<${table.className}Fk> queryFkList(${table.className}Cond cond) {
+    public java.util.List<${table.className}Fk> queryFkList(${table.className}FkCond cond) {
         StringBuilder sb = new StringBuilder("SELECT ");
         sb.append(this.getFkSelectedItems(cond));
         sb.append(" FROM ${table.tableName} t ");
@@ -250,7 +250,7 @@ public class ${table.className}Dao extends org.alvin.code.gen.beans.BaseDao {
     /**
      * 方法说明：按条件查询分页${table.comment}列表
      */
-    public org.alvin.code.gen.utils.Page<${table.className}Fk> queryFkorg.alvin.code.gen.utils.Page(${table.className}Cond cond) {
+    public org.alvin.code.gen.utils.Page<${table.className}Fk> queryFkPage(${table.className}FkCond cond) {
         StringBuilder sb = new StringBuilder("SELECT ");
         sb.append(this.getFkSelectedItems(cond));
         sb.append(" FROM ${table.tableName} t ");
@@ -259,7 +259,7 @@ public class ${table.className}Dao extends org.alvin.code.gen.beans.BaseDao {
         sb.append(cond.getCondition());
         sb.append(cond.getOrderSql());//增加排序子句;
         log.info(org.alvin.code.gen.utils.SqlUtil.showSql(sb.toString(), cond.getArray()));//显示SQL语句
-        return queryorg.alvin.code.gen.utils.Page(sb.toString(), cond, ${table.className}Fk.class);
+        return queryPage(sb.toString(), cond, ${table.className}Fk.class);
     }
 
     /**

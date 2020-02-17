@@ -12,7 +12,7 @@ package ${packageName} ;
 @lombok.AllArgsConstructor
 @lombok.NoArgsConstructor
 @io.swagger.annotations.ApiModel(value = "${table.className}Cond", description = "${table.comment}--查询条件实体类")
-public class ${table.className}Cond extends org.alvin.cishan.sys.util.base.BaseCondition {
+public class ${table.className}Cond extends org.alvin.code.gen.beans.BaseCondition {
 
 
     /**
@@ -37,16 +37,14 @@ public class ${table.className}Cond extends org.alvin.cishan.sys.util.base.BaseC
     #foreach ($fi in $fList)
 	@io.swagger.annotations.ApiModelProperty(value = "${fi.comment}", dataType = "${fi.allTypeName}")
     private  ${fi.allTypeName}  ${fi.lowerCamel} ;//  ${fi.comment}
-		//日期查询范围
 		#if($fi.type == "Date")
+			//日期查询范围
 			@io.swagger.annotations.ApiModelProperty(value = "${fi.comment}开始", dataType = "${fi.allTypeName}")
 			private  ${fi.allTypeName}  ${fi.lowerCamel}Start ;//  ${fi.comment}开始
 			@io.swagger.annotations.ApiModelProperty(value = "${fi.comment}结束", dataType = "${fi.allTypeName}")
 			private  ${fi.allTypeName}  ${fi.lowerCamel}End ;//  ${fi.comment}结束
 		#end
     #end
-	@io.swagger.annotations.ApiModelProperty(value = "要查询的字段", dataType = "java.lang.List")
-	private java.util.List<String> selectedFields; //暂时不放入父类
 	//其他常用条件字段
 	@io.swagger.annotations.ApiModelProperty(value = "${id.comment}", dataType = "java.lang.List")
     private java.util.List<${id.allTypeName}> ${id.lowerCamel}List;// 主键列表

@@ -22,6 +22,7 @@ public class FieldBean {
     private boolean isFk; //是否外键
     private String fkTable; //外键对应的表
     private String fkCol; //外键对应的列
+    private String fkTableClassName; //对应外键类名称
 
     //主键
     private boolean isPk = false; //是否主键 主键可以多个

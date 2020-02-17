@@ -93,11 +93,17 @@ public class GenCodeService {
         String uuid = UUID.randomUUID().toString();
         String outPath = "dist/" + uuid;
         String author = codeCond.getAuthor();// 作者
-        if(vms.isEmpty()){
+        if (vms.isEmpty()) {
             throw new RuntimeException("没有扫描到模板");
+        }
+        List<AlvinGenCodeConfig> configList = this.genCodeConfigDao.queryList(codeCond.getTables().parallelStream().map(TableBean::getTableName).collect(Collectors.toList()));
+        Map<String, String> configMap = Maps.newHashMap();
+        for (AlvinGenCodeConfig config : configList) {
+            configMap.put(config.getTableName(), config.getLabelName());
         }
         //根据选择的表 查询表信息
         for (TableBean tableBean : codeCond.getTables()) {
+            tableBean.setLabelCol(configMap.get(tableBean.getTableName()));
             //查询字段
             List<String> pks = this.genCodeDao.getPrimaryKey(tableBean.getTableName());
 //            List<FKFieldBean> fkFieldList = this.genCodeDao.getFKs(tableBean.getTableName());
@@ -105,7 +111,7 @@ public class GenCodeService {
                 item.setRefTableShortName(CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, item.getRefTableName()));
                 return item;
             }).collect(Collectors.toList());
-            List<FieldBean>  fkLabelFieldList= this.genCodeDao.getRefFields(refs).parallelStream().map(item ->{
+            List<FieldBean> fkLabelFieldList = this.genCodeDao.getRefFields(refs).parallelStream().map(item -> {
                 item.setClassVarName(CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, item.getClassVarName()));
                 item.setLowerCamel(CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, item.getName()));
                 item.setUpperCamel(CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.UPPER_CAMEL, item.getName()));
@@ -122,7 +128,7 @@ public class GenCodeService {
                 item.setLowerCamel(CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, item.getName()));
                 item.setUpperCamel(CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.UPPER_CAMEL, item.getName()));
                 item.setLowerUnderscore(CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, item.getUpperCamel()));
-                item.setClassVarName(CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL,tableBean.getVarName()));
+                item.setClassVarName(CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, tableBean.getVarName()));
                 if (item.getAllTypeName().contains(".")) {
                     int index = item.getAllTypeName().lastIndexOf(".");
                     item.setType(item.getAllTypeName().substring(index + 1));
@@ -134,6 +140,7 @@ public class GenCodeService {
                     if (fk.getColName().equalsIgnoreCase(item.getName())) {
                         item.setFkCol(fk.getRefColName());
                         item.setFkTable(fk.getRefTableName());
+                        item.setFkTableClassName(CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, fk.getRefTableName()));
                         item.setFk(true);
                     }
                 }
