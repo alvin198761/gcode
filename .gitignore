@@ -32,3 +32,6 @@ gen_code_v2/code_utils/src/main/java/rebel.xml
 /gen_code_v3/sql.log
 *.log
 gencodev3demo/.idea
+gen_code_v3/src/main/webapp/node_modules
+gen_code_v3/src/main/webapp/.idea
+gen_code_v3/src/main/webapp/package-lock.json
