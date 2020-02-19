@@ -113,9 +113,11 @@ public class GenCodeDao {
             }).collect(Collectors.joining(" OR "));
             sb.append(cond);
             sb.append(" ) ");
+            log.info(sb.toString());
+            return jdbcTemplate.query(sb.toString(), new Object[]{dbName}, new BeanPropertyRowMapper<>(FieldBean.class));
+        }else{
+            return Lists.newArrayList();
         }
-        log.info(sb.toString());
-        return jdbcTemplate.query(sb.toString(), new Object[]{dbName}, new BeanPropertyRowMapper<>(FieldBean.class));
     }
 
     /**

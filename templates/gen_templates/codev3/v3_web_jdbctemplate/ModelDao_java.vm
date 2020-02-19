@@ -10,40 +10,22 @@ package ${packageName} ;
 @org.springframework.stereotype.Repository
 public class ${table.className}Dao extends org.alvin.code.gen.beans.BaseDao {
 
-    private StringBuilder insert = new StringBuilder();
-
-    /**
-    * 方法说明：  构造方法,用于拼加SQL及初始化工作
-    */
-    public ${table.className}Dao () {
-        insert.append("INSERT INTO ${table.tableName} (${insertFields}) ");
-        insert.append(" VALUES (${insertParamsColon})");
-    }
-
     /**
     * 方法说明：  新增${table.comment}记录
     */
     public int save(${table.className} vo) {
-        StringBuilder sql = new StringBuilder();
-        sql.append("REPLACE INTO ${table.tableName} (${allFields})");
-        sql.append(" VALUES (${allFieldsParams}) ");
-        Object[] params ={ ${selectFillParams} };
-        //log.info(org.alvin.cishan.sys.util.SqlUtil.showSql(sql.toString(), params));//显示SQL语句
-        return jdbcTemplate.update(sql.toString(), params);
-    }
-    
-    /**
-    * 方法说明：新增${table.comment}记录并返回自增涨主键值
-    */
-    public long saveReturnPK(${table.className} vo) {
-         return saveKey(vo, insert.toString(), "${id.name}");
+	   String sql = "INSERT INTO ${table.tableName} (${insertFields}) VALUES (${insertParamsColon})";
+	   org.alvin.code.gen.beans.SaveKeyObj obj = saveKey(vo, sql, "${id.name}");
+       vo.set${id.upperCamel}((${id.allTypeName})obj.getKey());
+       return obj.getRes();
     }
     
     /**
     * 方法说明： 批量插入${table.comment}记录
     */
     public int[] insertBatch(java.util.List<${table.className}> list) {
-       return batchOperate(list, insert.toString());
+	   String sql = "INSERT INTO ${table.tableName} (${insertFields}) VALUES (${insertParamsColon})";
+       return batchOperate(list, sql);
     }
     
     /**
@@ -100,9 +82,8 @@ public class ${table.className}Dao extends org.alvin.code.gen.beans.BaseDao {
         sb.append(this.getJoinTables());
         sb.append(" WHERE 1=1 ");
         sb.append(cond.getCondition());
-		sb.append(" order by ${id.name} desc ");
         sb.append(cond.getOrderSql());//增加排序子句;
-        //log.info(org.alvin.cishan.sys.util.SqlUtil.showSql(sb.toString(),cond.getArray()));//显示SQL语句
+        //log.info(org.alvin.code.gen.utils.SqlUtil.showSql(sb.toString(),cond.getArray()));//显示SQL语句
         return queryPage(sb.toString(), cond, ${table.className}.class);
     }
     

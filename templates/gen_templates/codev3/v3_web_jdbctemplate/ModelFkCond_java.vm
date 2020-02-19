@@ -8,9 +8,6 @@ package ${packageName} ;
 @lombok.Setter
 @lombok.Getter
 @lombok.experimental.Accessors(chain = true)
-@lombok.Builder	
-@lombok.AllArgsConstructor
-@lombok.NoArgsConstructor
 @io.swagger.annotations.ApiModel(value = "${table.className}FkCond", description = "${table.comment}--查询条件实体类-外键")
 public class ${table.className}FkCond extends ${table.className}Cond {
 
@@ -25,10 +22,10 @@ public class ${table.className}FkCond extends ${table.className}Cond {
 			add(this.${fi.classVarName}${fi.upperCamel} , " AND ${fi.classVarName}.${fi.name} LIKE ? " ,3);
 		#elseif($fi.type == "Date")
 			add(this.${fi.classVarName}${fi.upperCamel}  , " AND ${fi.classVarName}.${fi.name} = ? " );
-			add(org.alvin.cishan.sys.util.DateUtil.setStart(this.${fi.classVarName}${fi.upperCamel}Start ), " AND ${fi.classVarName}.${fi.name} >= ? "); //${fi.comment}开始
-			add(org.alvin.cishan.sys.util.DateUtil.setEnd(this.${fi.classVarName}${fi.upperCamel}End), " AND ${fi.classVarName}.${fi.name} <= ? "); //  ${fi.comment}结束
+			add(org.alvin.utils.DateUtil.setStart(this.${fi.classVarName}${fi.upperCamel}Start ), " AND ${fi.classVarName}.${fi.name} >= ? "); //${fi.comment}开始
+			add(org.alvin.utils.DateUtil.setEnd(this.${fi.classVarName}${fi.upperCamel}End), " AND ${fi.classVarName}.${fi.name} <= ? "); //  ${fi.comment}结束
         #else
-			add(this.${fi.lowerCamel} , " AND ${fi.classVarName}.${fi.name} = ? " );
+			add(this.${fi.classVarName}${fi.upperCamel} , " AND ${fi.classVarName}.${fi.name} = ? " );
         #end
     #end
     }

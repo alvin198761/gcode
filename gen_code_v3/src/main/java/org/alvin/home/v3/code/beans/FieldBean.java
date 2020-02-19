@@ -19,13 +19,13 @@ public class FieldBean {
     private String lowerUnderscore;//小写下划线
     //v3 新增的字段
     //外键
-    private boolean isFk; //是否外键
+    private int isFk = 0; //是否外键
     private String fkTable; //外键对应的表
     private String fkCol; //外键对应的列
     private String fkTableClassName; //对应外键类名称
 
     //主键
-    private boolean isPk = false; //是否主键 主键可以多个
+    private int isPk = 0; //是否主键 主键可以多个
     //
     private String classVarName; //类名称
 

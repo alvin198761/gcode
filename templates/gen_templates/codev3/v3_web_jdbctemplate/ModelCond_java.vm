@@ -25,8 +25,12 @@ public class ${table.className}Cond extends org.alvin.code.gen.beans.BaseConditi
         add(this.${fi.lowerCamel} , " AND t.${fi.name} LIKE ? " ,3);
 		#elseif($fi.type == "Date")
 		add(this.${fi.lowerCamel} , " AND t.${fi.name} = ? " );
-		add(org.alvin.cishan.sys.util.DateUtil.setStart(this.${fi.lowerCamel}Start ), " AND t.${fi.name} >= ? "); //${fi.comment}开始
-        add(org.alvin.cishan.sys.util.DateUtil.setEnd(this.${fi.lowerCamel}End), " AND t.${fi.name} <= ? "); //  ${fi.comment}结束
+		if(this.${fi.lowerCamel}Start != null){
+			add(org.alvin.utils.DateUtil.setStart(this.${fi.lowerCamel}Start ), " AND t.${fi.name} >= ? "); //${fi.comment}开始
+		}
+		if(this.${fi.lowerCamel}Start != null){
+			add(org.alvin.utils.DateUtil.setEnd(this.${fi.lowerCamel}End), " AND t.${fi.name} <= ? "); //  ${fi.comment}结束
+		}
         #else
         add(this.${fi.lowerCamel} , " AND t.${fi.name} = ? " );
         #end

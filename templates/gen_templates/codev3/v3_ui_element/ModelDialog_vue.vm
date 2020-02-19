@@ -3,10 +3,12 @@
       <el-dialog :title="title" :visible.sync="show" :close-on-click-modal="false" :close-on-press-escape="false" width="80%">
             <el-form :model="form" ref="form" :rules="rules" label-width="100px">
 				#foreach($fi in $fList)
+				#if($fi.name != $id.name)
+						 
 				 <el-row>
 					<el-col>
 						<el-form-item label="${fi.comment}" prop="${fi.lowerCamel}">
-							#if($fi.isFk == true)
+							#if($fi.isFk == 1)
 							<!-- ${fi.lowerCamel} -->
 							<el-select placeholder="请输入${fi.comment}" size="small" v-model="form.${fi.lowerCamel}" clearable style="width: 100%">
 								<el-option
@@ -42,6 +44,7 @@
 					</el-col>
 				</el-row>
 				#end
+				#end
                 </el-form>
             <div slot="footer" style="text-align: right">
               <el-button @click="show = false">取消</el-button>
@@ -61,13 +64,17 @@
         show: false,
         rules: {
         #foreach($fi in $fList)
-            ${fi.name} :[
-            {required: true, message: '请输入${fi.comment}', trigger: 'blur'}, // {min: 1, max: 10, message: '${fi.comment}长度不正确', trigger: 'blur'},     
-			],
-        #end
+			#if($fi.name == $id.name)
+				//主键不处理
+			#else
+				${fi.name} :[
+				{required: true, message: '请输入${fi.comment}', trigger: 'blur'}, // {min: 1, max: 10, message: '${fi.comment}长度不正确', trigger: 'blur'},     
+				],
+			#end
+		#end
         },
 		#foreach($fi in $fList)
-			#if($fi.isFk == true)
+			#if($fi.isFk == 1)
 			${fi.lowerCamel}FkList:[],
 			#elseif($fi.allTypeName == "java.lang.Byte")
 			${fi.lowerCamel}List: [],
@@ -77,12 +84,12 @@
     },
     methods: {
 	#foreach($fi in $fList)
-		#if($fi.isFk == true)
+		#if($fi.isFk == 1)
 		load${fi.upperCamel}FkList(){
 			const that = this;
 			that.${dollar}postBody("/api/${fi.fkTableClassName}/queryLabelList",{}).then(res =>{
 				if(res.code != 0){
-					that.${dollar}message.error("${res.errmsg}");
+					that.${dollar}message.error(res.errmsg);
 					return ;
 				}
 				that.${fi.upperCamel}FkList = res.data;
@@ -100,7 +107,7 @@
 	  initData(){
 		//初始化数据
 		#foreach($fi in $fList)
-			#if($fi.isFk == true)
+			#if($fi.isFk == 1)
 				this.load${fi.upperCamel}FkList();
 			#elseif($fi.allTypeName == "java.lang.Byte")
 				this.load${fi.upperCamel}List();
@@ -113,10 +120,10 @@
               if (!valid) {
                 return;
               }
-              that.${dollar}postBody("/api/${table.lowerCamel}/" + that.dialogMode, JSON.stringify(that.form)).then(res => {
+              that.${dollar}postBody("/api/${table.varName}/" + that.dialogMode, that.form).then(res => {
                 that.show = false;
 				if(res.code != 0){
-					that.${dollar}message.error("${res.errmsg}");
+					that.${dollar}message.error(res.errmsg);
 					return ;
 				}
                 that.${dollar}message.success(that.title + "成功!");

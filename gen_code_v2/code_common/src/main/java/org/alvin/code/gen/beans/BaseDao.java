@@ -62,11 +62,12 @@ public abstract class BaseDao {
         return nameJdbcTemplate.batchUpdate(sql, params);
     }
 
-    protected <T> long saveKey(T t, String sql, String id) {
+    protected <T> SaveKeyObj saveKey(T t, String sql, String id) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         SqlParameterSource params = new BeanPropertySqlParameterSource(t);
-        nameJdbcTemplate.update(sql, params, keyHolder, new String[]{id});
-        return keyHolder.getKey().longValue();
+        int res = nameJdbcTemplate.update(sql, params, keyHolder, new String[]{id});
+        Number key = keyHolder.getKey();
+        return new SaveKeyObj(key, res);
     }
 
     /**

@@ -3,9 +3,10 @@
       <div>
             <el-form :inline="true">
                 #foreach($fi in $fList)
+				#if($fi.name != $id.name)
                     <el-form-item label="${fi.comment}">
-						#if($fi.isFk == true)
-							<!-- ${fi.lowerCamel} -->
+						#if($fi.isFk == 1)
+						<!-- ${fi.lowerCamel} -->
 							<el-select placeholder="请输入${fi.comment}" size="small" v-model="form.${fi.lowerCamel}" clearable style="width: 100%">
 								<el-option
 										v-for="item in ${fi.lowerCamel}FkList"
@@ -37,6 +38,7 @@
 						<el-input placeholder="请输入${fi.comment}" size="small" v-model="form.${fi.lowerCamel}" clearable style="width: 100%"></el-input>
 						#end
                     </el-form-item>
+					#end
                 #end
 				  <el-form-item>
                         <el-button icon="search" @click="refresh" title="根据输入条件查询" size="small">查询</el-button>
@@ -49,16 +51,31 @@
                             <el-form>
                                   <el-row :gutter="10">
                                       #foreach($fi in $fList)
-                                          <el-col :span="6">
-                                              <el-form-item label="${fi.comment}">{{props.row.${fi.name}}}</el-form-item>
-                                          </el-col>
+										  #if ($fi.allTypeName == "java.util.Date")
+											  <el-col :span="6">
+												  <el-form-item label="${fi.comment}">{{props.row.${fi.name} |date_filter}}</el-form-item>
+											  </el-col>
+										  #else
+										  <el-col :span="6">
+												  <el-form-item label="${fi.comment}">{{props.row.${fi.name}}}</el-form-item>
+											  </el-col>
+										  #end
                                       #end
                                       </el-row>
                                 </el-form>
                         </template>
                   </el-table-column>
                 #foreach($fi in $fList)
-                    <el-table-column prop="${fi.name}" label="${fi.comment}"></el-table-column>
+				#if ($fi.allTypeName == "java.util.Date")
+				<el-table-column label="操作" width="150">
+                    <template slot-scope="props">
+					{{props.row.${fi.name} |date_filter}}
+					  </template>
+                  </el-table-column>
+				  #else
+				  <el-table-column prop="${fi.name}" label="${fi.comment}"></el-table-column>
+				  #end
+                    
                 #end
               <el-table-column label="操作" width="150">
                     <template slot-scope="props">
@@ -74,14 +91,14 @@
               <el-pagination small layout="total,sizes,prev, pager, next" :current-page="page" :total="total" @current-change="(curr) => {this.page = curr ; this.refresh();}"
                :page-sizes="[10, 15, 20, 100]" @size-change="(s) => {this.size = s ; this.refresh();}" :page-size="size"></el-pagination>
             </div>
-        <${clsUpp}Dialog ref="dialog" :refresh="refresh"></${clsUpp}Dialog>
+        <${table.className}Dialog ref="dialog" :refresh="refresh"></${table.className}Dialog>
   </div>
 </template>
 <script>
-  import ${clsUpp}Dialog from './${clsUpp}Dialog.vue';
+  import ${table.className}Dialog from './${table.className}Dialog.vue';
   import moment from 'moment';
   export default {
-      components: { ${clsUpp}Dialog },
+      components: { ${table.className}Dialog },
       data: function () {
       return {
         total: 0,
@@ -90,7 +107,9 @@
         dataList: [],
         form: {
         #foreach($fi in $fList)
-			#if ($fi.allTypeName == "java.util.Date")
+			#if($fi.name == $id.name)
+				//主键不输出
+			#elseif ($fi.allTypeName == "java.util.Date")
 				${fi.lowerCamel} : [moment(),moment()],// ${fi.comment}
 			#else
 				${fi.lowerCamel} : null,// ${fi.comment}
@@ -109,7 +128,7 @@
     created: function () {
       this.refresh();
 	  #foreach($fi in $fList)
-		#if($fi.isFk == true)
+		#if($fi.isFk == 1)
 			this.load${fi.upperCamel}FkList();
 		#elseif($fi.allTypeName == "java.lang.Byte")
 			this.load${fi.upperCamel}List();
@@ -118,12 +137,12 @@
     },
     methods: {
 	 #foreach($fi in $fList)
-		#if($fi.isFk == true)
+		#if($fi.isFk == 1)
 		load${fi.upperCamel}FkList(){
 			const that = this;
 			that.${dollar}postBody("/api/${fi.fkTableClassName}/queryLabelList",{}).then(res =>{
 				if(res.code != 0){
-					that.${dollar}message.error("${res.errmsg}");
+					that.${dollar}message.error(res.errmsg);
 					return ;
 				}
 				that.${fi.upperCamel}FkList = res.data;
@@ -146,8 +165,8 @@
 			#if ($fi.allTypeName == "java.util.Date")
 			requestData.${fi.lowerCamel} = null;
 				if (that.form.${fi.lowerCamel} && that.form.${fi.lowerCamel}.length === 2) {
-					requestData.${fi.lowerCamel}Start=that.form[0];
-					requestData.${fi.lowerCamel}End=that.form[1];
+					requestData.${fi.lowerCamel}Start=that.form.${fi.lowerCamel}[0];
+					requestData.${fi.lowerCamel}End=that.form.${fi.lowerCamel}[1];
 				}
 			#end
 		#end
@@ -157,7 +176,7 @@
 			  that.dataList = res.data.content;
 			  that.total = res.data.totalElements;
 			}).catch(res => {
-			  that.${dollar}message.error("获取${cName}列表失败：" + res);
+			  that.${dollar}message.error("获取${table.comment}列表失败：" + res);
 			  that.loading = false;
 			});
       },
@@ -181,6 +200,7 @@
 				that.${dollar}message.error("删除失败：" + res);
 			  });
         }).catch(() => {
+			 
         });
       }
     }

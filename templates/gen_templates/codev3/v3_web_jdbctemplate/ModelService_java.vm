@@ -25,8 +25,8 @@ public class ${table.className}Service {
 	*/
 	@org.springframework.transaction.annotation.Transactional
 	public int delete(${id.allTypeName} ${id.lowerCamel}) {
-		return this.${table.varName}Dao.deleteLogic(${id.lowerCamel});//逻辑删除
-		//return this.${table.varName}Dao.delete(${id.lowerCamel});//物理删除
+		//return this.${table.varName}Dao.deleteLogic(${id.lowerCamel});//逻辑删除
+		return this.${table.varName}Dao.delete(${id.lowerCamel});//物理删除
 	}
 
 	/**

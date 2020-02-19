@@ -8,9 +8,6 @@ package ${packageName} ;
 @lombok.Setter
 @lombok.Getter
 @lombok.experimental.Accessors(chain = true)
-@lombok.Builder	
-@lombok.AllArgsConstructor
-@lombok.NoArgsConstructor
 @io.swagger.annotations.ApiModel(value = "${table.className}Fk", description = "${table.comment}--实体类-外键")
 public class ${table.className}Fk extends ${table.className}{
 

@@ -4,7 +4,9 @@ import com.alibaba.fastjson.JSONObject;
 import com.google.common.base.CaseFormat;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import org.alvin.home.v3.code.beans.*;
+import org.alvin.home.v3.code.beans.EntityConfig;
+import org.alvin.home.v3.code.beans.FieldBean;
+import org.alvin.home.v3.code.beans.TableBean;
 import org.alvin.home.v3.code.system.JDBC2MbTypeService;
 import org.alvin.home.v3.code.system.VmFileService;
 import org.alvin.home.v3.code.system.gencodeconfig.AlvinGenCodeConfig;
@@ -58,10 +60,10 @@ public class GenCodeService {
         }
 
         return list.parallelStream().map(item -> {
-            item.setClassName(CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.UPPER_CAMEL, item.getTableName()));
+//            item.setClassName(CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.UPPER_CAMEL, item.getTableName()));
             String className = item.getTableName().substring(item.getTableName().indexOf("_") + 1);//去前缀
             item.setClassName(CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.UPPER_CAMEL, className));
-            item.setVarName(CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, item.getTableName()));
+            item.setVarName(CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, className));
             item.setCnName(item.getComment());
             item.setLabelCol(configMap.get(item.getTableName()));
             return item;
@@ -112,7 +114,8 @@ public class GenCodeService {
                 return item;
             }).collect(Collectors.toList());
             List<FieldBean> fkLabelFieldList = this.genCodeDao.getRefFields(refs).parallelStream().map(item -> {
-                item.setClassVarName(CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, item.getClassVarName()));
+                String className = item.getClassVarName().substring(item.getClassVarName().indexOf("_") + 1);//去前缀
+                item.setClassVarName(CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, className));
                 item.setLowerCamel(CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, item.getName()));
                 item.setUpperCamel(CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.UPPER_CAMEL, item.getName()));
                 item.setLowerUnderscore(CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, item.getUpperCamel()));
@@ -135,13 +138,13 @@ public class GenCodeService {
                 } else {
                     item.setType(item.getAllTypeName());
                 }
-                item.setPk(pks.contains(item.getName()));
+                item.setIsPk(pks.contains(item.getName()) ? 1 : 0);
                 for (AlvinGenCodeRef fk : refs) {
                     if (fk.getColName().equalsIgnoreCase(item.getName())) {
                         item.setFkCol(fk.getRefColName());
                         item.setFkTable(fk.getRefTableName());
                         item.setFkTableClassName(CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, fk.getRefTableName()));
-                        item.setFk(true);
+                        item.setIsFk(1);
                     }
                 }
                 item.setMbDbType(this.jdbc2MbTypeService.getType(item.getDbType()));
@@ -157,11 +160,11 @@ public class GenCodeService {
             jsonObject.put("table", tableBean);
             jsonObject.put("packageName", codeCond.getPackageName());
             //主键可能是多个
-            List<FieldBean> ids = fieldBeans.parallelStream().filter(FieldBean::isPk).collect(Collectors.toList());
+            List<FieldBean> ids = fieldBeans.parallelStream().filter(item -> item.getIsPk() == 1).collect(Collectors.toList());
             jsonObject.put("ids", ids);
             jsonObject.put("id", ids.get(0)); //简化,一般只有一个主键
             //外键可能是多个
-            jsonObject.put("fks", fieldBeans.parallelStream().filter(item -> item.isFk()).collect(Collectors.toList()));
+            jsonObject.put("fks", fieldBeans.parallelStream().filter(item -> item.getIsFk() == 1).collect(Collectors.toList()));
             jsonObject.put("fkLabels", fkLabelFieldList);
 
             jsonObject.put("pks", pks);
@@ -171,11 +174,11 @@ public class GenCodeService {
             jsonObject.put("selectParams", fieldBeans.parallelStream().map(item -> item.getName().concat("=?")).collect(Collectors.joining(",")));
             jsonObject.put("selectParamsColon", fieldBeans.parallelStream().map(item -> ":".concat(item.getLowerCamel())).collect(Collectors.joining(",")));
             //添加或者修改
-            jsonObject.put("updateFields", fieldBeans.parallelStream().filter(item -> !item.isPk()).map(item -> item.getName().concat("=?")).collect(Collectors.joining(",")));
-            jsonObject.put("updateParams", fieldBeans.parallelStream().filter(item -> !item.isPk()).map(item -> "vo.get".concat(item.getUpperCamel()).concat("()")).collect(Collectors.joining(",")));
-            jsonObject.put("insertFields", fieldBeans.parallelStream().filter(item -> !item.isPk()).map(FieldBean::getName).collect(Collectors.joining(",")));
-            jsonObject.put("insertParams", fieldBeans.parallelStream().filter(item -> !item.isPk()).map(item -> "?").collect(Collectors.joining(",")));
-            jsonObject.put("insertParamsColon", fieldBeans.parallelStream().filter(item -> !item.isPk()).map(item -> ":".concat(item.getLowerCamel())).collect(Collectors.joining(",")));
+            jsonObject.put("updateFields", fieldBeans.parallelStream().filter(item -> item.getIsPk() == 0).map(item -> item.getName().concat("=?")).collect(Collectors.joining(",")));
+            jsonObject.put("updateParams", fieldBeans.parallelStream().filter(item -> item.getIsPk() == 0).map(item -> "vo.get".concat(item.getUpperCamel()).concat("()")).collect(Collectors.joining(",")));
+            jsonObject.put("insertFields", fieldBeans.parallelStream().filter(item -> item.getIsPk() == 0).map(FieldBean::getName).collect(Collectors.joining(",")));
+            jsonObject.put("insertParams", fieldBeans.parallelStream().filter(item -> item.getIsPk() == 0).map(item -> "?").collect(Collectors.joining(",")));
+            jsonObject.put("insertParamsColon", fieldBeans.parallelStream().filter(item -> item.getIsPk() == 0).map(item -> ":".concat(item.getLowerCamel())).collect(Collectors.joining(",")));
             jsonObject.put("allFields", fieldBeans.parallelStream().map(FieldBean::getName).collect(Collectors.joining(",")));
             jsonObject.put("allFieldsParams", fieldBeans.parallelStream().map(item -> "?").collect(Collectors.joining(",")));
             //外键关联表等
