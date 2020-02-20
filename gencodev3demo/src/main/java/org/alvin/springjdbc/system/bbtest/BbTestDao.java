@@ -4,7 +4,7 @@ package org.alvin.springjdbc.system.bbtest;
 * 类说明: [测试表B]--数据访问层
  * @类说明: 收寄信息--
 * @author 唐植超
-* 生成日期 2020-02-19 23:05:35
+* 生成日期 2020-02-20 20:09:06
 **/
 @lombok.extern.slf4j.Slf4j
 @org.springframework.stereotype.Repository
@@ -16,7 +16,7 @@ public class BbTestDao extends org.alvin.code.gen.beans.BaseDao {
     public int save(BbTest vo) {
 	   String sql = "INSERT INTO t_bb_test (title) VALUES (:title)";
 	   org.alvin.code.gen.beans.SaveKeyObj obj = saveKey(vo, sql, "id");
-       vo.setId(vo.getId());
+       vo.setId((Long)obj.getKey());
        return obj.getRes();
     }
     

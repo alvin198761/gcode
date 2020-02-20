@@ -170,7 +170,7 @@ public class ${table.className}Action {
             @io.swagger.annotations.ApiResponse(code = 0, message = "操作成功")
     })
     @org.springframework.web.bind.annotation.PostMapping("findFkOne")
-    public org.alvin.code.gen.beans.RestfullResp<${table.className}Fk> findFkOne(${table.className}FkCond ${table.varName}Cond) {
+    public org.alvin.code.gen.beans.RestfullResp<${table.className}Fk> findFkOne(@org.springframework.web.bind.annotation.RequestBody ${table.className}FkCond ${table.varName}Cond) {
         return new org.alvin.code.gen.beans.RestfullResp<>(this.${table.varName}Service.findFkOne(${table.varName}Cond));
     }
 
@@ -188,7 +188,7 @@ public class ${table.className}Action {
             @io.swagger.annotations.ApiResponse(code = 0, message = "操作成功")
     })
     @org.springframework.web.bind.annotation.PostMapping("queryLabelList")
-    public org.alvin.code.gen.beans.RestfullResp<java.util.List<org.alvin.code.gen.beans.SelectOption>> queryLabelList(${table.className}FkCond ${table.varName}FkCond) {
+    public org.alvin.code.gen.beans.RestfullResp<java.util.List<org.alvin.code.gen.beans.SelectOption>> queryLabelList(@org.springframework.web.bind.annotation.RequestBody ${table.className}FkCond ${table.varName}FkCond) {
         return new org.alvin.code.gen.beans.RestfullResp<>(this.${table.varName}Service.queryLabelList(${table.varName}FkCond));
     }
 
@@ -204,7 +204,7 @@ public class ${table.className}Action {
             @io.swagger.annotations.ApiResponse(code = 0, message = "操作成功")
     })
     @org.springframework.web.bind.annotation.PostMapping("queryFkList")
-    public org.alvin.code.gen.beans.RestfullResp<java.util.List<${table.className}Fk>> queryFkList(${table.className}FkCond ${table.varName}FkCond) {
+    public org.alvin.code.gen.beans.RestfullResp<java.util.List<${table.className}Fk>> queryFkList(@org.springframework.web.bind.annotation.RequestBody ${table.className}FkCond ${table.varName}FkCond) {
         return new org.alvin.code.gen.beans.RestfullResp<>(this.${table.varName}Service.queryFkList(${table.varName}FkCond));
     }
 
@@ -220,7 +220,7 @@ public class ${table.className}Action {
             @io.swagger.annotations.ApiResponse(code = 0, message = "操作成功")
     })
     @org.springframework.web.bind.annotation.PostMapping("queryFkPage")
-    public org.alvin.code.gen.beans.RestfullResp<org.alvin.code.gen.utils.Page<${table.className}Fk>> queryFkPage(${table.className}FkCond fkCond) {
+    public org.alvin.code.gen.beans.RestfullResp<org.alvin.code.gen.utils.Page<${table.className}Fk>> queryFkPage(@org.springframework.web.bind.annotation.RequestBody ${table.className}FkCond fkCond) {
         return new org.alvin.code.gen.beans.RestfullResp<>(this.${table.varName}Service.queryFkPage(fkCond));
     }
 

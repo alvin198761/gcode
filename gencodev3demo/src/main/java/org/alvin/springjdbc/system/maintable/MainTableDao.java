@@ -4,7 +4,7 @@ package org.alvin.springjdbc.system.maintable;
 * 类说明: [主表]--数据访问层
  * @类说明: 收寄信息--
 * @author 唐植超
-* 生成日期 2020-02-19 23:05:35
+* 生成日期 2020-02-20 20:09:06
 **/
 @lombok.extern.slf4j.Slf4j
 @org.springframework.stereotype.Repository
@@ -16,7 +16,7 @@ public class MainTableDao extends org.alvin.code.gen.beans.BaseDao {
     public int save(MainTable vo) {
 	   String sql = "INSERT INTO t_main_table (main_title,a_id,b_id,date) VALUES (:mainTitle,:aId,:bId,:date)";
 	   org.alvin.code.gen.beans.SaveKeyObj obj = saveKey(vo, sql, "id");
-       vo.setId(vo.getId());
+       vo.setId((Long)obj.getKey());
        return obj.getRes();
     }
     
@@ -264,8 +264,8 @@ public class MainTableDao extends org.alvin.code.gen.beans.BaseDao {
         if (cond == null || cond.getSelectedFields() == null || cond.getSelectedFields().isEmpty()) {
 			StringBuilder sb = new StringBuilder();
 			sb.append("t.id,t.main_title,t.a_id,t.b_id,t.date");
-							sb.append(" ,tAaTable.id ");
-							sb.append(" ,tBbTest.id ");
+							sb.append(" ,aaTable.id ");
+							sb.append(" ,bbTest.id ");
 			            return sb.toString(); //默认所有字段
         }
         return com.google.common.base.Joiner.on(",").join(cond.getSelectedFields());
@@ -276,8 +276,8 @@ public class MainTableDao extends org.alvin.code.gen.beans.BaseDao {
      */
     public String getFkJoinTables() {
         StringBuilder sb = new StringBuilder();
-					sb.append(" LEFT JOIN t_aa_table AS tAaTable ON t.a_id = tAaTable.id ");
-					sb.append(" LEFT JOIN t_bb_test AS tBbTest ON t.b_id = tBbTest.id ");
+					sb.append(" LEFT JOIN aa_table AS aaTable ON t.a_id = aaTable.id ");
+					sb.append(" LEFT JOIN bb_test AS bbTest ON t.b_id = bbTest.id ");
 		        return sb.toString();
     }
 

@@ -3,7 +3,7 @@ package org.alvin.springjdbc.system.aatable;
 /**
 * @类说明: 测试A--实体类
 * @author: 唐植超
-* @date : 2020-02-19 23:05:35
+* @date : 2020-02-20 20:09:06
 **/
 @lombok.Setter
 @lombok.Getter

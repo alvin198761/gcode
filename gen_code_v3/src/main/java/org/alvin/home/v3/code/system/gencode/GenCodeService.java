@@ -110,6 +110,8 @@ public class GenCodeService {
             List<String> pks = this.genCodeDao.getPrimaryKey(tableBean.getTableName());
 //            List<FKFieldBean> fkFieldList = this.genCodeDao.getFKs(tableBean.getTableName());
             List<AlvinGenCodeRef> refs = this.alvinGenCodeRefDao.queryListByTableName(tableBean.getTableName()).parallelStream().map(item -> {
+                String className = item.getRefTableName().substring(item.getRefTableName().indexOf("_") + 1);//去前缀
+                item.setRefTableName(className);
                 item.setRefTableShortName(CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, item.getRefTableName()));
                 return item;
             }).collect(Collectors.toList());

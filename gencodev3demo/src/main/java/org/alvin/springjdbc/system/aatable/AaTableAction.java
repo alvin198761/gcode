@@ -3,7 +3,7 @@ package org.alvin.springjdbc.system.aatable;
 /**
 * 类说明: 测试A--Swagger控制器类 ,使用requestbody 实现
 * @author 唐植超
-* 生成日期 2020-02-19 23:05:35
+* 生成日期 2020-02-20 20:09:06
 **/
 @lombok.extern.slf4j.Slf4j
 @io.swagger.annotations.Api(value = "[测试A]控制器", description = "[测试A]相关操作")
@@ -170,7 +170,7 @@ public class AaTableAction {
             @io.swagger.annotations.ApiResponse(code = 0, message = "操作成功")
     })
     @org.springframework.web.bind.annotation.PostMapping("findFkOne")
-    public org.alvin.code.gen.beans.RestfullResp<AaTableFk> findFkOne(AaTableFkCond aaTableCond) {
+    public org.alvin.code.gen.beans.RestfullResp<AaTableFk> findFkOne(@org.springframework.web.bind.annotation.RequestBody AaTableFkCond aaTableCond) {
         return new org.alvin.code.gen.beans.RestfullResp<>(this.aaTableService.findFkOne(aaTableCond));
     }
 
@@ -188,8 +188,8 @@ public class AaTableAction {
             @io.swagger.annotations.ApiResponse(code = 0, message = "操作成功")
     })
     @org.springframework.web.bind.annotation.PostMapping("queryLabelList")
-    public org.alvin.code.gen.beans.RestfullResp<java.util.List<org.alvin.code.gen.beans.SelectOption>> queryLabelList(AaTableFkCond aaTableFkCond) {
-        return new org.alvin.code.gen.beans.RestfullResp<>(this.aaTableService.queryLabelList(aaTableFkCond));
+    public org.alvin.code.gen.beans.RestfullResp<java.util.List<org.alvin.code.gen.beans.SelectOption>> queryLabelList(@org.springframework.web.bind.annotation.RequestBody AaTableFkCond aaTableFkCond) {
+        return new org.alvin.code.gen.beans.RestfullResp<>(this.aaTableService.queryLabelList( aaTableFkCond));
     }
 
     /**
@@ -204,7 +204,7 @@ public class AaTableAction {
             @io.swagger.annotations.ApiResponse(code = 0, message = "操作成功")
     })
     @org.springframework.web.bind.annotation.PostMapping("queryFkList")
-    public org.alvin.code.gen.beans.RestfullResp<java.util.List<AaTableFk>> queryFkList(AaTableFkCond aaTableFkCond) {
+    public org.alvin.code.gen.beans.RestfullResp<java.util.List<AaTableFk>> queryFkList(@org.springframework.web.bind.annotation.RequestBody AaTableFkCond aaTableFkCond) {
         return new org.alvin.code.gen.beans.RestfullResp<>(this.aaTableService.queryFkList(aaTableFkCond));
     }
 
@@ -220,7 +220,7 @@ public class AaTableAction {
             @io.swagger.annotations.ApiResponse(code = 0, message = "操作成功")
     })
     @org.springframework.web.bind.annotation.PostMapping("queryFkPage")
-    public org.alvin.code.gen.beans.RestfullResp<org.alvin.code.gen.utils.Page<AaTableFk>> queryFkPage(AaTableFkCond fkCond) {
+    public org.alvin.code.gen.beans.RestfullResp<org.alvin.code.gen.utils.Page<AaTableFk>> queryFkPage(@org.springframework.web.bind.annotation.RequestBody AaTableFkCond fkCond) {
         return new org.alvin.code.gen.beans.RestfullResp<>(this.aaTableService.queryFkPage(fkCond));
     }
 

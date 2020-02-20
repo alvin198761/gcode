@@ -120,6 +120,8 @@
 		#foreach($fi in $fList)
 			#if($fi.allTypeName == "java.lang.Byte")
 			${fi.lowerCamel}List: [],
+			#elseif($fi.isFk == 1)
+			${fi.lowerCamel}FkList:[],
 			#end
 		#end
       }
@@ -145,7 +147,7 @@
 					that.${dollar}message.error(res.errmsg);
 					return ;
 				}
-				that.${fi.upperCamel}FkList = res.data;
+				that.${fi.lowerCamel}FkList = res.data;
 			}).catch(err => {
 				that.${dollar}message.error("获取数据出错:" + res);
 			})

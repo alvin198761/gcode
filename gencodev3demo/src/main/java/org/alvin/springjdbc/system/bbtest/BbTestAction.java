@@ -3,7 +3,7 @@ package org.alvin.springjdbc.system.bbtest;
 /**
 * 类说明: 测试表B--Swagger控制器类 ,使用requestbody 实现
 * @author 唐植超
-* 生成日期 2020-02-19 23:05:35
+* 生成日期 2020-02-20 20:09:06
 **/
 @lombok.extern.slf4j.Slf4j
 @io.swagger.annotations.Api(value = "[测试表B]控制器", description = "[测试表B]相关操作")
@@ -170,7 +170,7 @@ public class BbTestAction {
             @io.swagger.annotations.ApiResponse(code = 0, message = "操作成功")
     })
     @org.springframework.web.bind.annotation.PostMapping("findFkOne")
-    public org.alvin.code.gen.beans.RestfullResp<BbTestFk> findFkOne(BbTestFkCond bbTestCond) {
+    public org.alvin.code.gen.beans.RestfullResp<BbTestFk> findFkOne(@org.springframework.web.bind.annotation.RequestBody BbTestFkCond bbTestCond) {
         return new org.alvin.code.gen.beans.RestfullResp<>(this.bbTestService.findFkOne(bbTestCond));
     }
 
@@ -188,7 +188,7 @@ public class BbTestAction {
             @io.swagger.annotations.ApiResponse(code = 0, message = "操作成功")
     })
     @org.springframework.web.bind.annotation.PostMapping("queryLabelList")
-    public org.alvin.code.gen.beans.RestfullResp<java.util.List<org.alvin.code.gen.beans.SelectOption>> queryLabelList(BbTestFkCond bbTestFkCond) {
+    public org.alvin.code.gen.beans.RestfullResp<java.util.List<org.alvin.code.gen.beans.SelectOption>> queryLabelList(@org.springframework.web.bind.annotation.RequestBody BbTestFkCond bbTestFkCond) {
         return new org.alvin.code.gen.beans.RestfullResp<>(this.bbTestService.queryLabelList(bbTestFkCond));
     }
 
@@ -204,7 +204,7 @@ public class BbTestAction {
             @io.swagger.annotations.ApiResponse(code = 0, message = "操作成功")
     })
     @org.springframework.web.bind.annotation.PostMapping("queryFkList")
-    public org.alvin.code.gen.beans.RestfullResp<java.util.List<BbTestFk>> queryFkList(BbTestFkCond bbTestFkCond) {
+    public org.alvin.code.gen.beans.RestfullResp<java.util.List<BbTestFk>> queryFkList(@org.springframework.web.bind.annotation.RequestBody BbTestFkCond bbTestFkCond) {
         return new org.alvin.code.gen.beans.RestfullResp<>(this.bbTestService.queryFkList(bbTestFkCond));
     }
 
@@ -220,7 +220,7 @@ public class BbTestAction {
             @io.swagger.annotations.ApiResponse(code = 0, message = "操作成功")
     })
     @org.springframework.web.bind.annotation.PostMapping("queryFkPage")
-    public org.alvin.code.gen.beans.RestfullResp<org.alvin.code.gen.utils.Page<BbTestFk>> queryFkPage(BbTestFkCond fkCond) {
+    public org.alvin.code.gen.beans.RestfullResp<org.alvin.code.gen.utils.Page<BbTestFk>> queryFkPage(@org.springframework.web.bind.annotation.RequestBody BbTestFkCond fkCond) {
         return new org.alvin.code.gen.beans.RestfullResp<>(this.bbTestService.queryFkPage(fkCond));
     }
 

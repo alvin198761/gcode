@@ -1,4 +1,4 @@
-/*主表管理,作者:唐植超,日期:2020-02-19 23:26:37*/
+/*主表管理,作者:唐植超,日期:2020-02-20 20:18:37*/
 <template>
       <div>
             <el-form :inline="true">
@@ -109,7 +109,9 @@
 			        							date : [moment(),moment()],// 日期
 			                },
         loading: false,
-																											      }
+																		aIdFkList:[],
+											bIdFkList:[],
+										      }
     },
     computed: {},
     created: function () {
@@ -120,24 +122,24 @@
     methods: {
 	 										loadAIdFkList(){
 			const that = this;
-			that.$postBody("/api/tAaTable/queryLabelList",{}).then(res =>{
+			that.$postBody("/api/aaTable/queryLabelList",{}).then(res =>{
 				if(res.code != 0){
 					that.$message.error(res.errmsg);
 					return ;
 				}
-				that.AIdFkList = res.data;
+				that.aIdFkList = res.data;
 			}).catch(err => {
 				that.$message.error("获取数据出错:" + res);
 			})
 		},
 							loadBIdFkList(){
 			const that = this;
-			that.$postBody("/api/tBbTest/queryLabelList",{}).then(res =>{
+			that.$postBody("/api/bbTest/queryLabelList",{}).then(res =>{
 				if(res.code != 0){
 					that.$message.error(res.errmsg);
 					return ;
 				}
-				that.BIdFkList = res.data;
+				that.bIdFkList = res.data;
 			}).catch(err => {
 				that.$message.error("获取数据出错:" + res);
 			})

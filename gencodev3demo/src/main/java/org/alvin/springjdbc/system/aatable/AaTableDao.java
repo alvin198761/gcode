@@ -4,7 +4,7 @@ package org.alvin.springjdbc.system.aatable;
 * 类说明: [测试A]--数据访问层
  * @类说明: 收寄信息--
 * @author 唐植超
-* 生成日期 2020-02-19 23:05:35
+* 生成日期 2020-02-20 20:09:06
 **/
 @lombok.extern.slf4j.Slf4j
 @org.springframework.stereotype.Repository
@@ -16,7 +16,7 @@ public class AaTableDao extends org.alvin.code.gen.beans.BaseDao {
     public int save(AaTable vo) {
 	   String sql = "INSERT INTO t_aa_table (tip,date) VALUES (:tip,:date)";
 	   org.alvin.code.gen.beans.SaveKeyObj obj = saveKey(vo, sql, "id");
-       vo.setId((java.lang.Long)obj.getKey());
+       vo.setId((Long)obj.getKey());
        return obj.getRes();
     }
     
@@ -89,8 +89,7 @@ public class AaTableDao extends org.alvin.code.gen.beans.BaseDao {
         sb.append(" WHERE 1=1 ");
         sb.append(cond.getCondition());
         sb.append(cond.getOrderSql());//增加排序子句;
-        log.info(org.alvin.code.gen.utils.SqlUtil.showSql(sb.toString(),cond.getArray()));//显示SQL语句
-        System.out.println(org.alvin.code.gen.utils.SqlUtil.showSql(sb.toString(),cond.getArray()));
+        //log.info(org.alvin.code.gen.utils.SqlUtil.showSql(sb.toString(),cond.getArray()));//显示SQL语句
         return queryPage(sb.toString(), cond, AaTable.class);
     }
     

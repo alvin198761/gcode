@@ -1,6 +1,6 @@
 /*${table.comment}管理,作者:${author},日期:${time}*/
 <template>
-      <el-dialog :title="title" :visible.sync="show" :close-on-click-modal="false" :close-on-press-escape="false" width="80%">
+      <el-dialog :title="title" :visible.sync="show" :close-on-click-modal="false" :close-on-press-escape="false" width="60%">
             <el-form :model="form" ref="form" :rules="rules" label-width="100px">
 				#foreach($fi in $fList)
 				#if($fi.name != $id.name)
@@ -88,13 +88,13 @@
 		load${fi.upperCamel}FkList(){
 			const that = this;
 			that.${dollar}postBody("/api/${fi.fkTableClassName}/queryLabelList",{}).then(res =>{
-				if(res.code != 0){
+				if(res.code !== 0){
 					that.${dollar}message.error(res.errmsg);
 					return ;
 				}
-				that.${fi.upperCamel}FkList = res.data;
+				that.${fi.lowerCamel}FkList = res.data;
 			}).catch(err => {
-				that.${dollar}message.error("获取数据出错:" + res);
+				that.${dollar}message.error("获取数据出错:" + err);
 			})
 		},
 		#elseif($fi.allTypeName == "java.lang.Byte")

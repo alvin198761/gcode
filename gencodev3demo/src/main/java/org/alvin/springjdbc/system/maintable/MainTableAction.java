@@ -3,7 +3,7 @@ package org.alvin.springjdbc.system.maintable;
 /**
 * 类说明: 主表--Swagger控制器类 ,使用requestbody 实现
 * @author 唐植超
-* 生成日期 2020-02-19 23:05:35
+* 生成日期 2020-02-20 20:09:06
 **/
 @lombok.extern.slf4j.Slf4j
 @io.swagger.annotations.Api(value = "[主表]控制器", description = "[主表]相关操作")
@@ -170,7 +170,7 @@ public class MainTableAction {
             @io.swagger.annotations.ApiResponse(code = 0, message = "操作成功")
     })
     @org.springframework.web.bind.annotation.PostMapping("findFkOne")
-    public org.alvin.code.gen.beans.RestfullResp<MainTableFk> findFkOne(MainTableFkCond mainTableCond) {
+    public org.alvin.code.gen.beans.RestfullResp<MainTableFk> findFkOne(@org.springframework.web.bind.annotation.RequestBody MainTableFkCond mainTableCond) {
         return new org.alvin.code.gen.beans.RestfullResp<>(this.mainTableService.findFkOne(mainTableCond));
     }
 
@@ -188,7 +188,7 @@ public class MainTableAction {
             @io.swagger.annotations.ApiResponse(code = 0, message = "操作成功")
     })
     @org.springframework.web.bind.annotation.PostMapping("queryLabelList")
-    public org.alvin.code.gen.beans.RestfullResp<java.util.List<org.alvin.code.gen.beans.SelectOption>> queryLabelList(MainTableFkCond mainTableFkCond) {
+    public org.alvin.code.gen.beans.RestfullResp<java.util.List<org.alvin.code.gen.beans.SelectOption>> queryLabelList(@org.springframework.web.bind.annotation.RequestBody MainTableFkCond mainTableFkCond) {
         return new org.alvin.code.gen.beans.RestfullResp<>(this.mainTableService.queryLabelList(mainTableFkCond));
     }
 
@@ -204,7 +204,7 @@ public class MainTableAction {
             @io.swagger.annotations.ApiResponse(code = 0, message = "操作成功")
     })
     @org.springframework.web.bind.annotation.PostMapping("queryFkList")
-    public org.alvin.code.gen.beans.RestfullResp<java.util.List<MainTableFk>> queryFkList(MainTableFkCond mainTableFkCond) {
+    public org.alvin.code.gen.beans.RestfullResp<java.util.List<MainTableFk>> queryFkList(@org.springframework.web.bind.annotation.RequestBody MainTableFkCond mainTableFkCond) {
         return new org.alvin.code.gen.beans.RestfullResp<>(this.mainTableService.queryFkList(mainTableFkCond));
     }
 
@@ -220,7 +220,7 @@ public class MainTableAction {
             @io.swagger.annotations.ApiResponse(code = 0, message = "操作成功")
     })
     @org.springframework.web.bind.annotation.PostMapping("queryFkPage")
-    public org.alvin.code.gen.beans.RestfullResp<org.alvin.code.gen.utils.Page<MainTableFk>> queryFkPage(MainTableFkCond fkCond) {
+    public org.alvin.code.gen.beans.RestfullResp<org.alvin.code.gen.utils.Page<MainTableFk>> queryFkPage(@org.springframework.web.bind.annotation.RequestBody MainTableFkCond fkCond) {
         return new org.alvin.code.gen.beans.RestfullResp<>(this.mainTableService.queryFkPage(fkCond));
     }
 

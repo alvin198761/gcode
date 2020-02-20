@@ -1,4 +1,4 @@
-/*测试表B管理,作者:唐植超,日期:2020-02-19 23:26:37*/
+/*测试表B管理,作者:唐植超,日期:2020-02-20 20:09:06*/
 <template>
       <el-dialog :title="title" :visible.sync="show" :close-on-click-modal="false" :close-on-press-escape="false" width="80%">
             <el-form :model="form" ref="form" :rules="rules" label-width="100px">
