@@ -5,6 +5,8 @@
                 <el-input v-model="form.tableName" placeholder="表名称" size="small"></el-input>
             </el-form-item>
             <el-form-item>
+                <el-checkbox v-model="showConfigTable" @change="changeShowConfigTable">隐藏配置表</el-checkbox>
+                &nbsp;
                 <el-button type="primary" @click="refresh" size="small">刷新</el-button>
                 <el-button type="primary" @click="genCode" size="small" :disabled="selectList.length == 0">生成代码
                 </el-button>
@@ -49,14 +51,15 @@
     import TableSettingsDialog from './TableSettingsDialog.vue';
 
     export default {
-        components: {CodeGenDialog, ExecuteSqlDialog, TableDesignDialog,TableSettingsDialog},
+        components: {CodeGenDialog, ExecuteSqlDialog, TableDesignDialog, TableSettingsDialog},
         data() {
             return {
                 form: {
                     tableName: null
                 },
                 dataList: [],
-                selectList: []
+                selectList: [],
+                showConfigTable: true,
             }
         },
         computed: {
@@ -74,7 +77,7 @@
         methods: {
             refresh() {
                 //刷新
-                this.$post("/api/code/queryTables").then(res => {
+                this.$post("/api/code/queryTables", {showConfigTable: this.showConfigTable}).then(res => {
                     if (res.code !== 0) {
                         this.$message.error(res.errmsg)
                         return;
@@ -113,8 +116,11 @@
                 //删除表
 
             },
-            showTableSettingsDialog(table){
+            showTableSettingsDialog(table) {
                 this.$refs["tableSettingsDialog"].showDialog(table);
+            },
+            changeShowConfigTable(val) {
+                this.refresh()
             }
         }
     }

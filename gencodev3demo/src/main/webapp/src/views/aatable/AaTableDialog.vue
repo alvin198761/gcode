@@ -1,6 +1,7 @@
-/*测试A管理,作者:唐植超,日期:2020-02-20 20:09:06*/
+/*测试A管理,作者:唐植超,日期:2020-02-20 22:28:50*/
 <template>
-      <el-dialog :title="title" :visible.sync="show" :close-on-click-modal="false" :close-on-press-escape="false" width="80%">
+<div>
+      <el-drawer :title="title" :visible.sync="show" show-close modal-append-to-body destroy-on-close append-to-body close-on-press-escape  :wrapperClosable="false" :close-on-click-modal="false" :close-on-press-escape="false" size="60%">
             <el-form :model="form" ref="form" :rules="rules" label-width="100px">
 																						 
 				 <el-row>
@@ -19,11 +20,12 @@
 					</el-col>
 				</el-row>
 								                </el-form>
-            <div slot="footer" style="text-align: right">
+            <div  style="text-align: right;display: flex;">
               <el-button @click="show = false">取消</el-button>
               <el-button type="primary" @click="save()">确定</el-button>
             </div>
-          </el-dialog>
+          </el-drawer>
+		  </div>
     </template>
 <script>
   export default {
@@ -36,12 +38,13 @@
         dialogMode: "save",
         show: false,
         rules: {
+		// 长度示例 {min: 1, max: 10, message: '长度不正确', trigger: 'blur'},
         							//主键不处理
 												tip :[
-				{required: true, message: '请输入提示文本', trigger: 'blur'}, // {min: 1, max: 10, message: '提示文本长度不正确', trigger: 'blur'},     
+				{required: true, message: '请输入提示文本', trigger: 'blur'},      
 				],
 												date :[
-				{required: true, message: '请输入日期', trigger: 'blur'}, // {min: 1, max: 10, message: '日期长度不正确', trigger: 'blur'},     
+				{required: true, message: '请输入日期', trigger: 'blur'},      
 				],
 					        },
 																	      }
