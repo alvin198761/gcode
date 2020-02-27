@@ -37,3 +37,6 @@ gen_code_v3/src/main/webapp/.idea
 gen_code_v3/src/main/webapp/package-lock.json
 /gen_code_v3/src/main/resources/templates
 /gen_code_v3/src/main/resources/static
+gencodev3demo/src/main/resources/static
+gencodev3demo/src/main/resources/templates
+gencodev3demo/target
