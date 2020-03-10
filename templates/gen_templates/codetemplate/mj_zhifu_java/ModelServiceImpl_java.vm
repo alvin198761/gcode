@@ -1,0 +1,162 @@
+package ${pName};
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import com.yijiaqi.common.service.BaseService;
+import java.util.HashMap;
+import java.util.List;
+/**
+* @类说明: ${cName}--数据逻辑层
+* @author: ${auth}
+* @date : ${time}
+**/
+@Service
+public class ${clsUpp}ServiceImpl extends BaseService implements ${clsUpp}Service  {
+
+     
+    @Autowired
+    private ${clsUpp}Mapper dao; //注入${cName}数据访问层
+
+    /**
+    * @方法说明：  新增[${cName}]记录
+    */
+    @Transactional
+    public HashMap<String, Object> save(${clsUpp} ${lowUpp}) {
+        HashMap<String, Object> result=new HashMap<>();
+        int res = this.dao.save(${lowUpp});
+        if (res == 1) {
+            result.put("errcode", 0);
+            result.put("errmsg", "添加成功!");
+        } else {
+            result.put("errcode", -1);
+            result.put("errmsg", "添加失败!");
+        }
+        return result;
+    }
+
+    /**
+    * @方法说明：  删除${cName}记录(多条)
+    */
+    @Transactional
+    public HashMap<String, Object> delete(${idType} id) {
+        HashMap<String, Object> result=new HashMap<>();
+        int res = this.dao.delete(id);
+        if (res == 1) {
+            result.put("errcode", 0);
+            result.put("errmsg", "删除成功!");
+        } else {
+            result.put("errcode", -1);
+            result.put("errmsg", "删除失败!");
+        }
+        return result;
+    }
+
+    /**
+    * @方法说明：  更新${cName}记录
+    */
+    @Transactional
+    public HashMap<String, Object> update(${clsUpp} ${lowUpp}) {
+        HashMap<String, Object> result=new HashMap<>();
+        int res = this.dao.update(${lowUpp});
+        if (res == 1) {
+            result.put("errcode", 0);
+            result.put("errmsg", "修改成功!");
+        } else {
+            result.put("errcode", -1);
+            result.put("errmsg", "修改失败!");
+        }
+        return result;
+    }
+
+     /**
+    * @方法说明：更新${cName}记录,不为空的都更新掉
+    */
+    @Transactional
+    public HashMap<String, Object> updateNotNull(${clsUpp} ${lowUpp}) {
+        HashMap<String, Object> result=new HashMap<>();
+        int res = this.dao.updateNotNull(${lowUpp});
+        if (res == 1) {
+            result.put("errcode", 0);
+            result.put("errmsg", "修改成功!");
+        } else {
+            result.put("errcode", -1);
+            result.put("errmsg", "修改失败!");
+        }
+        return result;
+    }
+
+    /**
+    * @方法说明： 按条件查询分页${cName}列表
+    */
+    public HashMap<String, Object> queryPage(${clsUpp}Vo vo) {
+        HashMap<String, Object> result = new HashMap<>();
+        List<${clsUpp}> list = this.dao.queryList(vo);
+        result.put("list", list);
+        vo.setTotalCount((int)this.dao.queryCount(vo));
+        result.put("pagevo", vo);
+        result.put("errcode", 0);
+        return result;
+    }
+
+    /**
+    * @方法说明： 按条件查询不分页${cName}列表(使用范型)
+    */
+    public HashMap<String, Object> queryList(${clsUpp}Vo vo) {
+        vo.setPagebreak(false);
+        HashMap<String, Object> result = new HashMap<>();
+        List<${clsUpp}> list = this.dao.queryList(vo);
+        result.put("list", list);
+        result.put("errcode", 0);
+        return result;
+    }
+    
+    /**
+    * @方法说明： 按条件查询一个 ${cName} 对象
+    */
+    public HashMap<String, Object> findOne(${clsUpp}Vo vo) {
+        HashMap<String, Object> result = new HashMap<>();
+        ${clsUpp} data = this.dao.findOne(vo);
+        result.put("data", data);
+        result.put("errcode", 0);
+        return result;
+    }
+
+    /**
+    * @方法说明： 按ID查找单个${cName}记录
+    */
+    public HashMap<String, Object> findById(${idType} id) {
+        HashMap<String, Object> result = new HashMap<>();
+        ${clsUpp} data = this.dao.findById(id);
+        result.put("data", data);
+        result.put("errcode", 0);
+        return result;
+    }
+
+    /**
+    * @方法说明： 按条件查询${cName}记录个数
+    */
+    public HashMap<String, Object> queryCount(${clsUpp}Vo vo) {
+        HashMap<String, Object> result = new HashMap<>();
+        long count = this.dao.queryCount(vo);
+        result.put("count", count);
+        result.put("errcode", 0);
+        return result;
+    }
+    
+    /**
+    * @方法说明： 批量添加 ${cName}
+    */
+    @Transactional
+    public HashMap<String, Object> insertBatch(List<${clsUpp}> list){
+        HashMap<String, Object> result=new HashMap<>();
+        int res = this.dao.insertBatch(list);
+        if (res > 0) {
+            result.put("errcode", 0);
+            result.put("errmsg", "添加成功!");
+        } else {
+            result.put("errcode", -1);
+            result.put("errmsg", "添加失败!");
+        }
+        return result;
+    }
+}

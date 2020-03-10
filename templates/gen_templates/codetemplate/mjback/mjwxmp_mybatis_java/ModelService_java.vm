@@ -1,0 +1,84 @@
+package ${pName};
+
+import java.util.HashMap;
+import java.util.List;
+import com.alibaba.fastjson.JSONObject;
+import com.yijiaqi.bsv1.AjaxResult;
+
+/**
+* @类说明: ${cName}--数据逻辑接口层
+* @author: ${auth}
+* @date : ${time}
+**/
+public interface ${clsUpp}Service{
+
+	/**
+	* @方法说明：  新增[${cName}]记录
+	* @param ${lowUpp}
+	* @return
+	*/
+	AjaxResult<JSONObject> save(${clsUpp} ${lowUpp});
+
+	/**
+	* @方法说明：  删除${cName}记录(多条)
+	* @param ids[]
+	* @return
+	*/
+	AjaxResult<JSONObject> delete(${idType} ids[]);
+
+	/**
+	* @方法说明：  更新${cName}记录
+	* @param ${lowUpp}
+	* @return
+	*/
+	AjaxResult<JSONObject> update(${clsUpp} ${lowUpp});
+
+	/**
+	* @方法说明：更新${cName}记录,不为空的都更新掉
+	* @param ${lowUpp}
+	* @return
+	*/
+	AjaxResult<JSONObject> updateNotNull(${clsUpp} ${lowUpp});
+
+	/**
+	* @方法说明： 按条件查询分页${cName}列表
+	* @param ${lowUpp}Vo
+	* @return
+	*/
+	AjaxResult<JSONObject> queryPage(${clsUpp}Vo ${lowUpp}Vo);
+
+	/**
+	* @方法说明： 按条件查询不分页${cName}列表(使用范型)
+	* @param ${lowUpp}Vo
+	* @return
+	*/
+	AjaxResult<JSONObject> queryList(${clsUpp}Vo ${lowUpp}Vo);
+
+	/**
+	* @方法说明： 按条件查询一个 ${cName} 对象
+	* @param ${lowUpp}Vo
+	* @return
+	*/
+	AjaxResult<JSONObject> findOne(${clsUpp}Vo ${lowUpp}Vo);
+
+	/**
+	* @方法说明： 按ID查找单个${cName}记录
+	* @param id
+	* @return
+	*/
+	AjaxResult<JSONObject> findById(${idType} id);
+
+	/**
+	* @方法说明： 按条件查询${cName}记录个数
+	* @param ${lowUpp}Vo
+	* @return
+	*/
+	AjaxResult<JSONObject> queryCount(${clsUpp}Vo ${lowUpp}Vo);
+
+	/**
+	* @方法说明： 批量添加 ${cName}
+	* @param list
+	* @return
+	*/
+	AjaxResult<JSONObject> insertBatch(List<${clsUpp}> list);
+}

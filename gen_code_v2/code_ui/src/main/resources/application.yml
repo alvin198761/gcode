@@ -5,7 +5,7 @@ server:
     mime-types: application/json,application/xml,text/html,text/xml,text/plain,application/javascript,text/css
 spring:
   profiles:
-    active: aliyun
+    active: mjlocal
 
 es:
   server:

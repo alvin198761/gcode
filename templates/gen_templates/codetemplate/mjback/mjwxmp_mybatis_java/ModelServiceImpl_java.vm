@@ -1,0 +1,139 @@
+package ${pName};
+
+import java.util.HashMap;
+import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import com.alibaba.fastjson.JSONObject;
+import com.yijiaqi.bsv1.AjaxResult;
+
+/**
+* @类说明: ${cName}--数据逻辑层
+* @author: ${auth}
+* @date : ${time}
+**/
+@Service
+public class ${clsUpp}ServiceImpl implements ${clsUpp}Service{
+
+    private Logger logger = LoggerFactory.getLogger(getClass().getName());
+
+	@Autowired
+	private ${clsUpp}Mapper ${lowUpp}Mapper; //注入${cName}数据访问层
+
+	public AjaxResult<JSONObject> save(${clsUpp} ${lowUpp}) {
+		AjaxResult<JSONObject> result=new AjaxResult<JSONObject>(-1, "操作异常");
+		int curdResult = ${lowUpp}Mapper.save(${lowUpp});
+		if(curdResult <= 0){
+			return result;
+		}
+		result.setErrcode(0);
+		result.setErrmsg("操作成功");
+		return result;
+	}
+
+	public AjaxResult<JSONObject> delete(${idType} ids[]) {
+		AjaxResult<JSONObject> result=new AjaxResult<JSONObject>(-1, "操作异常");
+		//int curdResult = ${lowUpp}Mapper.deleteLogic(ids);//逻辑删除
+		int curdResult = ${lowUpp}Mapper.delete(ids);//物理删除
+		if(curdResult <= 0){
+			return result;
+		}
+		result.setErrcode(0);
+		result.setErrmsg("操作成功");
+		return result;
+	}
+
+	public AjaxResult<JSONObject> update(${clsUpp} ${lowUpp}) {
+		AjaxResult<JSONObject> result=new AjaxResult<JSONObject>(-1, "操作异常");
+		int curdResult = ${lowUpp}Mapper.update(${lowUpp});
+		if(curdResult <= 0){
+			return result;
+		}
+		result.setErrcode(0);
+		result.setErrmsg("操作成功");
+		return result;
+	}
+
+    public AjaxResult<JSONObject> updateNotNull(${clsUpp} ${lowUpp}) {
+		AjaxResult<JSONObject> result=new AjaxResult<JSONObject>(-1, "操作异常");
+		int curdResult = ${lowUpp}Mapper.updateNotNull(${lowUpp});
+		if(curdResult <= 0){
+		return result;
+		}
+		result.setErrcode(0);
+		result.setErrmsg("操作成功");
+		return result;
+    }
+
+	public AjaxResult<JSONObject> queryPage(${clsUpp}Vo ${lowUpp}Vo) {
+		AjaxResult<JSONObject> result=new AjaxResult<JSONObject>(-1, "操作异常");
+		JSONObject replydata = new JSONObject();
+		List<${clsUpp}> ${lowUpp}s = ${lowUpp}Mapper.queryList(${lowUpp}Vo);
+		replydata.put("${lowUpp}s", ${lowUpp}s);
+		int count = ${lowUpp}Mapper.queryCount(${lowUpp}Vo);
+		${lowUpp}Vo.setTotalCount(count);
+		replydata.put("pagevo", ${lowUpp}Vo);
+		result.setReplydata(replydata);
+		result.setErrcode(0);
+		result.setErrmsg("操作成功");
+		return result;
+	}
+
+	public AjaxResult<JSONObject> queryList(${clsUpp}Vo ${lowUpp}Vo) {
+		AjaxResult<JSONObject> result=new AjaxResult<JSONObject>(-1, "操作异常");
+		JSONObject replydata = new JSONObject();
+		${lowUpp}Vo.setPagebreak(false);
+		List<${clsUpp}> ${lowUpp}s = ${lowUpp}Mapper.queryList(${lowUpp}Vo);
+		replydata.put("${lowUpp}s", ${lowUpp}s);
+		result.setReplydata(replydata);
+		result.setErrcode(0);
+		result.setErrmsg("操作成功");
+		return result;
+	}
+	
+	public AjaxResult<JSONObject> findOne(${clsUpp}Vo ${lowUpp}Vo) {
+		AjaxResult<JSONObject> result=new AjaxResult<JSONObject>(-1, "操作异常");
+		JSONObject replydata = new JSONObject();
+		${clsUpp} ${lowUpp} = ${lowUpp}Mapper.findOne(${lowUpp}Vo);
+		replydata.put("${lowUpp}", ${lowUpp});
+		result.setReplydata(replydata);
+		result.setErrcode(0);
+		result.setErrmsg("操作成功");
+		return result;
+	}
+
+	public AjaxResult<JSONObject> findById(${idType} id) {
+		AjaxResult<JSONObject> result=new AjaxResult<JSONObject>(-1, "操作异常");
+		JSONObject replydata = new JSONObject();
+		${clsUpp} ${lowUpp} = ${lowUpp}Mapper.findById(id);
+		replydata.put("${lowUpp}", ${lowUpp});
+		result.setReplydata(replydata);
+		result.setErrcode(0);
+		result.setErrmsg("操作成功");
+		return result;
+	}
+
+	public AjaxResult<JSONObject> queryCount(${clsUpp}Vo ${lowUpp}Vo) {
+		AjaxResult<JSONObject> result=new AjaxResult<JSONObject>(-1, "操作异常");
+		JSONObject replydata = new JSONObject();
+		int count = ${lowUpp}Mapper.queryCount(${lowUpp}Vo);
+		replydata.put("count", count);
+		result.setReplydata(replydata);
+		result.setErrcode(0);
+		result.setErrmsg("操作成功");
+		return result;
+	}
+	
+	public AjaxResult<JSONObject> insertBatch(List<${clsUpp}> list){
+		AjaxResult<JSONObject> result=new AjaxResult<JSONObject>(-1, "操作异常");
+		int curdResult = ${lowUpp}Mapper.insertBatch(list);
+		if(curdResult <= 0){
+			return result;
+		}
+		result.setErrcode(0);
+		result.setErrmsg("操作成功");
+		return result;
+	}
+}

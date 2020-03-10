@@ -1,0 +1,117 @@
+<template>
+    <Modal
+            :title="title"
+            :mask-closable="false"
+            v-model="show"
+            width="600px">
+        <Form ref="form" :model="form" :rules="rules" :label-width="90">
+           #foreach($field in $fList)
+                    #if($field.name != $id.name)
+                    <FormItem label="${field.comment}" prop="${field.lower_camel}">
+                    #if ($field.allTypeName == "java.util.Date")
+                    <DatePicker type="date" placeholder="${field.comment}" v-model="form.${field.lower_camel}" style="width: 100%" clearable></DatePicker>
+                     #elseif($field.allTypeName == "java.lang.Long")
+                    <InputNumber placeholder="${field.comment}" v-model="form.${field.lower_camel}"  style="width: 100%"  clearable></InputNumber>
+                    #elseif($field.allTypeName == "java.lang.Integer")
+                    <InputNumber placeholder="${field.comment}" v-model="form.${field.lower_camel}"  style="width: 100%"  clearable></InputNumber>
+                    #elseif($field.allTypeName == "java.lang.Integer")
+                    <InputNumber placeholder="${field.comment}" v-model="form.${field.lower_camel}"  style="width: 100%" clearable></InputNumber>
+                    #elseif($field.allTypeName == "java.lang.Double")
+                    <InputNumber placeholder="${field.comment}" v-model="form.${field.lower_camel}" style="width: 100%"  clearable></InputNumber>
+                    #elseif($field.allTypeName == "java.lang.Short")
+                    <InputNumber placeholder="${field.comment}" v-model="form.${field.lower_camel}" style="width: 100%" clearable></InputNumber>
+                    #elseif($field.allTypeName == "java.lang.Byte")
+                    <Input placeholder="${field.comment}" v-model.number="form.${field.lower_camel}" clearable/>
+                    #else
+                    <Input placeholder="${field.comment}" v-model="form.${field.lower_camel}" clearable/>
+                    #end
+                    </FormItem>
+                    #end
+                    #end
+        </Form>
+        <div slot="footer">
+            <Button @click="show = false">取消</Button>
+            <Button type="primary" @click="save" :loading="saveLoading">保存</Button>
+        </div>
+    </Modal>
+</template>
+<script>
+
+    export default{
+        components: {},
+        props: ["refresh"],
+        data: function () {
+            return {
+                title: '',
+                mode: '',
+                form: this.initForm(),
+                  //  {min: 1, max: 10,   message: '长度不正确', trigger: 'blur'},
+                rules: {
+                   #foreach($field in $fList)
+            ${field.lower_camel} : [
+             #if ($field.allTypeName == "java.util.Date")
+            {required: true, type:'date', message: '请输入${field.comment}', trigger: 'blur'}
+            #elseif($field.allTypeName == "java.lang.String")
+               {required: true,   message: '请输入${field.comment}', trigger: 'blur'}, 
+            #else
+           {required: true, type:'number', message: '请输入${field.comment}', trigger: 'blur'}, 
+            #end
+        ],
+        #end
+                },
+                show: false,
+                saveLoading: false
+            }
+        },
+        computed: {},
+        created: function () {
+
+        },
+        methods: {
+            initData(){
+
+            },
+            initForm(){
+                return {
+                  #foreach($field in $fList)
+                      ${field.lower_camel} : null,// ${field.comment}
+                  #end
+                }
+            },
+            showAddDialog(){
+                this.title = "新增${cName}";
+                this.mode = "save";
+                this.form = this.initForm();
+                this.show = true;
+            },
+            showEditDialog(row){
+                this.title = "修改${cName}";
+                this.mode = "update";
+                this.form = {...row};
+                this.show = true;
+            },
+            save(){
+                const that = this;
+                this.${dollar}refs["form"].validate((valid) => {
+                    if (!valid) {
+                        return;
+                    }
+                    that.saveLoading = true;
+                    that.${dollar}postBody("/gd/${lowUpp}/" + that.mode, that.form).then(res => {
+                        that.saveLoading = false;
+                        if (res.errcode != 0) {
+                            that.${dollar}Message.error(res.replydata.errmsg);
+                            return;
+                        }
+                        that.refresh();
+                        this.${dollar}Message.success(that.title + "成功")
+                        that.show = false;
+                    })
+                })
+            }
+        }
+    }
+</script>
+<style>
+
+</style>

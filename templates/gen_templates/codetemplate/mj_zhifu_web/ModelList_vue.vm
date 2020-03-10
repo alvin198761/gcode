@@ -1,0 +1,162 @@
+/*${cName}管理,作者:${auth},日期:${time}*/
+<template>
+      <div>
+            <Form inline :label-width="70"  style="text-align: left" class="searchForm">
+                #foreach($field in $fList) 
+                #if($field.name != $id.name)
+                            <FormItem label="${field.comment}" prop="${field.lower_camel}">
+                            #if ($field.allTypeName == "java.util.Date")
+                            <DatePicker type="date" placeholder="请选择${field.comment}" v-model="form.${field.lower_camel}" clearable></DatePicker>
+                            #elseif($field.allTypeName == "java.lang.Long")
+                            <Select placeholder="请选择${field.comment}" v-model="form.${field.lower_camel}" clearable>
+                            <Option   value="-1"  >-请选择-</Option>
+                            </Select>
+                            #elseif($field.allTypeName == "java.lang.Integer")
+                            <InputNumber placeholder="请输入${field.comment}" v-model="form.${field.lower_camel}" clearable></InputNumber>
+                            #elseif($field.allTypeName == "java.lang.Integer")
+                            <InputNumber placeholder="请输入${field.comment}" v-model="form.${field.lower_camel}" clearable></InputNumber>
+                            #elseif($field.allTypeName == "java.lang.Double")
+                            <InputNumber placeholder="请输入${field.comment}" v-model="form.${field.lower_camel}" clearable></InputNumber>
+                            #elseif($field.allTypeName == "java.lang.Short")
+                            <InputNumber placeholder="请输入${field.comment}" v-model="form.${field.lower_camel}" clearable></InputNumber>
+                            #elseif($field.allTypeName == "java.lang.Byte")
+                            <Input placeholder="请输入${field.comment}" v-model.number="form.${field.lower_camel}"/>
+                            #else
+                            <Input placeholder="请输入${field.comment}" v-model="form.${field.lower_camel}"/>
+                            #end
+                            </FormItem>
+                            #end
+                            #end
+                  <FormItem  :label-width="0">
+                        <Button @click="refresh" type="success" style="margin-right: 5px" title="搜索" icon="ios-search">搜索</Button>
+                        <Button @click="doAdd()" type="primary" style="margin-right: 5px" title="添加" icon="plus">新增</Button>
+                      </FormItem>
+                </Form>
+            <Table :loading="loading" :columns="tableHeader" :data="dataList" style="width: 100%">
+            #foreach($field in $fList)
+              <template slot-scope="{ row,index }" slot="col_${field.lower_camel}">
+                <div>{{ row.${field.lower_camel} }}</div>
+              </template>
+            #end
+            <template slot-scope="{ row,index }" slot="col_opt">
+              <div>
+               <Button size="small" type="primary" title="编辑" style="margin-right: 5px" @click="doEdit(row)"  ><i class="fa fa-edit"/></Button>
+               <Button size="small" type="error"   title="删除" style="margin-right: 5px" @click="doDelete(row)"><i class="fa fa-trash"/></Button>
+              </div>
+            </template>
+            </Table>
+            <br/>
+            <div style="text-align: right" v-if="page.totalCount > 0">
+             <Page style="float: right" size="small" show-total show-sizer v-model="page"
+                              :page-size="page.pageSize" :total="page.totalCount"
+                              :current="page.pageNum"
+                              :page-size-opts="[10, 15, 20, 25, 30]"
+                              @on-change="(curr) => {this.page = {...this.page ,pageNum: curr} ; this.loadData();}"
+                              @on-page-size-change="(pageSize) => { this.page = {...this.page ,pageSize : pageSize} ; this.loadData();}"
+                        />
+            </div>
+        <${clsUpp}Dialog ref="dialog" :refresh="refresh"></${clsUpp}Dialog>
+  </div>
+</template>
+<script>
+import ${clsUpp}Dialog from './${clsUpp}Dialog.vue';
+  export default {
+    components: {
+     ${clsUpp}Dialog,
+   },
+    data: function () {
+      const that = this;
+      return {
+        tableHeader: [
+          #foreach($field in $fList)
+                  {title: '${field.comment}', key: '${field.lower_camel}', slot:'col_${field.lower_camel}' },
+          #end
+          {            title: '操作',            width: 150,            slot : 'col_opt'          }
+        ],
+         page: {
+                    pageNum: 1,
+                    pageSize: 10,
+                    totalCount: 0
+                },
+        dataList: [],
+        form: {
+            #foreach($field in $fList)
+                ${field.lower_camel} : null,// ${field.comment}
+            #end
+        },
+        loading: false
+      }
+    },
+    computed: {},
+    created: function () {
+      this.refresh();
+    },
+    methods: {
+      refresh() {
+        this.page = {
+                    pageNum: 1,
+                    pageSize: 10,
+                    totalCount: 0
+                }
+        this.loadData();
+      },
+      loadData(){
+        const that = this;
+        that.loading = true;
+        const requestData = {...that.form, pageNum: that.page.pageNum - 1,pageSize:that.page.pageSize};
+        that.${dollar}postBody("/gd/${lowUpp}/queryPage", requestData).then(res => {
+              that.loading = false;
+              if (res.errcode !== 0) {
+                that.${dollar}Message.error({content: res.errmsg ? res.errmsg : '获取${cName}列表失败'});
+                return ;
+              }
+              if (res.errcode === 0) {
+                    that.dataList = res.replydata.list;
+                    that.page = {...res.replydata.pagevo ,pageNum: res.replydata.pagevo.pageNum + 1};
+                    that.loading = false;
+                } else {
+                    that.${dollar}Message.error(res.replydata.errmsg);
+                }
+            }) 
+      },
+      doAdd() {
+        this.${dollar}refs["dialog"].showAddDialog();
+      },
+      doEdit(row) {
+        this.${dollar}refs["dialog"].showEditDialog(row);
+      },
+      doDelete(row) {
+        const that = this;
+        that.${dollar}Modal.confirm({
+          title: '提示',
+          content: '您确定要删除吗?',
+          closable:true,
+          onOk: () => {
+            this.${dollar}post('/gd/${lowUpp}/delete', {id: row.${idName} }).then(res => {
+                  if (res.errcode != 0) {
+                    that.${dollar}Message.error({content: res.errmsg ? res.errmsg : '获取${cName}列表失败'});
+                    return ;
+                  }
+                    that.${dollar}Message.success({ content: '删除成功' });
+                    that.refresh();
+                  }).catch(res => {
+                    that.${dollar}Message.error({ content: '删除失败：' + res });
+                  });
+          },
+          onCancel: () => {
+          }
+        });
+      }
+    }
+  }
+</script>
+<style>
+  .expand-row {
+    margin-bottom: 6px;
+  }
+  .expand-key {
+    font-weight: bold;
+    line-height: 25px;
+  }
+  .expand-value {}
+</style>

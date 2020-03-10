@@ -1,0 +1,52 @@
+package $pName ;
+
+#foreach($importItem in $importList)
+    $importItem
+#end
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import java.util.List;
+
+
+/**
+* @类说明: ${cName}--查询条件实体类
+* @author: ${auth}
+* @date : ${time}
+**/
+@ApiModel(value = "${clsUpp}Vo", description = "${cName}查询条件实体")
+public class ${clsUpp}Vo extends BaseConditionVO {
+
+    //feilds
+    #foreach ($fie in $fList)
+    /**
+     * ${fie.comment}
+     */
+    @ApiModelProperty(value = "${fie.comment}", dataType = "${fie.type}")
+    private  ${fie.type}  ${fie.lower_camel};
+    #end
+    //  通用变量
+    /**
+    * 主键列表
+    */
+    private List<${idType}> ids;// 主键列表
+
+    //getters and setters
+    #foreach ($fi in $fList)
+        public ${fi.type} get${fi.upper_camel}(){
+            return this.${fi.lower_camel};
+        }
+
+        public void set${fi.upper_camel}(${fi.type} ${fi.lower_camel}){
+            this.${fi.lower_camel} = ${fi.lower_camel};
+        }
+
+    #end
+    public List<${idType}> getIds(){
+        return this.ids;
+    }
+
+    public void setIds(List<${idType}> ids){
+        this.ids = ids;
+    }
+
+}

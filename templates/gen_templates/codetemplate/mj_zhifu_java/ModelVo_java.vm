@@ -1,0 +1,42 @@
+package $pName ;
+
+#foreach($importItem in $importList)
+    $importItem
+#end
+import com.yijiaqi.wechat.pojo.vo.BaseConditionVO;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+/**
+* @类说明: ${cName}--查询条件
+* @author: ${auth}
+* @date : ${time}
+**/
+@ApiModel(value = "${clsUpp}Vo", description = "${cName}查询条件")
+public class ${clsUpp}Vo extends BaseConditionVO{
+
+    //数据库中的字段
+    #foreach ($fi in $fList)
+    @ApiModelProperty(value = "${fi.comment}", dataType = "${fi.type}")
+    private ${fi.type} ${fi.lower_camel} ;//  ${fi.comment}
+    #end
+
+    //此处可添加查询显示辅助字段
+
+    //getters and setters
+    #foreach ($fi in $fList)
+        /**
+        * @return ${fi.comment}
+        */
+        public ${fi.type} get${fi.upper_camel}(){
+            return this.${fi.lower_camel} ;
+        }
+
+        /**
+        * @param ${fi.lower_camel} ${fi.comment}
+        */
+        public void set${fi.upper_camel}(${fi.type} ${fi.lower_camel}){
+            this.${fi.lower_camel} = ${fi.lower_camel};
+        }
+
+    #end
+}
