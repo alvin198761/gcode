@@ -27,7 +27,7 @@ axios.interceptors.request.use(
 function parseData(data) {
     var obj = {};
     for (var p in data) {
-        if (!data[p]) {
+        if (data[p] === null) {
             continue;
         }
         obj[p] = data[p];
