@@ -2,6 +2,7 @@ package org.alvin.code.v2.core.utils;
 
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.io.Files;
+import de.hunsicker.jalopy.Jalopy;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
@@ -137,7 +138,7 @@ public class VelocityUtil {
      * @param suffix
      * @throws IOException
      */
-    public static void parseEntityTemplate(List<String> vms, String baseUrl, JSONObject jsonObject, String packageName, String low, String suffix, VelocityEngine engine) throws IOException {
+    public static void parseEntityTemplate(List<String> vms, String baseUrl, JSONObject jsonObject, String packageName, String low, String suffix, VelocityEngine engine) throws Exception {
         //循环模板，进行合并
         for (String vm : vms) {
             //获得文件名称
@@ -160,6 +161,20 @@ public class VelocityUtil {
             VelocityUtil.parse(vm, jsonObject, path + fileType, engine);
             log.info("=================end VelocityEngine==================");
         }
+
+
+    }
+
+    public static String format(String content, String path) throws Exception {
+        StringBuffer output = new StringBuffer();
+        Jalopy j = new Jalopy();
+        j.setEncoding("UTF-8");
+        j.setInput(content, path); // 第二个参数随便填个java类名
+        j.setOutput(output);
+        if (j.format()) {
+            return output.toString();
+        }
+        throw new Exception("format fail");
     }
 
 

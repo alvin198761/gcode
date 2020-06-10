@@ -223,7 +223,11 @@ public class ProjectService {
             jsonObject.put("packageName", packageName);
             jsonObject.putAll(project);
             //java 代码生成
-            VelocityUtil.parseEntityTemplate(Lists.newArrayList(f.getPath()), entityPath.toFile().getAbsolutePath(), jsonObject, packageName, low, suffix, fileEngine);
+            try {
+                VelocityUtil.parseEntityTemplate(Lists.newArrayList(f.getPath()), entityPath.toFile().getAbsolutePath(), jsonObject, packageName, low, suffix, fileEngine);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
